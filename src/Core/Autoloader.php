@@ -130,7 +130,7 @@ class Autoloader
             array_unshift($applications, $GLOBALS["sharp-src"] ?? "vendor/yonis-savary/sharp/src");
 
             foreach ($applications as $app)
-                self::loadApplication($app, false);
+                self::loadApplication(Utils::relativePath($app), false);
         }
 
         foreach (self::getListFiles(self::REQUIRE) as $file)
@@ -141,18 +141,16 @@ class Autoloader
 
     public static function loadApplication(string $path, bool $requireHelpers=true)
     {
-        $application = Utils::relativePath($path);
+        if (!is_dir($path))
+            throw new InvalidArgumentException("[$path] is not a directory !");
 
-        if (!is_dir($application))
-            throw new InvalidArgumentException("[$application] is not a directory !");
+        self::$loadedApplications[] = $path;
 
-        self::$loadedApplications[] = $application;
-
-        $vendorFile = Utils::joinPath($application, "vendor/autoload.php");
+        $vendorFile = Utils::joinPath($path, "vendor/autoload.php");
         if (is_file($vendorFile))
             require_once $vendorFile;
 
-        foreach (Utils::listDirectories($application) as $directory)
+        foreach (Utils::listDirectories($path) as $directory)
         {
             $basename = basename($directory);
 
