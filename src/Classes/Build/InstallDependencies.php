@@ -5,6 +5,7 @@ namespace YonisSavary\Sharp\Classes\Build;
 use YonisSavary\Sharp\Classes\CLI\AbstractBuildTask;
 use YonisSavary\Sharp\Classes\Env\Configuration;
 use YonisSavary\Sharp\Classes\Env\Storage;
+use YonisSavary\Sharp\Core\Autoloader;
 use YonisSavary\Sharp\Core\Utils;
 
 /**
@@ -16,7 +17,7 @@ class InstallDependencies extends AbstractBuildTask
     {
         echo "Installing dependencies...\n";
 
-        $applications = Configuration::getInstance()->toArray("applications");
+        $applications = Autoloader::getLoadedApplications();
 
         foreach ($applications as $appName)
             $this->installDependenciesInApp($appName);
@@ -25,16 +26,19 @@ class InstallDependencies extends AbstractBuildTask
     protected function installDependenciesInApp(string $appName)
     {
         $appPath = Utils::relativePath($appName);
+
+        $relPathName = str_replace(Autoloader::projectRoot(), "", $appPath);
+
         $app = new Storage($appPath);
 
         if (!is_dir($appPath))
-            return print("Cannot read [$appPath], inexistent directory");
+            return print("Cannot read [$relPathName], inexistent directory");
 
         if (!$app->isFile("composer.json"))
-            return print("Skipping [$appName] (no composer.json)\n");
+            return print("Skipping [$relPathName] (no composer.json)\n");
 
         if ($app->isDirectory("vendor"))
-            return print("Skipping [$appName] (Already installed)\n");
+            return print("Skipping [$relPathName] (Already installed)\n");
 
         echo "Installing in [$appName]\n";
         echo "---\n";

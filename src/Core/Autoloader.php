@@ -66,6 +66,8 @@ class Autoloader
     /** Used to cache the results of `getListFiles()` */
     protected static array $listsCache = [];
 
+    protected static array $loadedApplications = [];
+
     public static function initialize()
     {
         self::findProjectRoot();
@@ -144,6 +146,8 @@ class Autoloader
         if (!is_dir($application))
             throw new InvalidArgumentException("[$application] is not a directory !");
 
+        self::$loadedApplications[] = $application;
+
         $vendorFile = Utils::joinPath($application, "vendor/autoload.php");
         if (is_file($vendorFile))
             require_once $vendorFile;
@@ -163,6 +167,11 @@ class Autoloader
 
             self::addToList($purpose, $directory);
         }
+    }
+
+    public static function getLoadedApplications(): array
+    {
+        return self::$loadedApplications;
     }
 
     public static function addToList(string $list, ...$elements): void
