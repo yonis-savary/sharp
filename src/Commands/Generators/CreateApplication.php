@@ -36,7 +36,7 @@ class CreateApplication extends Command
 
         print("Enabling new applications\n");
 
-        $config = Configuration::getInstance();
+        $config = new Configuration(Configuration::DEFAULT_FILENAME);
         $config->edit("applications", function($applications) use ($values) {
             array_push($applications, ...$values);
             return array_values(array_unique($applications));

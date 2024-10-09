@@ -18,7 +18,7 @@ class FillConfiguration extends Command
     public function __invoke(Args $args)
     {
         $configurableList = Autoloader::classesThatUses(Configurable::class);
-        $config = Configuration::getInstance();
+        $config = new Configuration(Configuration::DEFAULT_FILENAME);
 
         /**
          * @var Configurable $class

@@ -23,7 +23,9 @@ One application is made of those directories (All of them are optional):
 
 ## Configuration
 
-Your application(s) configuration is stored inside `sharp.json`
+Your application(s) configuration is stored inside `sharp.json`,
+
+(You can also put your environment variables in `env.json`, it shall be merged with the content of `sharp.json`)
 
 The configuration is written as
 
@@ -115,7 +117,7 @@ App\Controllers\Provider\Order
 
 ## Making custom script that uses Sharp
 
-If you want to use YonisSavary\Sharp in a PHP script, you can just require [`Sharp/bootstrap.php`](../bootstrap.php) in your script
+If you want to use YonisSavary\Sharp in a PHP script, you only have to require `vendor/autoload.php`
 
 Including this script will load the components without doing anything else
 

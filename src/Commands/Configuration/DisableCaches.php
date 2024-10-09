@@ -24,7 +24,8 @@ class DisableCaches extends Command
             ClearCaches::execute("--all");
         }
 
-        $config = Configuration::getInstance();
+        $config = new Configuration(Configuration::DEFAULT_FILENAME);
+
         foreach (Autoloader::classesThatUses(Configurable::class) as $configurable)
         {
             /** @var Configurable $configurable */

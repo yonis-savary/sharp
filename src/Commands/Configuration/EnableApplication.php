@@ -34,7 +34,7 @@ class EnableApplication extends Command
 
         print("Enabling new applications\n");
 
-        $config = Configuration::getInstance();
+        $config = new Configuration(Configuration::DEFAULT_FILENAME);
 
         $config->edit("applications", function($applications) use ($values) {
             return ObjectArray::fromArray($applications)
