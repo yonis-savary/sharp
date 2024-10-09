@@ -1,0 +1,8 @@
+# Sharp dependencies & testing
+composer.lock
+/vendor/
+
+/test-app/
+.phpunit.result.cache
+
+Storage

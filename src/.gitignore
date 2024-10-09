@@ -1,0 +1,7 @@
+vendor
+Tests/tmp_test_storage
+Tests/Models
+.phpunit.result.cache
+/autoload.php.cache
+composer.lock
+/Extensions

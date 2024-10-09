@@ -1,0 +1,10 @@
+#!/bin/php
+<?php
+
+use YonisSavary\Sharp\Classes\CLI\Console;
+
+require_once "vendor/autoload.php";
+
+Console::getInstance()->handleArgv($argv);
+
+die;

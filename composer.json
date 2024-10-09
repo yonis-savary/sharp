@@ -1,0 +1,26 @@
+{
+    "version": "0.4.0",
+    "name": "yonis-savary/sharp",
+    "description": "Simple yet complete PHP8 Framework",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "YonisSavary\\Sharp\\": "src/",
+            "YonisSavary\\Sharp\\Tests\\": "tests/"
+        },
+        "files": [
+            "src/bootstrap.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "yonis-savary",
+            "email": "yonissavary@outlook.fr"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require-dev": {
+        "phpunit/phpunit": "^10.0"
+    }
+}
