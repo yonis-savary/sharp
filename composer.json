@@ -1,5 +1,5 @@
 {
-    "version": "0.4.0",
+    "version": "dev-main",
     "name": "yonis-savary/sharp",
     "description": "Simple yet complete PHP8 Framework",
     "type": "library",
