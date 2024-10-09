@@ -2,6 +2,8 @@
     "name": "yonis-savary/sharp",
     "description": "Simple yet complete PHP8 Framework",
     "type": "library",
+    "keywords": ["PHP8", "Framework", "library", "MVC"],
+    "homepage": "https://github.com/yonis-savary/sharp",
     "license": "MIT",
     "autoload": {
         "psr-4": {
@@ -18,6 +20,9 @@
             "email": "yonissavary@outlook.fr"
         }
     ],
+    "require": {
+        "php": ">=8.0.0"
+    },
     "minimum-stability": "dev",
     "require-dev": {
         "phpunit/phpunit": "^10.0"
