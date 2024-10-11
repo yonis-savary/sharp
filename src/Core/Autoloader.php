@@ -137,10 +137,6 @@ class Autoloader
 
         foreach (self::getListFiles(self::REQUIRE) as $file)
             require_once $file;
-
-        EventListener::getInstance()->dispatch(new LoadingFramework());
-
-        EventListener::getInstance()->dispatch(new LoadedFramework());
     }
 
     public static function loadApplication(string $path, bool $requireHelpers=true)

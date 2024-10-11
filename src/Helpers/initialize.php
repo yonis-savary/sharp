@@ -10,13 +10,15 @@ use YonisSavary\Sharp\Classes\Events\LoadedFramework;
 use YonisSavary\Sharp\Classes\Extras\AssetServer;
 use YonisSavary\Sharp\Classes\Web\Router;
 
-// AssertServer don't use a Route object to handle request
-// It process it as soon as the framework loads
-AssetServer::getInstance();
 
-// The quick routing route the request as soon as it arrives
-// The router need to be cached in order to use the quick-routing
-// See doc. for more
 EventListener::getInstance()->on(LoadedFramework::class, function(){
+    // AssertServer don't use a Route object to handle request
+    // It process it as soon as the framework loads
+    AssetServer::getInstance();
+
+    // The quick routing route the request as soon as it arrives
+    // The router need to be cached in order to use the quick-routing
+    // See doc. for more
     Router::getInstance()->executeQuickRouting();
+
 });
