@@ -12,6 +12,7 @@ use YonisSavary\Sharp\Classes\Env\Configuration;
 use YonisSavary\Sharp\Classes\Events\FailedAutoload;
 use YonisSavary\Sharp\Classes\Events\LoadedFramework;
 use Throwable;
+use YonisSavary\Sharp\Classes\Events\LoadingFramework;
 
 class Autoloader
 {
@@ -136,6 +137,8 @@ class Autoloader
 
         foreach (self::getListFiles(self::REQUIRE) as $file)
             require_once $file;
+
+        EventListener::getInstance()->dispatch(new LoadingFramework());
 
         EventListener::getInstance()->dispatch(new LoadedFramework());
     }
