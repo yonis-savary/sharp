@@ -14,7 +14,7 @@ EventListener::getInstance()->dispatch(new LoadedFramework());
 
 $request = Request::buildFromGlobals();
 $request->logSelf();
-Context::register($request);
+Context::set($request);
 
 $router = Router::getInstance();
 
