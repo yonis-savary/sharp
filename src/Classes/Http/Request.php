@@ -25,6 +25,8 @@ class Request
     protected array $slugs = [];
     protected ?Route $route = null;
 
+    protected ?float $lastFetchDurationMicro = 0;
+
     const IS_INT     = 1 << 0;
     const IS_FLOAT   = 1 << 1;
     const IS_STRING  = 1 << 2;
@@ -514,8 +516,11 @@ class Request
                 "BODY", $this->body()
             );
 
+        $startTime = hrtime(true);
         if (!($result = curl_exec($handle)))
             throw new RuntimeException(sprintf("Curl error %s: %s", curl_errno($handle), curl_error($handle)));
+
+        $this->lastFetchDurationMicro = (hrtime(true) - $startTime) / 1000;
 
         $headerSize = curl_getinfo($handle, CURLINFO_HEADER_SIZE);
         $resStatus = curl_getinfo($handle, CURLINFO_HTTP_CODE);
@@ -559,6 +564,11 @@ class Request
         return new Response($resBody, $resStatus, $resHeaders);
     }
 
+
+    public function getLastFetchDuration(): float
+    {
+        return $this->lastFetchDurationMicro;
+    }
 
     /**
      * Validate request parameters
