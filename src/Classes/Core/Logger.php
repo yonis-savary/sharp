@@ -7,6 +7,7 @@ use JsonException;
 use YonisSavary\Sharp\Classes\Core\Component;
 use YonisSavary\Sharp\Classes\Env\Storage;
 use Throwable;
+use YonisSavary\Sharp\Classes\Http\Request;
 
 class Logger
 {
@@ -18,7 +19,7 @@ class Logger
 
     public static function getDefaultInstance()
     {
-        return new self("sharp.csv", Storage::getInstance()->getSubStorage("Logs"));
+        return new self("sharp.csv");
     }
 
     /**
@@ -45,9 +46,9 @@ class Logger
         if (!$filename)
             return;
 
-        $storage ??= Storage::getInstance();
-        $exists = $storage->isFile($filename);
+        $storage ??= Storage::getInstance()->getSubStorage("Logs");
 
+        $exists = $storage->isFile($filename);
         if (!$exists)
             $storage->assertIsWritable();
 
@@ -122,8 +123,11 @@ class Logger
         if (!$this->stream)
             return;
 
-        $ip = $_SERVER['REMOTE_ADDR'] ?? "0.0.0.0";
-        $method = $_SERVER['REQUEST_METHOD'] ?? php_sapi_name();
+        /** @var Request */
+        $currentRequest = Context::get(Request::class, Request::buildFromGlobals());
+
+        $ip = $currentRequest->getIp();
+        $method = $currentRequest->getMethod();
         $now = date('Y-m-d H:i:s');
 
         foreach ($content as $line)

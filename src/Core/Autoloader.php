@@ -10,9 +10,7 @@ use YonisSavary\Sharp\Classes\Data\ObjectArray;
 use YonisSavary\Sharp\Classes\Env\Cache;
 use YonisSavary\Sharp\Classes\Env\Configuration;
 use YonisSavary\Sharp\Classes\Events\FailedAutoload;
-use YonisSavary\Sharp\Classes\Events\LoadedFramework;
 use Throwable;
-use YonisSavary\Sharp\Classes\Events\LoadingFramework;
 
 class Autoloader
 {
@@ -205,14 +203,10 @@ class Autoloader
         if (self::$cachedClassList && !$forceReload)
             return self::$cachedClassList;
 
-        $files = self::getListFiles(self::AUTOLOAD);
+        ObjectArray::fromArray(self::getListFiles(self::AUTOLOAD))
+        ->forEach(fn($file) => require_once $file);
 
-        ObjectArray::fromArray($files)
-        ->forEach( fn($file) => require_once $file );
-
-        self::$cachedClassList = get_declared_classes();
-
-        return self::$cachedClassList;
+        return self::$cachedClassList = get_declared_classes();
     }
 
     /**
@@ -253,7 +247,9 @@ class Autoloader
 
     public static function loadAutoloadCache(): bool
     {
-        $cacheFile = Cache::getInstance()->getStorage()->path(self::CACHE_FILE);
+        $cacheFile = Cache::getInstance()
+        ->getStorage()
+        ->path(self::CACHE_FILE);
 
         if (!is_file($cacheFile))
             return false;

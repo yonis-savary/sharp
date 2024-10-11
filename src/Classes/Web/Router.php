@@ -16,6 +16,7 @@ use YonisSavary\Sharp\Core\Autoloader;
 use YonisSavary\Sharp\Core\Utils;
 use YonisSavary\Sharp\Classes\Web\Controller;
 use Throwable;
+use YonisSavary\Sharp\Classes\Core\Context;
 
 /**
  * Given a set of `Routes`, this component is able to
@@ -250,9 +251,13 @@ class Router
             return $response;
         }
 
+        Context::set($route);
         EventListener::getInstance()->dispatch(new RoutedRequest($request, $route));
 
-        return Response::adapt($route($request));
+        $response = Response::adapt($route($request));
+        Context::set($response);
+
+        return $response;
     }
 
     /**

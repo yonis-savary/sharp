@@ -93,7 +93,7 @@ class Request
     /**
      * This function's purpose is to fix types of GET and POST parameters
      * when getting a `"null"`, value, we can assume it is a `null` in reality
-     * (Same for `"true"` and `"false"`)
+     * (Same for `"true"`, `"on"`, `"false"` and `"off"`)
      */
     protected static function parseDictionaryValueTypes(array $dict)
     {
@@ -106,9 +106,9 @@ class Request
 
             if ($lower === "null")
                 $value = null ;
-            else if ($lower === "false")
+            else if ($lower === "false" || $lower === "off")
                 $value = false;
-            else if ($lower === "true")
+            else if ($lower === "true" || $lower === "on")
                 $value = true;
         }
         return $dict;

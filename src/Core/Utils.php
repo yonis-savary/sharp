@@ -243,12 +243,12 @@ class Utils
         if ($length < 1)
             throw new InvalidArgumentException('$length must be at least 1');
 
-        $evenLength = (($length % 2) != 0) ?
+        $evenLength = $length % 2 ?
             $length+1:
             $length;
 
-        $randomStr = bin2hex(random_bytes($evenLength));
+        $randomString = bin2hex(random_bytes($evenLength));
 
-        return substr($randomStr, 0, $length);
+        return substr($randomString, 0, $length);
     }
 }

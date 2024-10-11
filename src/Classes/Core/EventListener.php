@@ -10,16 +10,35 @@ class EventListener
 {
     use Component;
 
-    protected array $handlers = [];
+    protected array $subscriptions = [];
+    protected array $subscriptionsCache = [];
 
     /**
      * Attach callback(s) to an event
      * When the given event is triggered, all given callbacks are called
+     *
+     * @param string $event Event name, usually a class name from `EventClass::class`
+     * @param callable $callback Callback to call on dispatch
+     * @param bool $once If true, the callback shall be called once per request
+     * @return int Subscription id
      */
-    public function on(string $event, callable ...$callbacks): void
+    public function on(string $event, callable $callback, bool $once=false): int
     {
-        $this->handlers[$event] ??= [];
-        array_push($this->handlers[$event], ...$callbacks);
+        $newIndex = count($this->subscriptions);
+        array_push($this->subscriptions, [$newIndex, $event, $callback, $once]);
+
+        return $newIndex;
+    }
+
+    public function removeSubscription(int $subscriptionId): bool
+    {
+        $subscription = $this->subscriptions[$subscriptionId] ?? null;
+
+        if (!$subscription)
+            return false;
+
+        $this->subscriptions[$subscriptionId] = null;
+        return true;
     }
 
     /**
@@ -32,8 +51,16 @@ class EventListener
     {
         $eventName = $event->getName();
 
-        $results = ObjectArray::fromArray($this->handlers[$eventName] ?? [])
-        ->map(fn($handler) => $handler($event))
+        $results = ObjectArray::fromArray($this->subscriptions)
+        ->filter(fn($x) => $x && $x[1] === $eventName)
+        ->map(function($subscription) use ($event) {
+            list($id, $_, $handler, $once) = $subscription;
+
+            if ($once)
+                $this->removeSubscription($id);
+
+            return $handler($event);
+        })
         ->collect();
 
         if ($eventName !== DispatchedEvent::class)

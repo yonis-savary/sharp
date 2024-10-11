@@ -38,4 +38,43 @@ class EventListenerTest extends TestCase
             $this->assertEquals($i, $myVar);
         }
     }
+
+    public function test_once()
+    {
+        $listener = new EventListener();
+
+        $myVar = 0;
+
+        $listener->on("increment", function() use (&$myVar){ $myVar++; });
+        $listener->on("increment-once", function() use (&$myVar){ $myVar++; }, true);
+
+        $this->assertEquals(0, $myVar);
+        $listener->dispatch(new CustomEvent("increment"));
+        $this->assertEquals(1, $myVar);
+        $listener->dispatch(new CustomEvent("increment"));
+        $this->assertEquals(2, $myVar);
+
+
+        $listener->dispatch(new CustomEvent("increment-once"));
+        $this->assertEquals(3, $myVar);
+        $listener->dispatch(new CustomEvent("increment-once"));
+        $this->assertEquals(3, $myVar);
+    }
+
+    public function test_delete()
+    {
+        $listener = new EventListener();
+
+        $myVar = 0;
+
+        $subscriptionId = $listener->on("increment", function() use (&$myVar){ $myVar++; });
+
+        $this->assertEquals(0, $myVar);
+        $listener->dispatch(new CustomEvent("increment"));
+        $this->assertEquals(1, $myVar);
+
+        $listener->removeSubscription($subscriptionId);
+        $listener->dispatch(new CustomEvent("increment"));
+        $this->assertEquals(1, $myVar);
+    }
 }
