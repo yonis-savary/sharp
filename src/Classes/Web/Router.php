@@ -132,11 +132,8 @@ class Router
 
     protected function loadControllersRoutes(): void
     {
-        $autoloadFile = Autoloader::getListFiles(Autoloader::AUTOLOAD);
-
-        ObjectArray::fromArray($autoloadFile)
+        ObjectArray::fromArray(Autoloader::getClassesList())
         ->filter(fn($file) => str_contains($file, "Controllers"))
-        ->map(Utils::pathToNamespace(...))
         ->filter(fn($class) => Utils::uses($class, Controller::class))
         ->forEach(fn($class) => $class::declareRoutes($this));
     }

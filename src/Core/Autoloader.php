@@ -38,6 +38,7 @@ class Autoloader
         "Assets"      => self::ASSETS,
         "Commands"    => self::AUTOLOAD,
         "Controllers" => self::AUTOLOAD,
+        "Middlewares" => self::AUTOLOAD,
         "Components"  => self::AUTOLOAD,
         "Classes"     => self::AUTOLOAD,
         "Models"      => self::AUTOLOAD,
