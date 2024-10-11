@@ -33,7 +33,7 @@ class Configuration extends AbstractMap
             return;
 
         $this->storage = [];
-        $this->filename = Utils::relativePath($filename);
+        $this->filename = $filename = Utils::relativePath($filename);
 
         // Info: this verification comes after the previous assignment
         // because we can create a config from nothing then save it in a file
