@@ -342,6 +342,20 @@ class ObjectArray
         return count($this->collect());
     }
 
+
+    /**
+     * Return `true` if the ObjectArray has the specified value
+     *
+     * @param mixed $value Value to check
+     * @param bool $strict if set to `true` then the `in_array` function will also check the types of the needle in the haystack
+     * @return bool `true` if the ObjectArray has the specified value
+     */
+    public function includes(mixed $value, bool $strict=true)
+    {
+        return in_array($value, $this->collect(), $strict);
+    }
+
+
     /**
      * Return the first element that respect a callback
      *
@@ -426,26 +440,36 @@ class ObjectArray
     }
 
     /**
-     * @return `true` if any of the array's values respect a given condition
+     * @return bool `true` if any of the array's values respect a given condition
      */
     public function any(callable $condition): bool
     {
-        foreach ($this->collect() as $value)
+        $values = $this->collect();
+        $count = count($this->collect());
+
+        for ($i=0; $i<$count; $i++)
         {
-            if ($condition($value) === true)
+            $value = $values[$i];
+
+            if ($condition($value, $i) === true)
                 return true;
         }
         return false;
     }
 
     /**
-     * @return `true` if ALL of the array's values respect a given condition
+     * @return bool `true` if ALL of the array's values respect a given condition
      */
     public function all(callable $condition): bool
     {
-        foreach ($this->collect() as $value)
+        $values = $this->collect();
+        $count = count($this->collect());
+
+        for ($i=0; $i<$count; $i++)
         {
-            if ($condition($value) !== true)
+            $value = $values[$i];
+
+            if ($condition($value, $i) !== true)
                 return false;
         }
         return true;
