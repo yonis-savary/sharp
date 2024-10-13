@@ -364,4 +364,19 @@ class ObjectArrayTest extends TestCase
     {
         $this->assertEquals(["1.9", "2", "3.1416", "abc", ""], ObjectArray::fromArray([1.9, 2, 3.1416, "abc", null])->asStrings()->collect());
     }
+
+    public function test_includes()
+    {
+        $oddsNumbers = ObjectArray::fromArray([0, 2, 4, 6, 8, 10]);
+
+        $this->assertTrue($oddsNumbers->includes(0));
+        $this->assertTrue($oddsNumbers->includes(2));
+
+        $this->assertFalse($oddsNumbers->includes(1));
+        $this->assertFalse($oddsNumbers->includes("2"));
+
+        $this->assertTrue($oddsNumbers->includes("1", false));
+        $this->assertTrue($oddsNumbers->includes("2", false));
+
+    }
 }
