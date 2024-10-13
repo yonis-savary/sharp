@@ -85,7 +85,7 @@ class CLIUtils
                 echo "\e8\e[0K" . $output . "\e7";
             }
         }
-        echo "\e8\e[0K\n";
+        echo "\e8\e[0K";
     }
 
 
