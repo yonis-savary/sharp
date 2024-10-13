@@ -49,6 +49,7 @@ Extras
 - [🚘 Automatic CRUD API](./extras/autobahn.md)
 - [🔐 Authentication](./security/authentication.md)
 - [✅ CSRF](./security/csrf.md)
+- [🕒 Scheduler](./extras/scheduler.md)
 - [⌛️ QueueHandler Trait](./extras/queue-handler.md)
 - [🌐 Code Helpers](./core/helpers.md)
 - [💬 Q/A & Snippets](./extras/snippets.md)

@@ -79,5 +79,6 @@ Your directory will look like
 🚀 Extras
 - 🟢 Asset serving
 - 🟢 Automatic CRUD API for Models
+- 🔵 Scheduler System
 
 ...and more ! The [`SharpExtension`](https://github.com/yonis-savary/sharp-extensions) repository got some additionnal features that can be used to make development faster

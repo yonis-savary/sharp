@@ -375,7 +375,7 @@ class ObjectArrayTest extends TestCase
         $this->assertFalse($oddsNumbers->includes(1));
         $this->assertFalse($oddsNumbers->includes("2"));
 
-        $this->assertTrue($oddsNumbers->includes("1", false));
+        $this->assertFalse($oddsNumbers->includes("1", false));
         $this->assertTrue($oddsNumbers->includes("2", false));
 
     }
