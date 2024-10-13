@@ -7,7 +7,7 @@ use YonisSavary\Sharp\Classes\CLI\Command;
 use YonisSavary\Sharp\Core\Autoloader;
 use YonisSavary\Sharp\Classes\Extras\QueueHandler;
 
-class ProcessQueues extends Command
+class QueuesLaunch extends Command
 {
     public function getHelp(): string
     {

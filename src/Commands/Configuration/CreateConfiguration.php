@@ -8,11 +8,11 @@ use YonisSavary\Sharp\Classes\Env\Configuration;
 use YonisSavary\Sharp\Core\Autoloader;
 use YonisSavary\Sharp\Classes\Core\Configurable;
 
-class FillConfiguration extends Command
+class CreateConfiguration extends Command
 {
     public function getHelp(): string
     {
-        return "Complete or create your configuration with the framework's default configuration";
+        return "Create or Complete your configuration with the framework's default configuration";
     }
 
     public function __invoke(Args $args)

@@ -1,6 +1,6 @@
 <?php
 
-namespace YonisSavary\Sharp\Commands;
+namespace YonisSavary\Sharp\Commands\Cache;
 
 use YonisSavary\Sharp\Classes\CLI\Args;
 use YonisSavary\Sharp\Classes\CLI\Command;

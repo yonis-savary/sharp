@@ -40,4 +40,9 @@ class CreateMap extends Command
 
         echo "File written at : " . $mapsStorage->path($filename) . "\n";
     }
+
+    public function getHelp(): string
+    {
+        return "Create a AppMap utility class in your application";
+    }
 }

@@ -7,7 +7,7 @@ use YonisSavary\Sharp\Classes\CLI\Command;
 use YonisSavary\Sharp\Classes\Env\Storage;
 use YonisSavary\Sharp\Core\Utils;
 
-class BackupConfiguration extends Command
+class ConfigBackup extends Command
 {
     public function __invoke(Args $args)
     {
@@ -27,5 +27,10 @@ class BackupConfiguration extends Command
 
         copy($currentConfig, $copyPath);
         echo "Configuration backup written to ./Storage/$copyBasename\n";
+    }
+
+    public function getHelp(): string
+    {
+        return "Create a backup file of your configuration";
     }
 }

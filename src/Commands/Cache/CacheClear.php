@@ -1,6 +1,6 @@
 <?php
 
-namespace YonisSavary\Sharp\Commands;
+namespace YonisSavary\Sharp\Commands\Cache;
 
 use YonisSavary\Sharp\Classes\CLI\Args;
 use YonisSavary\Sharp\Classes\CLI\Command;
@@ -9,7 +9,7 @@ use YonisSavary\Sharp\Classes\Env\Classes\CacheElement;
 use YonisSavary\Sharp\Classes\Env\Storage;
 use YonisSavary\Sharp\Core\Utils;
 
-class ClearCaches extends Command
+class CacheClear extends Command
 {
     public function getHelp(): string
     {

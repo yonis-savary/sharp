@@ -40,4 +40,10 @@ class CreateCache extends Command
 
         echo "File written at : " . $cacheStorage->path($filename) . "\n";
     }
+
+
+    public function getHelp(): string
+    {
+        return "Create a AppCache utility class in your application";
+    }
 }

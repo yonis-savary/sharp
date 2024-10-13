@@ -8,7 +8,7 @@ use YonisSavary\Sharp\Classes\CLI\Terminal;
 use YonisSavary\Sharp\Classes\Extras\QueueHandler;
 use YonisSavary\Sharp\Core\Autoloader;
 
-class ClearQueues extends Command
+class QueuesClear extends Command
 {
     public function getHelp(): string
     {

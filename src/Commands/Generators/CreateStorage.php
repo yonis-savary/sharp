@@ -40,4 +40,9 @@ class CreateStorage extends Command
 
         echo "File written at : " . $storagePath->path($filename) . "\n";
     }
+
+    public function getHelp(): string
+    {
+        return "Create a AppStorage utility class in your application";
+    }
 }
