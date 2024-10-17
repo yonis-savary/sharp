@@ -5,6 +5,7 @@ namespace YonisSavary\Sharp\Commands\Generators;
 use YonisSavary\Sharp\Classes\CLI\Args;
 use YonisSavary\Sharp\Classes\CLI\Command;
 use YonisSavary\Sharp\Classes\CLI\Terminal;
+use YonisSavary\Sharp\Classes\Extras\SessionStraw;
 use YonisSavary\Sharp\Core\Utils;
 
 class CreateStraw extends Command
@@ -30,9 +31,11 @@ class CreateStraw extends Command
 
         namespace $namespace;
 
+        use ".SessionStraw::class.";
+
         class $name
         {
-            use \Sharp\Classes\Extras\SessionStraw;
+            use SessionStraw;
         }
         ", 2));
 

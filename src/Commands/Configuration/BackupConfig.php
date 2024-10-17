@@ -7,7 +7,7 @@ use YonisSavary\Sharp\Classes\CLI\Command;
 use YonisSavary\Sharp\Classes\Env\Storage;
 use YonisSavary\Sharp\Core\Utils;
 
-class ConfigBackup extends Command
+class BackupConfig extends Command
 {
     public function __invoke(Args $args)
     {

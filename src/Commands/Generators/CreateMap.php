@@ -6,6 +6,7 @@ use YonisSavary\Sharp\Classes\CLI\Args;
 use YonisSavary\Sharp\Classes\CLI\Command;
 use YonisSavary\Sharp\Classes\CLI\Terminal;
 use YonisSavary\Sharp\Classes\Env\Storage;
+use YonisSavary\Sharp\Classes\Utils\AppMap;
 use YonisSavary\Sharp\Core\Utils;
 
 class CreateMap extends Command
@@ -30,7 +31,7 @@ class CreateMap extends Command
 
             namespace $applicationNamespace\\Classes\\App\\Maps;
 
-            use YonisSavary\Sharp\Classes\Utils\AppMap;
+            use ".AppMap::class.";
 
             class $name
             {

@@ -6,6 +6,7 @@ use YonisSavary\Sharp\Classes\CLI\Args;
 use YonisSavary\Sharp\Classes\CLI\Command;
 use YonisSavary\Sharp\Classes\CLI\Terminal;
 use YonisSavary\Sharp\Classes\Env\Storage;
+use YonisSavary\Sharp\Classes\Utils\AppStorage;
 use YonisSavary\Sharp\Core\Utils;
 
 class CreateStorage extends Command
@@ -30,7 +31,7 @@ class CreateStorage extends Command
 
             namespace $applicationNamespace\\Classes\\App\\Storages;
 
-            use YonisSavary\Sharp\Classes\Utils\AppStorage;
+            use ".AppStorage::class.";
 
             class $name
             {
