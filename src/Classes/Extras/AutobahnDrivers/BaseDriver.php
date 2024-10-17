@@ -5,7 +5,7 @@ namespace YonisSavary\Sharp\Classes\Extras\AutobahnDrivers;
 use Exception;
 use YonisSavary\Sharp\Classes\Core\EventListener;
 use YonisSavary\Sharp\Classes\Data\Database;
-use YonisSavary\Sharp\Classes\Data\DatabaseQuery;
+use YonisSavary\Sharp\Classes\Data\ModelQuery;
 use YonisSavary\Sharp\Classes\Data\ObjectArray;
 use YonisSavary\Sharp\Classes\Extras\Autobahn;
 use YonisSavary\Sharp\Classes\Http\Classes\ResponseCodes;
@@ -24,12 +24,13 @@ use YonisSavary\Sharp\Classes\Events\AutobahnEvents\AutobahnUpdateAfter;
 use YonisSavary\Sharp\Classes\Events\AutobahnEvents\AutobahnUpdateBefore;
 use YonisSavary\Sharp\Classes\Data\Model;
 use Throwable;
+use YonisSavary\Sharp\Classes\Data\AbstractModel;
 
 class BaseDriver implements DriverInterface
 {
     /**
      * Extract model name and middlewares from a route extras
-     * @return array[\Sharp\Classes\Data\Model,array]
+     * @return array[AbstractModel,array]
      */
     protected static function extractRouteData(Request $request)
     {
@@ -79,8 +80,12 @@ class BaseDriver implements DriverInterface
         return Response::json(["insertedId"=>$insertedIds], ResponseCodes::CREATED);
     }
 
+
+
+
     public static function multipleCreateCallback(Request $request): Response
     {
+        /** @var AbstractModel $model */
         list($model, $middlewares) = self::extractRouteData($request);
 
         $data = $request->body();
@@ -95,8 +100,7 @@ class BaseDriver implements DriverInterface
         if (count($badFields))
             return Response::json("[$model] does not contains theses fields " . json_encode($badFields), 400);
 
-        $query = new DatabaseQuery($model::getTable(), DatabaseQuery::INSERT);
-        $query->setInsertField($fields);
+        $query = $model::insert($fields);
 
         $data = ObjectArray::fromArray($data);
         foreach ($middlewares as $middleware)
@@ -113,13 +117,17 @@ class BaseDriver implements DriverInterface
         $lastInsert = Database::getInstance()->lastInsertId();
         $insertedIdList = range($lastInsert-$data->length()+1, $lastInsert);
 
-        $events->dispatch(new AutobahnMultipleCreateAfter($model, $query, $insertedIdList));
+        $events->dispatch(new AutobahnMultipleCreateAfter((string) $model, $query, $insertedIdList));
 
         return Response::json(['insertedId' => $insertedIdList]);
     }
 
+
+
+
     public static function readCallback(Request $request): Response
     {
+        /** @var AbstractModel $model */
         list($model, $middlewares) = self::extractRouteData($request);
 
         $doJoin = ($request->params("_join") ?? true) == true;
@@ -143,7 +151,7 @@ class BaseDriver implements DriverInterface
         list($limit, $offset) = $request->list("_limit", "_offset");
         $request->unset(["_ignores", "_join", "_limit", "_offset"]);
 
-        $query = new DatabaseQuery($model::getTable(), DatabaseQuery::SELECT);
+        $query = new ModelQuery($model, ModelQuery::SELECT);
         $query->exploreModel($model, $doJoin, $ignores);
 
         if ($limit)
@@ -159,14 +167,21 @@ class BaseDriver implements DriverInterface
             $middleware($query);
 
         $events = EventListener::getInstance();
-        $events->dispatch(new AutobahnReadBefore($model, $query));
+        $events->dispatch(new AutobahnReadBefore((string) $model, $query));
 
-        $results = $query->fetch();
+        $results = $query->toObjectArray();
 
-        $events->dispatch(new AutobahnReadAfter($model, $query, $results));
+        $events->dispatch(new AutobahnReadAfter((string) $model, $query, $results));
 
-        return Response::json($results);
+        return Response::json(
+            $results
+            ->map(fn(AbstractModel $model) => $model->toArray())
+            ->collect()
+        );
     }
+
+
+
 
 
 
@@ -180,7 +195,7 @@ class BaseDriver implements DriverInterface
         if (!($primaryKeyValue = $request->params($primaryKey)))
             return Response::json("A primary key [$primaryKey] is needed to update !", 401);
 
-        $query = new DatabaseQuery($model::getTable(), DatabaseQuery::UPDATE);
+        $query = new ModelQuery($model, ModelQuery::UPDATE);
         $query->where($primaryKey, $primaryKeyValue);
 
         foreach($request->all() as $key => $value)
@@ -204,11 +219,14 @@ class BaseDriver implements DriverInterface
     }
 
 
+
+
+
     public static function deleteCallback(Request $request): Response
     {
         list($model, $middlewares) = self::extractRouteData($request);
 
-        $query = new DatabaseQuery($model::getTable(), DatabaseQuery::DELETE);
+        $query = new ModelQuery($model, ModelQuery::DELETE);
 
         if (!count($request->all()))
             return Response::json("At least one filter must be given", ResponseCodes::CONFLICT);

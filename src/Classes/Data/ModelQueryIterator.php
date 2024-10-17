@@ -1,17 +1,17 @@
-<?php 
+<?php
 
 namespace YonisSavary\Sharp\Classes\Data;
 
 /**
  * @warning (WIP) This class is not tested yet, use it at your own risk
  */
-class DatabaseQueryIterator
+class ModelQueryIterator
 {
     protected int $count;
     protected int $index;
-    protected DatabaseQuery $query;
+    protected ModelQuery $query;
 
-    public static function forEach(DatabaseQuery $query, callable $function): void
+    public static function forEach(ModelQuery $query, callable $function): void
     {
         $iterator = new self($query);
 
@@ -19,7 +19,7 @@ class DatabaseQueryIterator
             $function($data, $iterator->getLastIndex(), $iterator->getCount());
     }
 
-    public function __construct(DatabaseQuery $query)
+    public function __construct(ModelQuery $query)
     {
         $sql = $query->build();
         $this->query = $query;
@@ -27,24 +27,24 @@ class DatabaseQueryIterator
         $this->index = 0;
     }
 
-    public function getLastIndex(): int 
+    public function getLastIndex(): int
     {
         $index = $this->index;
         return $index == 0 ? 0 : $index-1;
     }
 
-    public function getCount(): int 
+    public function getCount(): int
     {
         return $this->count;
     }
 
-    public function next(): array|false 
+    public function next(): array|false
     {
         if ($this->index >= $this->count)
             return false;
 
         $array = $this->query->limit(1, $this->index)->fetch()[0]["data"] ?? false;
-            
+
         $this->index++;
         return $array;
     }

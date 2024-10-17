@@ -158,10 +158,10 @@ Router::getInstance()->groupCallback(
 
 Every Autobahn callback can take some middlewares to protect your queries
 
-For Read, Update and Delete callback, the `DatabaseQuery` that is about to be executed is given to your middleware, which mean that your can edit it
+For Read, Update and Delete callback, the `ModelQuery` that is about to be executed is given to your middleware, which mean that your can edit it
 
 ```php
-$autobahn->read(User::class, function(DatabaseQuery &$query){
+$autobahn->read(User::class, function(ModelQuery &$query){
     $query->where("fk_user", UserId::get());
 });
 ```

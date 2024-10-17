@@ -23,6 +23,8 @@ class DatabaseField
 
     public bool $hasDefault = true;
 
+    public bool $isGenerated = false;
+
     public function __construct(
         public string $name
     ){}
@@ -51,14 +53,34 @@ class DatabaseField
         return $this;
     }
 
+    public function isGenerated(): self
+    {
+        $this->isGenerated = true;
+        return $this;
+    }
+
     public function validate(mixed $value): bool
     {
+        if ($value === null)
+            return true;
+
         return match($this->type) {
             self::DECIMAL   => is_numeric($value),
             self::FLOAT     => is_numeric($value),
             self::INTEGER   => is_numeric($value),
-            self::BOOLEAN   => is_numeric($value) || in_array(strtolower("$value"), ["1", "0", "true", "false"]),
+            self::BOOLEAN   => in_array(strtolower("$value"), ["1", "0", "true", "false"]),
             default         => true
         };
+    }
+
+    public function validateUpdate(mixed $value): bool
+    {
+        if ($value !== null)
+            return $this->validate($value);
+
+        if (!$this->nullable)
+            return false;
+
+        return true;
     }
 }

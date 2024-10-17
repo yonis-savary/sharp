@@ -6,10 +6,10 @@ use InvalidArgumentException;
 use YonisSavary\Sharp\Classes\Core\Component;
 use YonisSavary\Sharp\Classes\Core\Configurable;
 use YonisSavary\Sharp\Classes\Core\EventListener;
+use YonisSavary\Sharp\Classes\Data\AbstractModel;
 use YonisSavary\Sharp\Classes\Env\Configuration;
 use YonisSavary\Sharp\Classes\Env\Session;
 use YonisSavary\Sharp\Core\Utils;
-use YonisSavary\Sharp\Classes\Data\Model;
 use YonisSavary\Sharp\Classes\Events\AuthenticatedUser;
 
 class Authentication
@@ -78,8 +78,8 @@ class Authentication
         if (!class_exists($model))
             throw new InvalidArgumentException("[$model] class does not exists");
 
-        if (!Utils::uses($model, Model::class))
-            throw new InvalidArgumentException("[$model] class must use Model trait");
+        if (!Utils::extends($model, AbstractModel::class))
+            throw new InvalidArgumentException("[$model] class must use AbstractModel class");
 
         $modelFields = $model::getFieldNames();
         foreach (array_filter([$loginField, $passwordField, $saltField]) as $field)
@@ -106,9 +106,11 @@ class Authentication
         if (!($user = $model::select()->where($this->loginField, $login)->first()))
             return $this->failAttempt();
 
-        $hash = $user["data"][$this->passwordField];
-        if ($this->saltField)
-            $password .= $user["data"][$this->saltField];
+        $passwordField = $this->passwordField;
+        $hash = $user->data->$passwordField;
+
+        if ($saltField = $this->saltField)
+            $password .= $user->data->$saltField;
 
         if (!password_verify($password, $hash))
             return $this->failAttempt();
@@ -122,8 +124,11 @@ class Authentication
      * Directly login a user and set its data
      * @param array $userData Data of the user, can be retrieved with `getUser()`
      */
-    public function login(array $userData): void
+    public function login(array|AbstractModel $userData): void
     {
+        if ($userData instanceof AbstractModel)
+            $userData = $userData->toArray();
+
         $this->setSessionKey(self::IS_LOGGED, true);
         $this->setSessionKey(self::USER_DATA, $userData);
         $this->setSessionKey(self::ATTEMPTS_NUMBER, 0);

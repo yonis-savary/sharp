@@ -2,10 +2,10 @@
 
 namespace YonisSavary\Sharp\Tests\Units;
 
-use Exception;
 use PHPUnit\Framework\TestCase;
+use YonisSavary\Sharp\Classes\Data\AbstractModel;
 use YonisSavary\Sharp\Classes\Data\Database;
-use YonisSavary\Sharp\Classes\Data\DatabaseQuery;
+use YonisSavary\Sharp\Classes\Data\ModelQuery;
 use YonisSavary\Sharp\Classes\Data\Model;
 use YonisSavary\Sharp\Classes\Data\DatabaseField;
 use YonisSavary\Sharp\Tests\Models\TestUser;
@@ -15,10 +15,8 @@ class ModelTest extends TestCase
 {
     public static function getSampleModel()
     {
-        return new class
+        return new class extends AbstractModel
         {
-            use Model;
-
             public static function getTable(): string
             {
                 return "test_user";
@@ -32,26 +30,10 @@ class ModelTest extends TestCase
             public static function getFields(): array
             {
                 return [
-                    "id" => new DatabaseField("id", DatabaseField::INTEGER, false, [DatabaseField::IS_UNIQUE]),
-                    "login" => new DatabaseField("id", DatabaseField::STRING, false),
-                    "password" => new DatabaseField("id", DatabaseField::STRING, false)
+                    "id" => (new DatabaseField("id"))->setType(DatabaseField::INTEGER)->setNullable(false)->hasDefault(false),
+                    "login" => (new DatabaseField("id"))->setType(DatabaseField::STRING)->setNullable(false)->hasDefault(false),
+                    "password" => (new DatabaseField("id"))->setType(DatabaseField::STRING)->setNullable(false)->hasDefault(false),
                 ];
-            }
-
-            public function validate(array $data=null): bool
-            {
-                $data ??= $this->toArray();
-
-                if (!($data["id"] ?? null))
-                    throw new Exception("[id] field is needed !");
-
-                if (!($data["login"] ?? null))
-                    throw new Exception("[login] field is needed !");
-
-                if (!($data["password"] ?? null))
-                    throw new Exception("[password] field is needed !");
-
-                return true;
             }
         };
     }
@@ -84,13 +66,13 @@ class ModelTest extends TestCase
     public function test_insert()
     {
         $user = self::getSampleModel();
-        $this->assertInstanceOf(DatabaseQuery::class, $user::insert());
+        $this->assertInstanceOf(ModelQuery::class, $user::insert());
     }
 
     public function test_select()
     {
         $user = self::getSampleModel();
-        $this->assertInstanceOf(DatabaseQuery::class, $user::select());
+        $this->assertInstanceOf(ModelQuery::class, $user::select());
     }
 
     public function test_column_format()
@@ -98,26 +80,26 @@ class ModelTest extends TestCase
         $user = TestUser::select()->where("id", 1)->first();
 
         $this->assertEquals(
-            [
+            (object)[
                 "id" => 1,
                 'login' => 'admin',
                 'password' => '$2y$08$pxfA4LlzVyXRPYVZH7czvu.gQQ8BNfzRdhejln2dwB7Bv6QafwAua',
                 'salt' => 'dummySalt',
                 'blocked' => false
             ]
-        , $user["data"]);
+        , $user->data);
     }
 
     public function test_update()
     {
         $user = self::getSampleModel();
-        $this->assertInstanceOf(DatabaseQuery::class, $user::update());
+        $this->assertInstanceOf(ModelQuery::class, $user::update());
     }
 
     public function test_delete()
     {
         $user = self::getSampleModel();
-        $this->assertInstanceOf(DatabaseQuery::class, $user::delete());
+        $this->assertInstanceOf(ModelQuery::class, $user::delete());
     }
 
     public function test_toArray()
@@ -132,9 +114,11 @@ class ModelTest extends TestCase
         ]);
 
         $this->assertEquals([
-            "id" => 1,
-            "login" => "admin",
-            "password" => "dummy"
+            "data" => [
+                "id" => 1,
+                "login" => "admin",
+                "password" => "dummy"
+            ]
         ], $admin->toArray());
     }
 
@@ -142,16 +126,10 @@ class ModelTest extends TestCase
     {
         $user = self::getSampleModel();
 
-        $this->assertTrue((new $user(["id" => 1, "login" => "admin", "password" => "dummy"]))->validate());
-
-        $this->expectException(Exception::class);
-        (new $user(["login" => "admin", "password" => "dummy"]))->validate();
-
-        $this->expectException(Exception::class);
-        (new $user(["id" => 1, "password" => "dummy"]))->validate();
-
-        $this->expectException(Exception::class);
-        (new $user(["id" => 1, "login" => "admin"]))->validate();
+        $this->assertTrue( (new $user(["id" => 1, "login" => "admin", "password" => "dummy"]))->validate() );
+        $this->assertTrue( (new $user(["login" => "admin", "password" => "dummy"]))->validate() );
+        $this->assertTrue( (new $user(["id" => 1, "password" => "dummy"]))->validate() );
+        $this->assertTrue( (new $user(["id" => 1, "login" => "admin"]))->validate() );
     }
 
     public function test_insertArray()
@@ -167,22 +145,57 @@ class ModelTest extends TestCase
         $this->assertEquals($nextId, $inserted);
     }
 
+    public function test_save()
+    {
+        $id = TestUserData::insertArray([
+            "fk_user" => 1,
+            "data" => "test_save"
+        ]);
+
+        $row = TestUserData::findId($id);
+        $this->assertEquals("test_save", $row->data->data);
+
+        $row->data->data = "new_value";
+
+        $row->save();
+        $this->assertEquals("new_value", $row->data->data);
+
+        $copy = TestUserData::findId($id);
+        $this->assertEquals("new_value", $copy->data->data);
+    }
+
+    public function test_save_linked()
+    {
+        $id = TestUserData::insertArray(["fk_user" => 1, "data" => "test_save_link"]);
+
+        $row = TestUserData::findId($id);
+        $row->setLinked(true);
+
+        $this->assertEquals("test_save_link", $row->data->data);
+
+        $row->data = "new_value";
+
+        $copy = TestUserData::findId($id);
+        $this->assertEquals("new_value", $copy->data->data);
+    }
+
+
     public function test_findId()
     {
-        $this->assertIsArray(TestUser::findId(1));
+        $this->assertInstanceOf(AbstractModel::class, TestUser::findId(1));
         $this->assertNull(TestUser::findId(1309809));
     }
 
     public function test_findWhere()
     {
-        $this->assertIsArray(TestUser::findWhere(["id" => 1]));
+        $this->assertInstanceOf(AbstractModel::class, TestUser::findWhere(["id" => 1]));
         $this->assertNull(TestUser::findId(["id" => 1309809]));
     }
 
     public function test_updateId()
     {
         TestUser::updateId(1)->set("login", "testupdate")->fetch();
-        $this->assertEquals("testupdate", TestUser::findId(1)["data"]["login"]);
+        $this->assertEquals("testupdate", TestUser::findId(1)->data->login);
     }
 
     public function test_updateRow()
@@ -190,7 +203,7 @@ class ModelTest extends TestCase
         TestUser::updateRow(1, [
             "login" => "testupdaterow"
         ]);
-        $this->assertEquals("testupdaterow", TestUser::findId(1)["data"]["login"]);
+        $this->assertEquals("testupdaterow", TestUser::findId(1)->data->login);
     }
 
     public function test_deleteId()
@@ -198,7 +211,7 @@ class ModelTest extends TestCase
         TestUser::insertArray(["login" => "dummy", "password" => "any", "salt" => "any"]);
         $id = Database::getInstance()->lastInsertId();
 
-        $this->assertIsArray(TestUser::findId($id));
+        $this->assertInstanceOf(AbstractModel::class, TestUser::findId($id));
         TestUser::deleteId($id);
         $this->assertNull(TestUser::findId($id));
     }

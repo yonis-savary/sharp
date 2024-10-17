@@ -15,9 +15,8 @@ use YonisSavary\Sharp\Classes\Data\Classes\QuerySet;
 use YonisSavary\Sharp\Classes\Data\Classes\QueryConditionRaw;
 use YonisSavary\Sharp\Classes\Data\Database;
 use YonisSavary\Sharp\Core\Utils;
-use YonisSavary\Sharp\Classes\Data\Model;
 
-class DatabaseQuery
+class ModelQuery
 {
     use Configurable;
 
@@ -51,18 +50,34 @@ class DatabaseQuery
     protected array $insertValues = [];
 
     protected string $targetTable;
+    protected array $tablesModels = [];
 
     protected ?int $limit = null;
     protected ?int $offset = null;
+
+    protected int $lastRowCount = -1;
 
     public static function getDefaultConfiguration(): array
     {
         return ["join-limit" => 50];
     }
 
-    public function __construct(string $table, int $mode)
+    /**
+     * @param string|AbstractModel $modelClass
+     */
+    protected function registerTable(string|AbstractModel $modelClass, string $key=null)
     {
-        $this->targetTable = $table;
+        $key ??= $modelClass::getTable();
+        $this->tablesModels[$key] = $modelClass;
+    }
+
+    /**
+     * @param string|AbstractModel $modelClass
+     */
+    public function __construct(string|AbstractModel $modelClass, int $mode)
+    {
+        $this->registerTable($modelClass);
+        $this->targetTable = $modelClass::getTable();
         $this->setMode($mode);
         $this->loadConfiguration();
     }
@@ -92,7 +107,7 @@ class DatabaseQuery
         foreach ($setsOfValues as $values)
         {
             if (count($values) !== count($this->insertFields))
-                throw new Exception(sprintf("DatabaseQuery insert: %s values expected, %s given", count($this->insertFields), count($values)));
+                throw new Exception(sprintf("ModelQuery insert: %s values expected, %s given", count($this->insertFields), count($values)));
 
             $this->insertValues[] = Database::getInstance()->build("{}", [$values]);
         }
@@ -107,22 +122,25 @@ class DatabaseQuery
      * @param string $alias Alias for the selected column
      * @param int $type How is the field parsed (DatabaseField type constant)
      */
-    public function addField(string $table, string $field, string $alias=null, int $type=DatabaseField::STRING): self
+    protected function addField(string $table, string $field, string $alias=null, int $type=DatabaseField::STRING): self
     {
         $this->fields[] = new QueryField($table, $field, $alias, $type);
         return $this;
     }
 
-    public function exploreModel(string $model, bool $recursive=true, array $foreignKeyIgnores=[]): self
+    /**
+     * Explore initial model THEN recursively explore other models with exploreReferences
+     */
+    public function exploreModel(string|AbstractModel $modelClass, bool $recursive=true, array $foreignKeyIgnores=[]): self
     {
-        if (!Utils::uses($model, Model::class))
-            throw new InvalidArgumentException("[$model] must use model trait");
-        /** @var \Sharp\Classes\Data\Model $model */
+        if (!Utils::extends($modelClass, AbstractModel::class))
+            throw new InvalidArgumentException("[$modelClass] must use model trait");
 
         $references = [];
 
-        $table = $model::getTable();
-        $fields = $model::getFields();
+        $this->registerTable($modelClass);
+        $table = $modelClass::getTable();
+        $fields = $modelClass::getFields();
 
         foreach ($fields as $_ => $field)
         {
@@ -149,10 +167,11 @@ class DatabaseQuery
     {
         $nextReferences = [];
 
-        /** @var \Sharp\Classes\Data\Model $model */
+        /** @var AbstractModel $model */
         foreach ($references as [$origin, $field, $model, $target, $tableAcc])
         {
             $targetAcc = "$origin&$field";
+            $this->registerTable($model, $targetAcc);
 
             if (in_array($targetAcc, $foreignKeyIgnores))
                 continue;
@@ -227,7 +246,7 @@ class DatabaseQuery
     protected function setMode(int $mode): self
     {
         if (!in_array($mode, [self::INSERT, self::SELECT, self::UPDATE, self::DELETE]))
-            throw new InvalidArgumentException("Given mode must be a DatabaseQuery type constant !");
+            throw new InvalidArgumentException("Given mode must be a ModelQuery type constant !");
 
         $this->mode = $mode;
         return $this;
@@ -310,7 +329,7 @@ class DatabaseQuery
     protected function buildEssentials(): string
     {
         if ($this->offset && is_null($this->limit))
-            Logger::getInstance()->warning(new Exception("DatabaseQuery: setting an offset without a limit does not have any effect on the query"));
+            Logger::getInstance()->warning(new Exception("ModelQuery: setting an offset without a limit does not have any effect on the query"));
 
         $essentials = "";
 
@@ -330,7 +349,7 @@ class DatabaseQuery
     {
         return join(" ", [
             "INSERT INTO",
-            $this->targetTable,
+            "`".$this->targetTable."`",
             "(".join(",", $this->insertFields).")",
             "VALUES",
             join(",", $this->insertValues)
@@ -373,7 +392,7 @@ class DatabaseQuery
     public function build(): string
     {
         if (!($mode = $this->mode ?? false))
-            throw new Exception("Un-configured query mode ! Please provide a valid DatabaseQuery mode when building");
+            throw new Exception("Un-configured query mode ! Please provide a valid ModelQuery mode when building");
 
         switch ($mode)
         {
@@ -381,11 +400,11 @@ class DatabaseQuery
             case self::SELECT: return $this->buildSelect();
             case self::UPDATE: return $this->buildUpdate();
             case self::DELETE: return $this->buildDelete();
-            default : throw new Exception("Unknown DatabaseQuery mode [$mode] !");
+            default : throw new Exception("Unknown ModelQuery mode [$mode] !");
         }
     }
 
-    public function first(): ?array
+    public function first(): ?AbstractModel
     {
         $oldLimit = $this->limit;
         $oldOffset = $this->offset;
@@ -398,47 +417,64 @@ class DatabaseQuery
         return $res[0] ?? null;
     }
 
+    public function createModel(string $table): AbstractModel
+    {
+        $class = $this->tablesModels[$table];
+
+        return new $class();
+    }
+
+    public function rowCount(): int
+    {
+        return $this->lastRowCount;
+    }
+
     /**
-     * @return array|int Return selected rows if the query is a SELECT query, affected row count otherwise
+     * @return array<AbstractModel> Return selected rows as models instances
      */
     public function fetch(Database $database=null): array|int
     {
         $database ??= Database::getInstance();
+
         $res = $database->query($this->build(), [], PDO::FETCH_NUM);
 
-        if ($this->mode !== self::SELECT)
-            return $database->getLastStatement()->rowCount();
+        if ($this->mode != self::SELECT)
+        {
+            $this->lastRowCount = $database->getLastStatement()->rowCount();
+            return [];
+        }
 
+        $this->lastRowCount = count($res);
         $data = [];
 
         foreach ($res as $row)
         {
-            $data[] = [];
-            $lastId = count($data)-1;
-            $lastTable = null;
+            $model = $this->createModel($this->targetTable);
+            $ref = &$model;
 
+            $lastTable = null;
             for ($i=0; $i<count($this->fields); $i++)
             {
                 $field = $this->fields[$i];
+                $fieldName = $field->field;
 
-                if ($lastTable != $field->table)
+                if ($field->table != $lastTable)
                 {
-                    $ref = &$data[$lastId];
                     $lastTable = $field->table;
-
+                    $ref = &$model;
                     foreach (explode("&", $field->table) as $c)
                     {
-                        $ref[$c] ??= [];
-                        $ref = &$ref[$c];
+                        if ($c === $this->targetTable)
+                            continue;
+
+                        $ref = &$ref->getOrCreateForeignObject($c, $this->createModel($field->table));
                     }
-                    $ref["data"] ??= [];
-                    $ref = &$ref["data"];
                 }
 
-                $ref[$field->field] = $field->fromString($row[$i]);
+                $ref->$fieldName = $field->fromString($row[$i]);
             }
 
-            $data[$lastId] = $data[$lastId][$this->targetTable];
+            $data[] = $model;
         }
 
         return $data;
@@ -462,9 +498,9 @@ class DatabaseQuery
     public function forEach(callable $function): self
     {
         if ($this->mode !== self::SELECT)
-            throw new Exception("DatabaseQuery::forEach method only works with SELECT queries");
+            throw new Exception("ModelQuery::forEach method only works with SELECT queries");
 
-        DatabaseQueryIterator::forEach($this, $function);
+        ModelQueryIterator::forEach($this, $function);
         return $this;
     }
 }

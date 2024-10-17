@@ -6,6 +6,7 @@ use Exception;
 use InvalidArgumentException;
 use YonisSavary\Sharp\Classes\Core\Component;
 use YonisSavary\Sharp\Classes\Core\Configurable;
+use YonisSavary\Sharp\Classes\Data\AbstractModel;
 use YonisSavary\Sharp\Classes\Extras\AutobahnDrivers\BaseDriver;
 use YonisSavary\Sharp\Classes\Extras\AutobahnDrivers\DriverInterface;
 use YonisSavary\Sharp\Classes\Web\Route;
@@ -40,8 +41,8 @@ class Autobahn
      */
     public function throwOnInvalidModel(string $model)
     {
-        if (!Utils::uses($model, Model::class))
-            throw new InvalidArgumentException("[$model] does not use the ". Model::class ." trait !");
+        if (!Utils::extends($model, AbstractModel::class))
+            throw new InvalidArgumentException("[$model] does not use the ". AbstractModel::class ." class !");
 
         return $model;
     }

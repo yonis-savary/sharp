@@ -4,21 +4,22 @@ namespace YonisSavary\Sharp\Tests\Units;
 
 use PHPUnit\Framework\TestCase;
 use YonisSavary\Sharp\Classes\Core\Logger;
+use YonisSavary\Sharp\Classes\Data\AbstractModel;
 use YonisSavary\Sharp\Classes\Data\Classes\QueryField;
 use YonisSavary\Sharp\Classes\Data\Database;
-use YonisSavary\Sharp\Classes\Data\DatabaseQuery;
+use YonisSavary\Sharp\Classes\Data\ModelQuery;
 use YonisSavary\Sharp\Tests\Models\TestUser;
 use YonisSavary\Sharp\Tests\Models\TestUserData;
 
-class DatabaseQueryTest extends TestCase
+class ModelQueryTest extends TestCase
 {
-    protected function assertBuiltQueryContains(DatabaseQuery $query, string $needle)
+    protected function assertBuiltQueryContains(ModelQuery $query, string $needle)
     {
         $built = preg_replace("/\s{2,}/", " ", str_replace("\n", " ", $query->build()));
         $this->assertStringContainsString($needle, $built);
     }
 
-    protected function assertBuiltQueryNotContains(DatabaseQuery $query, string $needle)
+    protected function assertBuiltQueryNotContains(ModelQuery $query, string $needle)
     {
         $built = preg_replace("/\s{2,}/", " ", str_replace("\n", " ", $query->build()));
         $this->assertStringNotContainsString($needle, $built);
@@ -26,7 +27,7 @@ class DatabaseQueryTest extends TestCase
 
     public function test_set()
     {
-        $q = new DatabaseQuery("dummy", DatabaseQuery::UPDATE);
+        $q = new ModelQuery(TestUser::class, ModelQuery::UPDATE);
         $q->set("field", 5);
 
         $this->assertBuiltQueryContains($q, "`field` = '5'");
@@ -34,32 +35,27 @@ class DatabaseQueryTest extends TestCase
 
     public function test_setInsertField()
     {
-        $q = new DatabaseQuery("dummy", DatabaseQuery::INSERT);
+        $q = new ModelQuery(TestUser::class, ModelQuery::INSERT);
         $q->setInsertField(["A", "B", "C"]);
 
+        $this->assertBuiltQueryContains($q, "(`A`,`B`,`C`)");
+
+        $q = TestUser::insert(["A", "B", "C"]);
         $this->assertBuiltQueryContains($q, "(`A`,`B`,`C`)");
     }
 
     public function test_insertValues()
     {
-        $q = new DatabaseQuery("dummy", DatabaseQuery::INSERT);
+        $q = new ModelQuery(TestUser::class, ModelQuery::INSERT);
         $q->setInsertField(["A", "B", "C"]);
         $q->insertValues([1,2,3]);
 
         $this->assertBuiltQueryContains($q, "('1','2','3')");
     }
 
-    public function test_addField()
-    {
-        $q = new DatabaseQuery("dummy", DatabaseQuery::SELECT);
-        $q->addField("dummy", "id");
-
-        $this->assertBuiltQueryContains($q, "`dummy`.id");
-    }
-
     public function test_exploreModel()
     {
-        $q = new DatabaseQuery("test_user_data", DatabaseQuery::SELECT);
+        $q = new ModelQuery(TestUserData::class, ModelQuery::SELECT);
         $q->exploreModel(TestUserData::class);
         $this->assertBuiltQueryContains($q, "`test_user_data`.fk_user");
         $this->assertBuiltQueryContains($q, "`test_user_data`.data");
@@ -67,7 +63,7 @@ class DatabaseQueryTest extends TestCase
         $this->assertBuiltQueryContains($q, "`test_user_data&fk_user`.login");
         $this->assertBuiltQueryContains($q, "`test_user_data&fk_user`.password");
 
-        $q = new DatabaseQuery("test_user_data", DatabaseQuery::SELECT);
+        $q = new ModelQuery(TestUserData::class, ModelQuery::SELECT);
         $q->exploreModel(TestUserData::class, false);
         $this->assertBuiltQueryContains($q, "`test_user_data`.fk_user");
         $this->assertBuiltQueryContains($q, "`test_user_data`.data");
@@ -75,7 +71,7 @@ class DatabaseQueryTest extends TestCase
         $this->assertBuiltQueryNotContains($q, "`test_user_data&fk_user`.login");
         $this->assertBuiltQueryNotContains($q, "`test_user_data&fk_user`.password");
 
-        $q = new DatabaseQuery("test_user_data", DatabaseQuery::SELECT);
+        $q = new ModelQuery(TestUserData::class, ModelQuery::SELECT);
         $q->exploreModel(TestUserData::class, true, ["test_user_data&fk_user"]);
         $this->assertBuiltQueryContains($q, "`test_user_data`.fk_user");
         $this->assertBuiltQueryContains($q, "`test_user_data`.data");
@@ -86,19 +82,19 @@ class DatabaseQueryTest extends TestCase
 
     public function test_limit()
     {
-        $q = new DatabaseQuery("dummy", DatabaseQuery::SELECT);
+        $q = new ModelQuery(TestUser::class, ModelQuery::SELECT);
         $q->limit(500);
         $this->assertBuiltQueryContains($q, "LIMIT 500");
         $this->assertBuiltQueryNotContains($q, "OFFSET");
 
-        $q = new DatabaseQuery("dummy", DatabaseQuery::SELECT);
+        $q = new ModelQuery(TestUser::class, ModelQuery::SELECT);
         $q->limit(500, 100);
         $this->assertBuiltQueryContains($q, "LIMIT 500 OFFSET 100");
     }
 
     public function test_offset()
     {
-        $q = new DatabaseQuery("dummy", DatabaseQuery::SELECT);
+        $q = new ModelQuery(TestUser::class, ModelQuery::SELECT);
         $q->limit(500);
         $q->offset(100);
 
@@ -110,7 +106,7 @@ class DatabaseQueryTest extends TestCase
         Logger::setInstance($tempLogger);
 
         # Offset without query test
-        $q = new DatabaseQuery("dummy", DatabaseQuery::SELECT);
+        $q = new ModelQuery(TestUser::class, ModelQuery::SELECT);
         $q->offset(100);
         $this->assertBuiltQueryNotContains($q, "OFFSET 100");
 
@@ -119,33 +115,33 @@ class DatabaseQueryTest extends TestCase
 
     public function test_where()
     {
-        $q = (new DatabaseQuery("dummy", DatabaseQuery::SELECT))->where("id", 5);
+        $q = (new ModelQuery(TestUser::class, ModelQuery::SELECT))->where("id", 5);
         $this->assertBuiltQueryContains($q, "id = '5'");
 
-        $q = (new DatabaseQuery("dummy", DatabaseQuery::SELECT))->where("id", 5, '>');
+        $q = (new ModelQuery(TestUser::class, ModelQuery::SELECT))->where("id", 5, '>');
         $this->assertBuiltQueryContains($q, "id > '5'");
 
-        $q = (new DatabaseQuery("dummy", DatabaseQuery::SELECT))->where("id", 5, '=', 'dummy');
+        $q = (new ModelQuery(TestUser::class, ModelQuery::SELECT))->where("id", 5, '=', 'dummy');
         $this->assertBuiltQueryContains($q, "`dummy`.id = '5'");
     }
 
     public function test_whereSQL()
     {
-        $q = new DatabaseQuery("dummy", DatabaseQuery::SELECT);
+        $q = new ModelQuery(TestUser::class, ModelQuery::SELECT);
         $q->whereSQL("roses = 'Red'");
         $this->assertBuiltQueryContains($q, "(roses = 'Red')");
 
-        $q = new DatabaseQuery("dummy", DatabaseQuery::SELECT);
+        $q = new ModelQuery(TestUser::class, ModelQuery::SELECT);
         $q->whereSQL("roses = 'Red'");
         $q->whereSQL("violets = 'Blue'");
         $this->assertBuiltQueryContains($q, "(roses = 'Red') AND (violets = 'Blue')");
 
-        $q = new DatabaseQuery("dummy", DatabaseQuery::SELECT);
+        $q = new ModelQuery(TestUser::class, ModelQuery::SELECT);
         $q->whereSQL("roses = {}", ['Red']);
         $q->whereSQL("violets = {}", ['Blue']);
         $this->assertBuiltQueryContains($q, "(roses = 'Red') AND (violets = 'Blue')");
 
-        $q = new DatabaseQuery("dummy", DatabaseQuery::SELECT);
+        $q = new ModelQuery(TestUser::class, ModelQuery::SELECT);
         $q->whereSQL("roses = 'Red'");
         $q->where("violets", "Blue");
         $this->assertBuiltQueryContains($q, "(roses = 'Red') AND (violets = 'Blue')");
@@ -153,7 +149,7 @@ class DatabaseQueryTest extends TestCase
 
     public function test_join()
     {
-        $q = new DatabaseQuery("dummy", DatabaseQuery::SELECT);
+        $q = new ModelQuery(TestUser::class, ModelQuery::SELECT);
 
         $q->join("LEFT", new QueryField("source", "field"), "=", "target", "targetAlias", "targetField");
 
@@ -162,38 +158,37 @@ class DatabaseQueryTest extends TestCase
 
     public function test_order()
     {
-        $q = new DatabaseQuery("dummy", DatabaseQuery::SELECT);
-        $q->order("dummy", "field");
-        $this->assertBuiltQueryContains($q, "ORDER BY `dummy`.field ASC");
+        $q = new ModelQuery(TestUser::class, ModelQuery::SELECT);
+        $q->order("test_user", "field");
+        $this->assertBuiltQueryContains($q, "ORDER BY `test_user`.field ASC");
 
-        $q = new DatabaseQuery("dummy", DatabaseQuery::SELECT);
-        $q->order("dummy", "field");
-        $q->order("dummy", "id", "DESC");
-        $this->assertBuiltQueryContains($q, "ORDER BY `dummy`.field ASC, `dummy`.id DESC");
+        $q = new ModelQuery(TestUser::class, ModelQuery::SELECT);
+        $q->order("test_user", "field");
+        $q->order("test_user", "id", "DESC");
+        $this->assertBuiltQueryContains($q, "ORDER BY `test_user`.field ASC, `test_user`.id DESC");
     }
 
     public function test_build()
     {
-        $q = new DatabaseQuery("dummy", DatabaseQuery::CREATE);
+        $q = new ModelQuery(TestUserData::class, ModelQuery::CREATE);
         $this->assertBuiltQueryContains($q, "INSERT INTO");
 
-        $q = new DatabaseQuery("dummy", DatabaseQuery::READ);
+        $q = new ModelQuery(TestUserData::class, ModelQuery::READ);
         $this->assertBuiltQueryContains($q, "SELECT FROM");
 
-        $q = new DatabaseQuery("dummy", DatabaseQuery::UPDATE);
+        $q = new ModelQuery(TestUserData::class, ModelQuery::UPDATE);
         $this->assertBuiltQueryContains($q, "UPDATE");
 
-        $q = new DatabaseQuery("dummy", DatabaseQuery::DELETE);
+        $q = new ModelQuery(TestUserData::class, ModelQuery::DELETE);
         $this->assertBuiltQueryContains($q, "DELETE FROM");
 
     }
 
     public function test_first()
     {
-        $q = new DatabaseQuery("test_user_data", DatabaseQuery::SELECT);
-        $q->exploreModel(TestUserData::class);
+        $q = TestUserData::select();
 
-        $this->assertIsArray($q->first());
+        $this->assertInstanceOf(AbstractModel::class, $q->first());
 
         $q->where("id", -1);
         $this->assertNull($q->first());
@@ -201,20 +196,22 @@ class DatabaseQueryTest extends TestCase
 
     public function test_fetch()
     {
-        $q = new DatabaseQuery("test_user_data", DatabaseQuery::SELECT);
-        $q->exploreModel(TestUserData::class);
+        $q = TestUserData::select();
 
         $this->assertCount(
             Database::getInstance()->query("SELECT COUNT(*) as max FROM test_user_data")[0]["max"],
             $q->fetch()
         );
 
+
         $q->where("id", -1);
         $this->assertCount(0, $q->fetch());
+        $this->assertEquals(0, $q->rowCount());
 
-        $q = new DatabaseQuery("test_user", DatabaseQuery::UPDATE);
+        $q = TestUser::update();
         $q->set("login", "blah");
-        $this->assertEquals(1, $q->fetch());
+        $q->fetch();
+        $this->assertEquals(1, $q->rowCount());
 
         // Set back the edited login
         TestUser::update()->set("login", "admin")->fetch();

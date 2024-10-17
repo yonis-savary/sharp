@@ -3,6 +3,7 @@
 namespace YonisSavary\Sharp\Classes\Data\ModelGenerator;
 
 use YonisSavary\Sharp\Classes\CLI\Terminal;
+use YonisSavary\Sharp\Classes\Data\AbstractModel;
 use YonisSavary\Sharp\Classes\Data\DatabaseField;
 use YonisSavary\Sharp\Classes\Data\ObjectArray;
 use YonisSavary\Sharp\Core\Utils;
@@ -43,6 +44,7 @@ class SQLite extends GeneratorDriver
 
     protected array $schemaCache = [];
     protected ?string $currentPrimaryKey = null;
+    protected ?string $currentDocumentation = "";
     protected array $fieldExtras = [];
 
     public function listTables(): array
@@ -63,7 +65,7 @@ class SQLite extends GeneratorDriver
         return $tables;
     }
 
-    public function getTableFields(string $createTableScript): array
+    public function getTableFields(string $createTableScript, string $namespace): array
     {
         $sql = $createTableScript;
 
@@ -97,12 +99,12 @@ class SQLite extends GeneratorDriver
         $lines[]= $currentLine;
 
         return ObjectArray::fromArray($lines)
-        ->map($this->lineToField(...))
+        ->map(fn($line) => $this->lineToField($line, $namespace))
         ->filter()
         ->collect();
     }
 
-    public function lineToField(string $sqlLine): ?array
+    public function lineToField(string $sqlLine, string $namespace): ?array
     {
         $sqlLine = trim($sqlLine);
 
@@ -112,27 +114,44 @@ class SQLite extends GeneratorDriver
         $typesNames = join('|', self::TYPES_REGEX);
         $columnRegex = "/^(.+?) ($typesNames)/";
 
+        $description = "";
+
         if (preg_match($columnRegex, $sqlLine, $matches))
         {
             $fieldName = $matches[1];
             $field = "'$fieldName' => (new DatabaseField('$fieldName'))";
 
-            $field .= "->hasDefault(".(str_contains($sqlLine, 'DEFAULT') ? "true": "false").")";
+            $isGenerated = str_contains($sqlLine, "AUTOINCREMENT") || str_contains($sqlLine, "GENERATED");
+            if ($isGenerated)
+                $field .= "->isGenerated()";
+
+            $hasDefault = $isGenerated || str_contains($sqlLine, 'DEFAULT');
+            $field .= "->hasDefault(".($hasDefault ? "true": "false").")";
             if (str_contains($sqlLine, 'PRIMARY KEY'))
                 $this->currentPrimaryKey = $matches[1];
 
+            $canBeNull = !str_contains($sqlLine, "NOT NULL");
+            $field .= "->setNullable(". ($canBeNull ? "true": "false") .")";
+
+            $descriptionType = "string";
             $type = $matches[2];
             $classType = "STRING";
-            if (preg_match("/smallint\(1\)/i", $type))  $classType = "BOOLEAN";
-            else if (preg_match("/bool/i", $type))      $classType = "BOOLEAN";
-            else if (preg_match("/int/i", $type))       $classType = "INTEGER";
-            else if (preg_match("/float\(/i", $type))   $classType = "FLOAT";
-            else if (preg_match("/decimal/i", $type))   $classType = "DECIMAL";
+            if (preg_match("/smallint\(1\)/i", $type))  { $classType = "BOOLEAN"; $descriptionType = "bool"; }
+            else if (preg_match("/bool/i", $type))      { $classType = "BOOLEAN"; $descriptionType = "bool"; }
+            else if (preg_match("/int/i", $type))       { $classType = "INTEGER"; $descriptionType = "int"; }
+            else if (preg_match("/float\(/i", $type))   { $classType = "FLOAT"  ; $descriptionType = "float"; }
+            else if (preg_match("/decimal/i", $type))   { $classType = "DECIMAL"; $descriptionType = "string"; }
             $field .= "->setType(DatabaseField::$classType)";
 
             $matches = [];
             if (preg_match('/REFERENCES (.+?)\((.+?)\)/', $sqlLine, $matches))
-                $field .= "->references(".$this->sqlToPHPName($matches[1])."::class, '".$matches[2]."')";
+            {
+                $refClassName = $this->sqlToPHPName($matches[1]);
+                $field .= "->references($refClassName::class, '".$matches[2]."')";
+                $descriptionType = "\\$namespace\\$refClassName";
+            }
+
+            $this->currentDocumentation .= " * @property $descriptionType $fieldName\n";
 
             return [$fieldName, $field];
         }
@@ -144,8 +163,25 @@ class SQLite extends GeneratorDriver
         return null;
     }
 
+    protected function getFieldDoc(array $fieldDescription, array $foreignKey=null, string $namespace): string
+    {
+        list($field, $type, $null, $key, $default, $extras) = array_values($fieldDescription);
+
+        $type = "string";
+        if (preg_match("/int\(/", $type))           $type = "int";
+        if (preg_match("/float\(/", $type))         $type = "float";
+        if (preg_match("/smallint\(1\)/", $type))   $type = "float";
+
+        if ($ref = $foreignKey[$field] ?? false)
+            $type =  "\\" . $namespace . "\\" .  $this->sqlToPHPName($ref[0]);
+
+        return " * @property $type \$$field";
+    }
+
+
     public function generate(string $table, string $targetApplication, string $modelNamespace=null): void
     {
+        $this->currentDocumentation = "";
         $classBasename = $this->sqlToPHPName($table);
 
         $fileName = "$classBasename.php";
@@ -155,10 +191,10 @@ class SQLite extends GeneratorDriver
         if (!is_dir($fileDir))
             mkdir($fileDir);
 
-        $classname = $modelNamespace ?? Utils::pathToNamespace($fileDir);
+        $namespace = $modelNamespace ?? Utils::pathToNamespace($fileDir);
 
         $descriptionRaw = $this->schemaCache[$table];
-        $fields = $this->getTableFields($descriptionRaw);
+        $fields = $this->getTableFields($descriptionRaw, $namespace);
 
         foreach ($fields as &$field)
         {
@@ -170,14 +206,16 @@ class SQLite extends GeneratorDriver
         file_put_contents($filePath, Terminal::stringToFile(
         "<?php
 
-        namespace $classname;
+        namespace $namespace;
 
         use ".DatabaseField::class.";
+        use ".AbstractModel::class.";
 
-        class $classBasename
+        /**
+         ".trim($this->currentDocumentation)."
+        */
+        class $classBasename extends AbstractModel
         {
-            use \YonisSavary\Sharp\Classes\Data\Model;
-
             public static function getTable(): string
             {
                 return \"$table\";

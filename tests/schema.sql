@@ -26,6 +26,14 @@ CREATE TABLE test_sample_data (
     birth_year INT NOT NULL
 );
 
+
+CREATE TABLE test_generated_column (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    age SMALLINT NOT NULL,
+    is_adult BOOLEAN ALWAYS GENERATED AS (age >= 21)
+);
+
 INSERT INTO test_sample_data (name, birth_year)
 VALUES
 ('Alfred', 1899),

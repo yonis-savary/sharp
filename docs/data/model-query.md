@@ -1,13 +1,13 @@
-[< Back to summary](../README.mdmd)
+[< Back to summary](../README.md)
 
-# 📜 Database Queries
+# 📜 Model Queries
 
 Database queries can be made through:
 - The `query` method of any `Database` object
-- The `DatabaseQuery` object, which modelize basic queries type
+- The `ModelQuery` object, which modelize basic queries type
 
 > [!NOTE]
-> `DatabaseQuery` objects are mostly created through Models shortcuts,
+> `ModelQuery` objects are mostly created through Models shortcuts,
 > its manual creation is more an edge case than something else
 
 ## INSERT query
@@ -15,7 +15,7 @@ Database queries can be made through:
 The only type of insert that is supported is `INSERT INTO ... VALUES ...`
 
 ```php
-$query = new DatabaseQuery("user_data", DatabaseQuery::INSERT);
+$query = new ModelQuery(UserData::class, ModelQuery::INSERT);
 $query->setInsertField(["fk_user", "data"]);
 $query->insertValues([1, "one-row"], [2, "another-one"]);
 
@@ -30,7 +30,7 @@ $sql = $query->build();
 $query = User::select();
 
 # Second solution
-$query = new DatabaseQuery("user", DatabaseQuery::SELECT);
+$query = new ModelQuery(User::class, ModelQuery::SELECT);
 $query->exploreModel(User::class);
 
 
@@ -54,7 +54,7 @@ Tips:
 
 Select queries are specials, they explore your models relations to select every possible fields
 
-Let's say you have a `User` model, which points to the `Person` model through `fk_person`, which points to `PersonPhone` through `fk_phone`, our response format will be
+Let's say you have a `User` model, which points to the `Person` model through `fk_person`, which points to `PersonPhone` through `fk_phone`, in JSON, our response format will be
 
 ```json
 [
@@ -88,7 +88,17 @@ It can seem quite hard to use at first, but it is really simple:
 - use a foreign key name to access a foreign table
 - use `data.[key-name]` on specified table to access data
 
-Example: to access our user's phone number, we can access
+When fetching data in PHP, Model queries will return arrays of `AbstractModel` instances
+
+```php
+$user = User::select()->fetch()
+$user->fk_person->number;
+$user->data->fk_person;
+$user->id;
+```
+
+
+Example in Javascript: to access our user's phone number, we can access
 
 `user.fk_person.fk_phone.data.number`
 
@@ -96,11 +106,11 @@ Example: to access our user's phone number, we can access
 
 Using those prototypes
 ```php
-DatabaseQuery::exploreModel(string $model, bool $recursive=true, array $foreignKeyIgnores=[]): self;
+ModelQuery::exploreModel(string $model, bool $recursive=true, array $foreignKeyIgnores=[]): self;
 Model::select(bool $recursive=true, array $foreignKeyIgnores=[]);
 ```
 
-We can control how `DatabaseQuery` explore our "model tree"
+We can control how `ModelQuery` explore our "model tree"
 
 By setting `$recursive` to `false`, we only fetch our model data, and don't explore more
 
@@ -112,7 +122,7 @@ Putting relations in `$foreignKeysIgnores` as `table&foreign_key[&foreign_key]` 
 ## UPDATE query
 
 ```php
-$query = new DatabaseQuery("user", DatabaseQuery::UPDATE);
+$query = new ModelQuery(User::class, ModelQuery::UPDATE);
 
 $query->set("created_this_year", true)
 $query->set("active", false)
@@ -130,7 +140,7 @@ $sql = $query->build();
 ## DELETE query
 
 ```php
-$query = new DatabaseQuery("user", DatabaseQuery::DELETE);
+$query = new ModelQuery(User::class, ModelQuery::DELETE);
 
 $query->where("my_field", 5) ;
 $query->where("my_field", null, "<>");
@@ -145,7 +155,7 @@ $sql = $query->build();
 
 ## Configuration
 
-`DatabaseQuery` don't have a big configurable, so far, you can only change the maximum number of `JOIN` a query can handle (50 by default)
+`ModelQuery` don't have a big configurable, so far, you can only change the maximum number of `JOIN` a query can handle (50 by default)
 
 ```json
 "database-query": {

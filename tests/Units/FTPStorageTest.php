@@ -65,10 +65,6 @@ class FTPStorageTest extends TestCase
                 $this->enabled = false;
             }
         }
-        else
-        {
-            Logger::getInstance()->info("FTP Test not enabled");
-        }
 
         return $this->enabled;
     }

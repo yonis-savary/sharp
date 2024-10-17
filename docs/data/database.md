@@ -77,7 +77,7 @@ Sharp philosophy on models is
 > It is your application that must adapt itself to your structure
 
 A Model in Sharp is a class that use the
-[`Sharp\Classes\Data\Model`](../../Classes/Data/Model.php) trait
+[`YonisSavary\Sharp\Classes\Data\AbstractModel`](../../src/Classes/Data/AbstractModel.php) trait
 
 The goal of sharp is to avoid writting manually any model, they can be generated automatically
 
@@ -119,10 +119,10 @@ User::getFields(); // Return an array as `FieldName => DatabaseField` object
 User::getFieldNames(); // Return ["id", "login", "password", "salt"]
 User::getInsertables(); // Return ["login", "password", "salt"]
 
-User::insert(); // Return a DatabaseQuery object ready to insert inside user table
-User::select(); // Return a DatabaseQuery object ready to select from user table
-User::update(); // Return a DatabaseQuery object ready to update user table
-User::delete(); // Return a DatabaseQuery object ready to delete from user table
+User::insert(); // Return a ModelQuery object ready to insert inside user table
+User::select(); // Return a ModelQuery object ready to select from user table
+User::update(); // Return a ModelQuery object ready to update user table
+User::delete(); // Return a ModelQuery object ready to delete from user table
 
 # Some examples
 
@@ -148,8 +148,14 @@ User::delete()
 ->whereSQL("fk_type IN (1, 12, 52, 4)")
 ->order("id", "DESC")
 ->fetch();
+
+# Collect data and put it in an object array
+User::delete()
+->whereSQL("fk_type IN (1, 12, 52, 4)")
+->order("id", "DESC")
+->toObjectArray();
 ```
 
-To know more on `DatabaseQuery`, you can read [its documentation](./database-query.md)
+To know more on `ModelQuery` and its return format, you can read [its documentation](./model-query.md)
 
 [< Back to summary](../README.md)

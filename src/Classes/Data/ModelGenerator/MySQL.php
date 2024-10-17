@@ -3,6 +3,7 @@
 namespace YonisSavary\Sharp\Classes\Data\ModelGenerator;
 
 use YonisSavary\Sharp\Classes\CLI\Terminal;
+use YonisSavary\Sharp\Classes\Data\AbstractModel;
 use YonisSavary\Sharp\Classes\Data\DatabaseField;
 use YonisSavary\Sharp\Classes\Data\ObjectArray;
 use YonisSavary\Sharp\Core\Utils;
@@ -25,6 +26,7 @@ class MySQL extends GeneratorDriver
         list($field, $type, $null, $key, $default, $extras) = array_values($fieldDescription);
         $string = "'$field' => (new DatabaseField('$field'))";
 
+
         $classType = "STRING";
         if (preg_match("/int\(/", $type))           $classType = "INTEGER";
         if (preg_match("/float\(/", $type))         $classType = "FLOAT";
@@ -34,6 +36,15 @@ class MySQL extends GeneratorDriver
 
         $string .= "->setNullable(". ($null=="YES" ? "true": "false") .")";
 
+        $lowerExtras = strtolower($extras);
+        $isGenerated = str_contains($lowerExtras, 'auto_increment') || str_contains($lowerExtras, "generated");
+
+        if ($isGenerated)
+            $string .= "->isGenerated()";
+
+        $hasDefault = $null || $default || $isGenerated;
+        $string .= "->hasDefault(". ($hasDefault ? "true": "false") .")";
+
         if ($ref = $foreignKey[$field] ?? false)
             $string .= "->references(".$this->sqlToPHPName($ref[0])."::class, '$ref[1]')";
 
@@ -41,6 +52,22 @@ class MySQL extends GeneratorDriver
             $primaryKey ??= $field;
 
         return $string;
+    }
+
+
+    protected function getFieldDoc(array $fieldDescription, array $foreignKey=null, string $namespace): string
+    {
+        list($field, $type, $null, $key, $default, $extras) = array_values($fieldDescription);
+
+        $type = "string";
+        if (preg_match("/int\(/", $type))           $type = "int";
+        if (preg_match("/float\(/", $type))         $type = "float";
+        if (preg_match("/smallint\(1\)/", $type))   $type = "float";
+
+        if ($ref = $foreignKey[$field] ?? false)
+            $type =  "\\" . $namespace . "\\" .  $this->sqlToPHPName($ref[0]);
+
+        return " * @property $type \$$field";
     }
 
     public function generate(string $table, string $targetApplication, string $modelNamespace=null): void
@@ -55,7 +82,7 @@ class MySQL extends GeneratorDriver
         $filePath = Utils::joinPath($fileDir, $fileName);
 
         if (!is_dir($fileDir)) mkdir($fileDir);
-        $classname = $modelNamespace ?? Utils::pathToNamespace($fileDir);
+        $namespace = $modelNamespace ?? Utils::pathToNamespace($fileDir);
 
         $foreignKeysRaw = $db->query(
             "SELECT
@@ -83,29 +110,37 @@ class MySQL extends GeneratorDriver
             $model = Utils::pathToNamespace($model);
             return "use $model;";
         })
-        ->filter(fn($x) => !str_contains($x, "$classname\\$classBasename"))
+        ->filter(fn($x) => !str_contains($x, "$namespace\\$classBasename"))
         ->unique()
         ->collect();
 
         $primaryKey = null;
 
-        $descriptionRaw =  $db->query("DESCRIBE `$table`");
-        $description = array_map(function($e) use ($foreignKeys, &$primaryKey) {
+        $description = ObjectArray::fromArray($db->query("DESCRIBE `$table`"))
+        ->map(function($e) use ($foreignKeys, &$primaryKey) {
             return $this->getFieldDescription($e, $foreignKeys, $primaryKey);
-        }, $descriptionRaw);
+        })
+        ->collect();
+
+        $documentation = ObjectArray::fromArray($db->query("DESCRIBE `$table`"))
+        ->map(fn($e) => $this->getFieldDoc($e, $foreignKeys, $namespace))
+        ->join("\n");
+
 
         file_put_contents($filePath, Terminal::stringToFile(
         "<?php
 
-        namespace $classname;
+        namespace $namespace;
 
         use ".DatabaseField::class.";
+        use ".AbstractModel::class.";
         ".join("\n", $usedModels)."
 
-        class $classBasename
+        /**
+        $documentation
+        */
+        class $classBasename extends AbstractModel
         {
-            use \YonisSavary\Sharp\Classes\Data\Model;
-
             public static function getTable(): string
             {
                 return \"$table\";
