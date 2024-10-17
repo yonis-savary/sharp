@@ -1,6 +1,6 @@
 [< Back to summary](../README.md)
 
-# 📚 Database and models
+# 📚 Database
 
 Database connection is made through the [`Database`](../../Classes/Data/Database.php) component (which uses `PDO`)
 
@@ -68,94 +68,5 @@ $db->hasField("ship_order", "fk_ship");
 ```
 
 This config will create a `Storage/myDatabase.db` file with your data inside
-
-## Interacting with models
-
-Sharp philosophy on models is
-> Your application don't have to dictate how your database schema should look like
->
-> It is your application that must adapt itself to your structure
-
-A Model in Sharp is a class that use the
-[`YonisSavary\Sharp\Classes\Data\AbstractModel`](../../src/Classes/Data/AbstractModel.php) trait
-
-The goal of sharp is to avoid writting manually any model, they can be generated automatically
-
-### Generating models
-
-To generate your models, launch this in your terminal
-
-```bash
-php do fetch-models
-```
-
-This will create models classes in `YourApp/Models`, with `snake_case` names transformed their `PascalCase` equivalent
-
-> [!NOTE]
-> So far, only two types of database are supported :
-> - MySQL (+MariaDB)
-> - SQLite
->
-> A new adapter can be created by implementing a new `GeneratorDriver`
-
-### Model Interaction
-
-Let's say we have a `User` model which got this structure:
-```sql
-CREATE TABLE user (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    login VARCHAR(100) NOT NULL UNIQUE,
-    password VARCHAR(100) NOT NULL,
-    salt VARCHAR(100) NOT NULL
-);
-```
-
-Here is how we can interact with the model
-
-```php
-User::getTable(); // Return "user"
-User::getPrimaryKey(); // Return "id"
-User::getFields(); // Return an array as `FieldName => DatabaseField` object
-User::getFieldNames(); // Return ["id", "login", "password", "salt"]
-User::getInsertables(); // Return ["login", "password", "salt"]
-
-User::insert(); // Return a ModelQuery object ready to insert inside user table
-User::select(); // Return a ModelQuery object ready to select from user table
-User::update(); // Return a ModelQuery object ready to update user table
-User::delete(); // Return a ModelQuery object ready to delete from user table
-
-# Some examples
-
-$users = User::select()
-->where("fk_country", 14)
-->whereSQL("creation_date > DATESUB(NOW(), INTERVAL 3 MONTH)")
-->limit(5)
-->fetch();
-
-$someUser = User::select()
-->where("id", 168)
-->first();
-
-// Same as the previous query
-$someUser = User::findId(168);
-
-User::update()
-->set("fk_type", 2)
-->where("fk_type", 5)
-->first();
-
-User::delete()
-->whereSQL("fk_type IN (1, 12, 52, 4)")
-->order("id", "DESC")
-->fetch();
-
-# Collect data and put it in an object array
-User::delete()
-->whereSQL("fk_type IN (1, 12, 52, 4)")
-->order("id", "DESC")
-->toObjectArray();
-```
-
-To know more on `ModelQuery` and its return format, you can read [its documentation](./model-query.md)
 
 [< Back to summary](../README.md)

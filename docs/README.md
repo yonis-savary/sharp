@@ -37,8 +37,8 @@ Routing & Logic
 
 
 Database
-- [📚 Database and Models](./data/database.md)
-- [📜 Model Queries](./data/model-query.md)
+- [📚 Database](./data/database.md)
+- [📖 Model & Queries](./data/model-query.md)
 
 Business Logic
 - [🥤 Session Straw](./extras/session-straw.md)

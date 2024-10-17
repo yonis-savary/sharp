@@ -1,14 +1,92 @@
 [< Back to summary](../README.md)
 
-# 📜 Model Queries
+# 📖 Models & Queries
 
-Database queries can be made through:
-- The `query` method of any `Database` object
-- The `ModelQuery` object, which modelize basic queries type
+Sharp philosophy on models is
+> Your application don't have to dictate how your database schema should look like
+>
+> It is your application that must adapt itself to your structure
+
+Models are class that represent a database table and extends from [`AbstractModel`](../../src/Classes/Data/AbstractModel.php)
+
+The goal of sharp is to avoid writting manually any model, they can be generated automatically
+
+## Generating models
+
+To generate your models, launch this in your terminal
+
+```bash
+php do create-models
+```
+
+This will create models classes in `YourApp/Models`, with `snake_case` names transformed their `PascalCase` equivalent
 
 > [!NOTE]
-> `ModelQuery` objects are mostly created through Models shortcuts,
-> its manual creation is more an edge case than something else
+> So far, only two types of database are supported :
+> - MySQL (+MariaDB)
+> - SQLite
+>
+> A new adapter can be created by implementing a new `GeneratorDriver`
+
+### Model Interaction
+
+Let's say we have a `User` model which got this structure
+
+```sql
+CREATE TABLE user (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    login VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(100) NOT NULL,
+    salt VARCHAR(100) NOT NULL
+);
+```
+
+Here is how we can interact with the model
+
+```php
+User::getTable(); // Return "user"
+User::getPrimaryKey(); // Return "id"
+User::getFields(); // Return an array as `FieldName => DatabaseField` object
+User::getFieldNames(); // Return ["id", "login", "password", "salt"]
+User::getInsertables(); // Return ["login", "password", "salt"]
+
+User::insert(); // Return a ModelQuery object ready to insert inside user table
+User::select(); // Return a ModelQuery object ready to select from user table
+User::update(); // Return a ModelQuery object ready to update user table
+User::delete(); // Return a ModelQuery object ready to delete from user table
+
+# Some examples of ModelQuery usage
+
+$users = User::select()
+->where("fk_country", 14)
+->whereSQL("creation_date > DATESUB(NOW(), INTERVAL 3 MONTH)")
+->limit(5)
+->fetch();
+
+$someUser = User::select()
+->where("id", 168)
+->first();
+
+// Same as the previous query
+$someUser = User::findId(168);
+
+User::update()
+->set("fk_type", 2)
+->where("fk_type", 5)
+->first();
+
+User::delete()
+->whereSQL("fk_type IN (1, 12, 52, 4)")
+->order("id", "DESC")
+->fetch();
+
+# Collect data and put it in an object array
+User::delete()
+->whereSQL("fk_type IN (1, 12, 52, 4)")
+->order("id", "DESC")
+->toObjectArray();
+```
+
 
 ## INSERT query
 
@@ -52,43 +130,18 @@ Tips:
 
 ### Select query return format
 
-Select queries are specials, they explore your models relations to select every possible fields
+By default, ModelQuery explore your models relations to select every fields possible
 
-Let's say you have a `User` model, which points to the `Person` model through `fk_person`, which points to `PersonPhone` through `fk_phone`, in JSON, our response format will be
+Let's say you have a `User` model, which points to the `Person` model through `fk_person`, which points to `PersonPhone` through `fk_phone`
 
-```json
-[
-    {
-        "data":
-        {
-            "id": "...",
-            "login": "...",
-            "password": "...",
-            "...": "..."
-        },
-        "fk_person":
-        {
-            "data":
-            {
-                "firstname": "bob",
-                "lastname": "robertson",
-                "...": "..."
-            },
-            "fk_phone":
-            {
-                "number": "0123456789",
-                "...": "..."
-            }
-        }
-    }
-]
+Executing
+
+```php
+$user = User::select()->first();
 ```
 
-It can seem quite hard to use at first, but it is really simple:
-- use a foreign key name to access a foreign table
-- use `data.[key-name]` on specified table to access data
-
-When fetching data in PHP, Model queries will return arrays of `AbstractModel` instances
+Allow use to read its data through the `->data` expression,
+you can also read its foreign key data with the `->$foreignKey` expression
 
 ```php
 $user = User::select()->fetch()
@@ -97,26 +150,60 @@ $user->data->fk_person;
 $user->id;
 ```
 
+Also, you can convert this data to an array with `->toArray()` which will return something like this
 
-Example in Javascript: to access our user's phone number, we can access
+```json
+{
+    "data": {
+        "id": "...",
+        "login": "...",
+        "password": "...",
+        "...": "..."
+    },
+    "fk_person": {
+        "data": {
+            "firstname": "bob",
+            "lastname": "robertson",
+            "...": "..."
+        },
+        "fk_phone": {
+            "number": "0123456789",
+            "...": "..."
+        }
+    }
+}
+```
 
-`user.fk_person.fk_phone.data.number`
+This format can seem quite hard to use at first, but it is really simple:
+- use `data.[key-name]` on specified table to access data
+- use a foreign key name to access a foreign table
+
 
 ### Bottleneck model exploration
 
 Using those prototypes
 ```php
-ModelQuery::exploreModel(string $model, bool $recursive=true, array $foreignKeyIgnores=[]): self;
-Model::select(bool $recursive=true, array $foreignKeyIgnores=[]);
+ModelQuery::exploreModel(
+    string $model,
+    bool $recursive=true,
+    array $foreignKeyIgnores=[]
+): self;
+
+// OR
+
+Model::select(
+    bool $recursive=true,
+    array $foreignKeyIgnores=[]
+);
 ```
 
 We can control how `ModelQuery` explore our "model tree"
 
-By setting `$recursive` to `false`, we only fetch our model data, and don't explore more
+By setting `$recursive` to `false`, we only fetch our first table data, and don't explore more.
 
-Putting relations in `$foreignKeysIgnores` as `table&foreign_key[&foreign_key]` :
-- To ignore the phone key, we can put `"user&fk_person&fk_phone"`
-- Putting `"user&fk_person"` will also ignore every model that depends on it (`"user&fk_person&fk_phone"` in this case)
+Putting relations in `$foreignKeysIgnores` allow use to prevent specified table relations
+
+Exemple, giving `user&fk_person` will allow the exploration or `user` table but not `person` or any table that depends on it.
 
 
 ## UPDATE query
