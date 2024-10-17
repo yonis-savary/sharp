@@ -21,8 +21,6 @@ class SchedulerList extends Command
             $description = $handler->toSentence();
 
             $description = trim(preg_replace_callback("/( ?every \w+(,|$)){2,}/", function($match) use ($description) {
-                debug($description, $match);
-
                 $submatch = explode(",", $match[0])[0];
 
                 return $submatch . ",";
