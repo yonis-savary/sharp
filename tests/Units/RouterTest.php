@@ -14,6 +14,12 @@ use YonisSavary\Sharp\Tests\Middlewares\RequestHasPostData;
 class RouterTest extends TestCase
 {
 
+    public function test_routerVariableIsDefinedInHelper()
+    {
+        $this->assertTrue(defined("ROUTE_OBJECT_IN_ROUTE_APP_FILE"));
+        $this->assertInstanceOf(Router::class, ROUTE_OBJECT_IN_ROUTE_APP_FILE);
+    }
+
     public function test_route()
     {
         $r = new Router();

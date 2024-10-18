@@ -128,7 +128,10 @@ class Router
     protected function loadAutoloaderFiles(): void
     {
         foreach (Autoloader::getListFiles(Autoloader::ROUTES) as $file)
+        {
+            $router = $this; // Can be used in routes files
             require_once $file;
+        }
     }
 
     protected function loadControllersRoutes(): void
