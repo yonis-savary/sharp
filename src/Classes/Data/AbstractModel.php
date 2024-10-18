@@ -402,10 +402,7 @@ abstract class AbstractModel implements JsonSerializable
         {
             $value = $data[$fieldName] ?? null;
             if (!$fieldObject->validate($value))
-            {
-                debug("Cannot validate $fieldName = $value");
                 return false;
-            }
         }
         return true;
     }

@@ -146,7 +146,6 @@ class AbstractModelTest extends TestCase
     {
         $db = Database::getInstance();
 
-        debug($db->query("SELECT id FROM test_user_data"));
         $nextId = $db->query("SELECT MAX(id) + 1 as next FROM test_user_data")[0]["next"];
 
         $inserted = TestUserData::insertArray([
