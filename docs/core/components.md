@@ -3,7 +3,7 @@
 # 🧩 Sharp components
 
 Some classes need to be accessed globally from your application (like `Configuration`, `Logger`...etc)
-to resolve this, the [`Component`](../../Classes/Core/Component.php) trait was created.
+to resolve this, the [`Component`](../../src/Classes/Core/Component.php) trait was created.
 
 To be clear: **This trait's purpose is to be a [Singleton](https://en.wikipedia.org/wiki/Singleton_pattern) that does not limit itself to one instance**
 

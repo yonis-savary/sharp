@@ -2,7 +2,7 @@
 
 # 🚃 ObjectArray class
 
-Sharp got the [`ObjectArray`](../../Classes/Data/ObjectArray.php) class, which purpose is to be an Object version of an array of data (A list, not an associative array)
+Sharp got the [`ObjectArray`](../../src/Classes/Data/ObjectArray.php) class, which purpose is to be an Object version of an array of data (A list, not an associative array)
 
 This class got the most of ["standard"](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array#array_methods_and_empty_slots) array methods an array can have, this include
 ```php

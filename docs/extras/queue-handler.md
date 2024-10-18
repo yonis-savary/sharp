@@ -9,7 +9,7 @@ With this class, we can compose simple queues in our application
 ## Usage
 
 To use this trait :
-- put [`use QueueHandler`](../../Classes/Extras/QueueHandler.php) to your class
+- put [`use QueueHandler`](../../src/Classes/Extras/QueueHandler.php) to your class
 - implements `protected static function processQueueItem(array $data): bool` in your class, this method purpose is to process ONE item of your queue data (return true if processed, false is skipped)
 - use `self::pushQueueItem(array $data)` in your base class to push an item to the queue
 

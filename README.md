@@ -1,15 +1,12 @@
 # Sharp PHP
 
-> [!IMPORTANT]
-> This project is still under development
+## Welcome !
 
-Sharp is a Framework for PHP 8 that focuses on code cleanliness and simplicity
-
-The goal is to have a good balance between abstraction and concrete objects
+Sharp is a framework for PHP 8 that focuses on code cleanliness and simplicity, the goal is to have a good balance between abstraction and concrete objects, make a framework that just work with your IDE and doesn't use some magic syntax or unecessary complexity.
 
 ## 📚 Documentation and Tutorials
 
-You can find resources to work/learn with Sharp in the [Docs directory](./docs/README.md)
+You can find resources to work/learn with Sharp in the [docs/ directory](./docs/README.md)
 
 ## 📦 Get Sharp
 
@@ -24,11 +21,13 @@ cp -r vendor/yonis-savary/sharp/src/Core/Server/* .
 xcopy /s vendor/yonis-savary/sharp/src/Core/Server/* .
 
 # Create an empty configuration/project
-php do fill-configuration
+php do create-configuration
 php do create-application MyProject
 
 # Launch built-in web server
 php do serve
+# specify port
+php do serve 8080
 ```
 
 Your directory will look like

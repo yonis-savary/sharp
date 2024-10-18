@@ -4,7 +4,7 @@
 
 Great news ! No need to write basic CRUD API for your models anymore !
 
-Sharp got the [`Autobahn`](../../Classes/Extras/Autobahn.php) component, which can
+Sharp got the [`Autobahn`](../../src/Classes/Extras/Autobahn.php) component, which can
 create CRUD API routes for any of your model
 
 ```php
@@ -199,7 +199,7 @@ INSERT INTO user (login, password) VALUES ('andy', 'lucy'), ('lucy', 'andy'), ('
 
 ## Configuration
 
-`Autobahn` is based on a "driver" which implements [`DriverInterface`](../../Classes/Extras/AutobahnDrivers/DriverInterface.php),
+`Autobahn` is based on a "driver" which implements [`DriverInterface`](../../src/Classes/Extras/AutobahnDrivers/DriverInterface.php),
 it is the driver that defines the API behavior, which means that you can change the API behind `Autobahn` at any moment
 
 If you decide to use one, the only step required is to specify it in the configuration:

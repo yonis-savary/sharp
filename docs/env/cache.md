@@ -2,7 +2,7 @@
 
 # 🔥 Cache
 
-The [`Cache`](../../Classes/Env/Cache.php) class can save [serialized](https://www.php.net/manual/en/language.oop5.serialization.php) objects in any [`Storage`](./storage.md)
+The [`Cache`](../../src/Classes/Env/Cache.php) class can save [serialized](https://www.php.net/manual/en/language.oop5.serialization.php) objects in any [`Storage`](./storage.md)
 
 ```php
 $cache = Cache::getInstance();

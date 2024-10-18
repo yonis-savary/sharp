@@ -2,7 +2,7 @@
 
 # 📁 Storage
 
-[Storage](../../Classes/Env/Storage.php) is a class which represent a file directory, it can be used
+[Storage](../../src/Classes/Env/Storage.php) is a class which represent a file directory, it can be used
 to read, write and explore the directory content
 
 > [!NOTE]
@@ -81,7 +81,7 @@ $storage->getSubStorage("MySubDir");
 
 ## FTP Storage
 
-Sharp supports FTP connections ! They are made through the [FTPDriver](../../Classes/Env/Drivers/FTPDriver.php)
+Sharp supports FTP connections ! They are made through the [FTPDriver](../../src/Classes/Env/Drivers/FTPDriver.php)
 class which is a basic wrapper for FTP functions
 
 They can be given to the `Storage` constructor

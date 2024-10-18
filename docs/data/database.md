@@ -2,7 +2,7 @@
 
 # 📚 Database
 
-Database connection is made through the [`Database`](../../Classes/Data/Database.php) component (which uses `PDO`)
+Database connection is made through the [`Database`](../../src/Classes/Data/Database.php) component (which uses `PDO`)
 
 ## Using the database
 

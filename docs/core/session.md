@@ -3,7 +3,7 @@
 # 🔏 Session Management
 
 With Sharp, the session management is really straightforward, it is made
-through the [`Session`](../../Classes/Env/Session.php) component
+through the [`Session`](../../src/Classes/Env/Session.php) component
 
 ```php
 $session = Session::getInstance();

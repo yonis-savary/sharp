@@ -53,7 +53,7 @@ To get your assets, put this in your view
 ```
 But writing this is quite long and not very readable.
 
-To address this, the [`helper-web.php`](../../Helpers/helpers-web.php) got three useful functions
+To address this, the [`helper-web.php`](../../src/Helpers/helpers-web.php) got three useful functions
 
 ```php
 <!-- Put the script and stylesheet with it URL -->

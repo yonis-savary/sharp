@@ -2,7 +2,7 @@
 
 # 📃 Logging & Shortcuts
 
-The [`Logger`](../../Classes/Core/Logger.php) class is a [`Component`](./components.md) that can be used to log information inside a CSV file
+The [`Logger`](../../src/Classes/Core/Logger.php) class is a [`Component`](./components.md) that can be used to log information inside a CSV file
 
 By default, you can log by calling the `log()` method
 

@@ -3,8 +3,8 @@
 # 🛣️ Routing
 
 Routing in Sharp is made through two classes :
-- [`Route`](../../Classes/Web/Route.php), which hold information about one route
-- [`Router`](../../Classes/Web/Router.php), which hold a set of `Route` objects and is able to route a [`Request`](../../Classes/Http/Request.php) object
+- [`Route`](../../src/Classes/Web/Route.php), which hold information about one route
+- [`Router`](../../src/Classes/Web/Router.php), which hold a set of `Route` objects and is able to route a [`Request`](../../src/Classes/Http/Request.php) object
 
 ## Routes creation
 

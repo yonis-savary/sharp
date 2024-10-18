@@ -2,7 +2,7 @@
 
 # 🔐 Authentication
 
-Sharp got the [`Authentication`](../../Classes/Security/Authentication.php) class to handle authentication
+Sharp got the [`Authentication`](../../src/Classes/Security/Authentication.php) class to handle authentication
 
 Authentication is made through a [Model](../data/database.md) that you can choose
 

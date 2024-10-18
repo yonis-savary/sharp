@@ -2,7 +2,7 @@
 
 # 🗂 App Utils (AppStorage, AppCache...)
 
-Traits inside [Sharp\Classes\Utils](../../Classes/Utils/) are designed
+Traits inside [Sharp\Classes\Utils](../../src/Classes/Utils/) are designed
 to help you through the making of your application
 
 Their goal is to provide some global data-container to your app, which are
@@ -24,10 +24,10 @@ Their goal is to provide some global data-container to your app, which are
 
 In this example, our `App` must have a special directory to store user profile pictures
 
-We can manually define a path and create a `Storage` object, 
+We can manually define a path and create a `Storage` object,
 or create a class that uses the `AppStorage` trait
 
-We can create this class by using the `create-storage` command 
+We can create this class by using the `create-storage` command
 
 ```bash
 php do create-storage ProfilePicture
@@ -39,10 +39,10 @@ namespace App\Classes\App\Storages;
 
 use YonisSavary\Sharp\Classes\Utils\AppStorage;
 
-class ProfilePicture 
+class ProfilePicture
 {
     use AppStorage;
-} 
+}
 ```
 
 To use this storage, call the `get` function of the trait, which returns a reference to the global instance of the storage

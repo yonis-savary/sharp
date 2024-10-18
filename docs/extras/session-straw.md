@@ -19,7 +19,7 @@ $permissions = $session->get(USER_PERMISSION);
 ```
 
 It is readable, but not very practical, we can do better,
-with the [`SessionStraw`](../../Classes/Extras/SessionStraw.php) trait
+with the [`SessionStraw`](../../src/Classes/Extras/SessionStraw.php) trait
 
 This trait is simply a way to transform a class into a global getter-setter that store its data to the session
 

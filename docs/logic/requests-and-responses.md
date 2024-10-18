@@ -2,7 +2,7 @@
 
 # 📨 Requests and Responses
 
-[`Request`](../../Classes/Http/Request.php) and [`Response`](../../Classes/Http/Response.php) classes are basics data structure to interact with input/output, both of them are made of getters/setters with a few additional features
+[`Request`](../../src/Classes/Http/Request.php) and [`Response`](../../src/Classes/Http/Response.php) classes are basics data structure to interact with input/output, both of them are made of getters/setters with a few additional features
 
 > [!NOTE]
 > In an effort to normalize header names,

@@ -3,7 +3,7 @@
 
 # Utils
 
-The [`Utils`](../../Core/Utils.php) class got some utilitaries method to simplify some tasks, here are some of it
+The [`Utils`](../../src/Core/Utils.php) class got some utilitaries method to simplify some tasks, here are some of it
 
 
 ```php

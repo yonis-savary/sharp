@@ -2,12 +2,12 @@
 
 # 💻 CLI Commands
 
-Sharp is shipped with the [`do`](../../Core/Server/do) script,
-which is a launcher for any [`Command`](../../Classes/CLI/Command.php) classes
+Sharp is shipped with the [`do`](../../src/Core/Server/do) script,
+which is a launcher for any [`Command`](../../src/Classes/CLI/Command.php) classes
 
 ## Create a command
 
-Creating a command is very simple, all you have to do is to create a file in your application (Preferably in a `Commands` directory) and create a class that extends [`Command`](../../Classes/CLI/Command.php)
+Creating a command is very simple, all you have to do is to create a file in your application (Preferably in a `Commands` directory) and create a class that extends [`Command`](../../src/Classes/CLI/Command.php)
 
 `SuperApp/Commands/ClearCaches.php`:
 ```php
@@ -43,7 +43,7 @@ And voilà !
 
 The args object represent the arguments given to your command through the cli (like `--verbose`, `--help`...etc)
 
-[`Args`](../../Classes/CLI/Args.php) most useful methods are :
+[`Args`](../../src/Classes/CLI/Args.php) most useful methods are :
 ```php
 # Return the parameter value or null if absent
 # public function get(string $short, string $long);

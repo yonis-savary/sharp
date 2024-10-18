@@ -2,7 +2,7 @@
 
 # ✅ CSRF
 
-The [`Csrf`](../../Classes/Security/Csrf.php) component allows you to use a [CSRF Token](https://owasp.org/www-community/attacks/csrf) in your application, its usage made through the component class or its helper functions
+The [`Csrf`](../../src/Classes/Security/Csrf.php) component allows you to use a [CSRF Token](https://owasp.org/www-community/attacks/csrf) in your application, its usage made through the component class or its helper functions
 
 ```php
 $csrf = Csrf::getInstance();
