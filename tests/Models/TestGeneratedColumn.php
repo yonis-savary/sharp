@@ -6,10 +6,10 @@ use YonisSavary\Sharp\Classes\Data\DatabaseField;
 use YonisSavary\Sharp\Classes\Data\AbstractModel;
 
 /**
- * @property int id
- * @property string name
- * @property int age
- * @property bool is_adult
+ * @property int id DEFINED BY `id INTEGER PRIMARY KEY AUTOINCREMENT`
+ * @property string name DEFINED BY `name VARCHAR(100) NOT NULL UNIQUE`
+ * @property int age DEFINED BY `age SMALLINT NOT NULL`
+ * @property bool is_adult DEFINED BY `is_adult BOOLEAN ALWAYS GENERATED AS (age >= 21)`
 */
 class TestGeneratedColumn extends AbstractModel
 {

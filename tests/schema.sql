@@ -34,6 +34,13 @@ CREATE TABLE test_generated_column (
     is_adult BOOLEAN ALWAYS GENERATED AS (age >= 21)
 );
 
+INSERT INTO test_user_data (fk_user, data)
+VALUES
+(1, 'Twin Peaks'),
+(1, 'Malcom In The Middle'),
+(1, 'Harry Potter'),
+(1, 'And stuff');
+
 INSERT INTO test_sample_data (name, birth_year)
 VALUES
 ('Alfred', 1899),

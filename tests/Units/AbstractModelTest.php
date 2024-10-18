@@ -2,17 +2,27 @@
 
 namespace YonisSavary\Sharp\Tests\Units;
 
+use PharIo\Manifest\RequiresElement;
 use PHPUnit\Framework\TestCase;
 use YonisSavary\Sharp\Classes\Data\AbstractModel;
 use YonisSavary\Sharp\Classes\Data\Database;
 use YonisSavary\Sharp\Classes\Data\ModelQuery;
 use YonisSavary\Sharp\Classes\Data\Model;
 use YonisSavary\Sharp\Classes\Data\DatabaseField;
+use YonisSavary\Sharp\Classes\Http\Request;
+use YonisSavary\Sharp\Classes\Web\Route;
+use YonisSavary\Sharp\Classes\Web\Router;
+use YonisSavary\Sharp\Tests\Models\TestSampleData;
 use YonisSavary\Sharp\Tests\Models\TestUser;
 use YonisSavary\Sharp\Tests\Models\TestUserData;
 
-class ModelTest extends TestCase
+class AbstractModelTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        resetTestDatabase();
+    }
+
     public static function getSampleModel()
     {
         return new class extends AbstractModel
@@ -135,6 +145,8 @@ class ModelTest extends TestCase
     public function test_insertArray()
     {
         $db = Database::getInstance();
+
+        debug($db->query("SELECT id FROM test_user_data"));
         $nextId = $db->query("SELECT MAX(id) + 1 as next FROM test_user_data")[0]["next"];
 
         $inserted = TestUserData::insertArray([
@@ -200,9 +212,7 @@ class ModelTest extends TestCase
 
     public function test_updateRow()
     {
-        TestUser::updateRow(1, [
-            "login" => "testupdaterow"
-        ]);
+        TestUser::updateRow(1, ["login" => "testupdaterow"]);
         $this->assertEquals("testupdaterow", TestUser::findId(1)->data->login);
     }
 
@@ -256,5 +266,25 @@ class ModelTest extends TestCase
 
         TestUserData::deleteWhere(["data" => "someDelete"]);
         $this->assertFalse(TestUserData::idExists($insertedId));
+    }
+
+
+    public function test_case_routerCanReturnModelData()
+    {
+        $router = new Router();
+        $router->addRoutes(
+            Route::get("/", fn() => TestUserData::select()->fetch())
+        );
+
+        $req = new Request("GET", "/");
+        $res = $router->route($req);
+
+        $res->logSelf();
+
+        $body = json_decode($res->getClientContent(), true);
+        $this->assertIsArray($body);
+
+        $this->assertNotNull($body[0]["data"]["fk_user"]);
+
     }
 }

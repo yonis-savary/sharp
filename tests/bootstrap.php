@@ -32,36 +32,23 @@ $defaultStorage = Storage::getInstance();
 Logger::setInstance(new Logger("test-suite.csv", $defaultStorage->getSubStorage("Logs")));
 
 $testStoragePath = __DIR__ ;
-
 Autoloader::loadApplication($testStoragePath);
 
 $testStorage = new Storage(Utils::relativePath("$testStoragePath/tmp_test_storage"));
-
 Storage::setInstance($testStorage);
 
 $testConfig = new Configuration(Utils::relativePath("$testStoragePath/config.json"));
-
 Configuration::getInstance()->merge($testConfig->dump());
 Cache::setInstance(new Cache($testStorage, "Cache"));
 
-$database = Database::getInstance();
-
-$schema = file_get_contents( __DIR__."/schema.sql");
-
-$schema = ObjectArray::fromExplode(";", $schema)
-->map(trim(...))
-->filter()
-->collect();
-
-foreach ($schema as $line)
-    $database->query($line);
+resetTestDatabase();
 
 $generator = ModelGenerator::getInstance();
 $generator->generateAll(Utils::relativePath($testStoragePath), 'YonisSavary\\Sharp\\Tests\\Models');
 
-/*
-    Remove every files in the Test Storage before deleting the directory
-*/
+/**
+ * Remove every files in the Test Storage before deleting the directory
+ */
 register_shutdown_function(function () use (&$testStorage){
 
     $files = array_reverse($testStorage->exploreDirectory(mode: Storage::ONLY_FILES));

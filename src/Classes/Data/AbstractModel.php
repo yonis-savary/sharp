@@ -4,6 +4,7 @@ namespace YonisSavary\Sharp\Classes\Data;
 
 use Exception;
 use InvalidArgumentException;
+use JsonSerializable;
 use stdClass;
 use YonisSavary\Sharp\Classes\Data\DatabaseField;
 use YonisSavary\Sharp\Core\Utils;
@@ -11,7 +12,7 @@ use YonisSavary\Sharp\Core\Utils;
 /**
  * Classes that uses `Model` represents tables from your Database
  */
-abstract class AbstractModel
+abstract class AbstractModel implements JsonSerializable
 {
     protected stdClass $originalData;
     protected stdClass $data;
@@ -87,6 +88,11 @@ abstract class AbstractModel
             $result[$key] = $model->toArray();
 
         return $result;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return $this->toArray();
     }
 
 
@@ -190,6 +196,7 @@ abstract class AbstractModel
      * @param array $conditions Column conditions as <column> => <value>
      * @param bool $recursive Explore foreign keys to fetch references
      * @param array $foreignKeyIgnores List of foreign keys to ignore while exploring model as "table&foreign_key_column"
+     * @return array<static> Array of result rows
      * @example base `Model::selectWhere(["id" => 309, "user" => 585])`
      */
     public static function selectWhere(array $conditions=[], bool $recursive=true, array $foreignKeyIgnores=[]): array
@@ -259,9 +266,9 @@ abstract class AbstractModel
      *
      * @param mixed $id Id to select
      * @param bool $explore Explore foreign keys to fetch references
-     * @return ?AbstractModel Matching row or `null`
+     * @return ?static Matching row or `null`
      */
-    public static function findId(mixed $id, bool $explore=true): ?AbstractModel
+    public static function findId(mixed $id, bool $explore=true): ?self
     {
         $self = get_called_class();
         return $self::findWhere([$self::getPrimaryKey() => $id], $explore);
@@ -273,9 +280,9 @@ abstract class AbstractModel
      * @param mixed $column Filter column
      * @param mixed $value Value to match
      * @param bool $explore Explore foreign keys to fetch references
-     * @return ?AbstractModel Matching row or `null`
+     * @return ?static Matching row or `null`
      */
-    public static function find(string $column, mixed $value, bool $explore=true): ?AbstractModel
+    public static function find(string $column, mixed $value, bool $explore=true): ?self
     {
         $self = get_called_class();
         return $self::findWhere([$column => $value], $explore);
@@ -287,10 +294,10 @@ abstract class AbstractModel
      *
      * @param array $conditions Column conditions as <column> => <value>
      * @param bool $explore Explore foreign keys to fetch references
-     * @return ?AbstractModel Matching row or `null`
+     * @return ?static Matching row or `null`
      * @example base `Model::findWhere(["id" => 309, "user" => 585])`
      */
-    public static function findWhere(array $conditions, bool $explore=true): ?AbstractModel
+    public static function findWhere(array $conditions, bool $explore=true): ?self
     {
         if (!Utils::isAssoc($conditions))
             throw new InvalidArgumentException('$conditions must be an associative array as <column> => <value>');

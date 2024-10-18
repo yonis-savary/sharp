@@ -6,11 +6,11 @@ use YonisSavary\Sharp\Classes\Data\DatabaseField;
 use YonisSavary\Sharp\Classes\Data\AbstractModel;
 
 /**
- * @property int id
- * @property string login
- * @property string password
- * @property string salt
- * @property bool blocked
+ * @property int id DEFINED BY `id INTEGER PRIMARY KEY AUTOINCREMENT`
+ * @property string login DEFINED BY `login VARCHAR(100) NOT NULL UNIQUE`
+ * @property string password DEFINED BY `password VARCHAR(100) NOT NULL`
+ * @property string salt DEFINED BY `salt VARCHAR(100) NOT NULL`
+ * @property bool blocked DEFINED BY `blocked BOOLEAN DEFAULT FALSE`
 */
 class TestUser extends AbstractModel
 {

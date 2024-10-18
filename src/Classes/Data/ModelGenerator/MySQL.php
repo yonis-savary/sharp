@@ -67,7 +67,7 @@ class MySQL extends GeneratorDriver
         if ($ref = $foreignKey[$field] ?? false)
             $type =  "\\" . $namespace . "\\" .  $this->sqlToPHPName($ref[0]);
 
-        return " * @property $type \$$field";
+        return " * @property $type \$$field DEFINED BY `".join(", ", array_values($fieldDescription))."`";
     }
 
     public function generate(string $table, string $targetApplication, string $modelNamespace=null): void

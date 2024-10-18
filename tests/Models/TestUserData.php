@@ -6,9 +6,9 @@ use YonisSavary\Sharp\Classes\Data\DatabaseField;
 use YonisSavary\Sharp\Classes\Data\AbstractModel;
 
 /**
- * @property int id
- * @property \YonisSavary\Sharp\Tests\Models\TestUser fk_user
- * @property string data
+ * @property int id DEFINED BY `id INTEGER PRIMARY KEY AUTOINCREMENT`
+ * @property \YonisSavary\Sharp\Tests\Models\TestUser fk_user DEFINED BY `fk_user INTEGER NOT NULL REFERENCES test_user(id) ON DELETE CASCADE`
+ * @property string data DEFINED BY `data VARCHAR(200)`
 */
 class TestUserData extends AbstractModel
 {

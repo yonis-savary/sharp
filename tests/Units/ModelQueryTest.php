@@ -8,11 +8,17 @@ use YonisSavary\Sharp\Classes\Data\AbstractModel;
 use YonisSavary\Sharp\Classes\Data\Classes\QueryField;
 use YonisSavary\Sharp\Classes\Data\Database;
 use YonisSavary\Sharp\Classes\Data\ModelQuery;
+use YonisSavary\Sharp\Tests\Models\TestSampleData;
 use YonisSavary\Sharp\Tests\Models\TestUser;
 use YonisSavary\Sharp\Tests\Models\TestUserData;
 
 class ModelQueryTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        resetTestDatabase();
+    }
+
     protected function assertBuiltQueryContains(ModelQuery $query, string $needle)
     {
         $built = preg_replace("/\s{2,}/", " ", str_replace("\n", " ", $query->build()));
@@ -186,7 +192,7 @@ class ModelQueryTest extends TestCase
 
     public function test_first()
     {
-        $q = TestUserData::select();
+        $q = TestSampleData::select();
 
         $this->assertInstanceOf(AbstractModel::class, $q->first());
 

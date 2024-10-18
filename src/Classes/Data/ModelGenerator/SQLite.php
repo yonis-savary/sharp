@@ -151,7 +151,7 @@ class SQLite extends GeneratorDriver
                 $descriptionType = "\\$namespace\\$refClassName";
             }
 
-            $this->currentDocumentation .= " * @property $descriptionType $fieldName\n";
+            $this->currentDocumentation .= " * @property $descriptionType $fieldName DEFINED BY `$sqlLine`\n";
 
             return [$fieldName, $field];
         }

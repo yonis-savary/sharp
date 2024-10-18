@@ -66,6 +66,22 @@ class Response
     }
 
     /**
+     * @return string The text content that shall be displayed to the client
+     */
+    public function getClientContent(): ?string
+    {
+        $toDisplay = $this->content;
+
+        if (str_starts_with($this->headers["content-type"] ?? "", 'application/json'))
+            $toDisplay = json_encode($toDisplay, JSON_THROW_ON_ERROR);
+
+        if ($callback = $this->responseTransformer)
+            $toDisplay = $callback($this, $this->content);
+
+        return $toDisplay;
+    }
+
+    /**
      * @return int HTTP Response code
      */
     public function getResponseCode(): int
@@ -173,15 +189,7 @@ class Response
                 header_remove($header);
         }
 
-        $toDisplay = $this->content;
-
-        if (str_starts_with($this->headers["content-type"] ?? "", 'application/json'))
-            $toDisplay = json_encode($toDisplay, JSON_THROW_ON_ERROR);
-
-        if ($callback = $this->responseTransformer)
-            $toDisplay = $callback($this, $this->content);
-
-        echo "$toDisplay";
+        echo $this->getClientContent();
     }
 
     /**
