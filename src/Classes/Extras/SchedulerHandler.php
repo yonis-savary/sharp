@@ -3,6 +3,7 @@
 namespace YonisSavary\Sharp\Classes\Extras;
 
 use DateTime;
+use Psr\Log\LoggerInterface;
 use Throwable;
 use YonisSavary\Sharp\Classes\Core\Logger;
 use YonisSavary\Sharp\Classes\Data\ObjectArray;
@@ -10,7 +11,7 @@ use YonisSavary\Sharp\Classes\Data\ObjectArray;
 class SchedulerHandler
 {
     public $callback;
-    protected ?Logger $logger = null;
+    protected ?LoggerInterface $logger = null;
 
     public function __construct(
         public string $identifier,
@@ -20,7 +21,7 @@ class SchedulerHandler
         $this->callback = $callback;
     }
 
-    public function getLogger(): Logger
+    public function getLogger(): LoggerInterface
     {
         if (!$this->logger)
         {
@@ -45,10 +46,8 @@ class SchedulerHandler
         }
         catch (Throwable $err)
         {
-            Logger::getInstance()->warning(
-                "Could not transform cron expression [".$this->cronExpression."] into a sentence",
-                $err
-            );
+            $this->logger->warning("Could not transform cron expression [{expression}] into a sentence", ["expression" => $this->cronExpression]);
+            $this->logger->warning($err);
         }
     }
 
@@ -73,7 +72,8 @@ class SchedulerHandler
         }
         catch (Throwable $err)
         {
-            $logger->error("Error while launching task", $err);
+            $logger->error("Error while launching task");
+            $logger->error($err);
         }
 
         if ($output = ob_get_clean())

@@ -55,7 +55,7 @@ class MagicOrderPrinter
 
     public function printOrder(int $orderId)
     {
-        $this->logger->info("Printing order $orderId");
+        $this->logger->info("Printing order {id}", ["id" => $orderId]);
         //...
     }
 }

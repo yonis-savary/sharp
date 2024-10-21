@@ -158,7 +158,7 @@ class Request
     public function logSelf(Logger $logger=null): void
     {
         $logger ??= Logger::getInstance();
-        $logger->info("Request: ". $this->getMethod() . " " . $this->getPath());
+        $logger->info("Request: {method} {path}", ["method" => $this->getMethod(), "path" => $this->getPath()]);
     }
 
     protected function getCleanUploadData(array $data): array
@@ -425,7 +425,7 @@ class Request
         {
             case "GET":
                 /* GET by default*/ ;
-                $logger->info("GET Params string = $getParams");
+                $logger->info("GET Params string = {params}", ["params" => $getParams]);
                 break;
             case "POST":
                 $logger->info("Using CURLOPT_POST");
@@ -441,7 +441,7 @@ class Request
                 curl_setopt($handle, CURLOPT_PUT, true);
                 break;
             default:
-                $logger->info("Setting CURLOPT_CUSTOMREQUEST to", $thisMethod);
+                $logger->info("Setting CURLOPT_CUSTOMREQUEST to {method}", ["method" => $thisMethod]);
                 curl_setopt($handle, CURLOPT_CUSTOMREQUEST, $thisMethod);
                 break;
         }
@@ -456,20 +456,21 @@ class Request
                 json_encode($thisPOST, JSON_THROW_ON_ERROR):
                 $thisPOST;
 
-            $logger->info("Setting CURLOPT_POSTFIELDS to", $postFields);
+            $logger->info("Setting CURLOPT_POSTFIELDS to");
+            $logger->info($postFields);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $postFields);
         }
 
         if ($timeout)
         {
-            $logger->info("Setting CURLOPT_CONNECTTIMEOUT, CURLOPT_TIMEOUT to " . $timeout);
+            $logger->info("Setting CURLOPT_CONNECTTIMEOUT, CURLOPT_TIMEOUT to {timeout}", ["timeout" => $timeout]);
             curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, $timeout);
             curl_setopt($handle, CURLOPT_TIMEOUT, $timeout);
         }
 
         if ($userAgent)
         {
-            $logger->info("Using 'user-agent'", $userAgent);
+            $logger->info("Using 'user-agent' : {useragent}", ["useragent" => $userAgent]);
             $headers['user-agent'] = $userAgent;
         }
 
@@ -477,7 +478,8 @@ class Request
         foreach ($headers as $key => &$value)
             $headersStrings[] = "$key: $value";
 
-        $logger->info("Setting CURLOPT_HTTPHEADER to", $headersStrings);
+        $logger->info("Setting CURLOPT_HTTPHEADER to");
+        $logger->info($headersStrings);
         curl_setopt($handle, CURLOPT_HTTPHEADER, $headersStrings);
 
         return $handle;
@@ -510,11 +512,11 @@ class Request
         }
 
         if (Utils::valueHasFlag($logFlags, self::DEBUG_REQUEST_BODY))
-            $logger->info(
-                "GET", $this->get(),
-                "POST", $this->post(),
-                "BODY", $this->body()
-            );
+        {
+            $logger->info("GET\n{get}",["get" => $this->get()]);
+            $logger->info("POST\n{post}",["post" => $this->post()]);
+            $logger->info("BODY\n{body}",["body" => $this->body()]);
+        }
 
         $startTime = hrtime(true);
         if (!($result = curl_exec($handle)))
@@ -527,18 +529,21 @@ class Request
         curl_close($handle);
 
         if (Utils::valueHasFlag($logFlags, self::DEBUG_RESPONSE_HEADERS))
-            $logger->info(sprintf("Got [$resStatus] with [%s] bytes of data", strlen($result)));
+            $logger->info("Got [{status}] with [{size}] bytes of data", ["status" => $resStatus, "size" => strlen($result)]);
 
         $resHeaders = substr($result, 0, $headerSize);
         $resHeaders = $this->parseHeaders($resHeaders);
         $resHeaders = array_change_key_case($resHeaders, CASE_LOWER);
 
         if (Utils::valueHasFlag($logFlags, self::DEBUG_RESPONSE_HEADERS))
-            $logger->info("Got Headers", $resHeaders);
+        {
+            $logger->info("Got Headers");
+            $logger->info($resHeaders);
+        }
 
         if ($supportRedirection && $nextURL = ($resHeaders['location'] ?? null))
         {
-            $logger->info("Got redirected to [$nextURL]");
+            $logger->info("Got redirected to [{url}]", ["url" => $nextURL]);
             $request = new self("GET", $nextURL);
             return $request->fetch(
                 $logger,
@@ -551,7 +556,10 @@ class Request
         $resBody = substr($result, $headerSize);
 
         if (Utils::valueHasFlag($logFlags, self::DEBUG_RESPONSE_BODY))
-            $logger->info("Got Body", $resBody);
+        {
+            $logger->info("Got Body");
+            $logger->info($resBody);
+        }
 
         if (str_starts_with($resHeaders['content-type'] ?? "", 'application/json') && $resBody)
         {

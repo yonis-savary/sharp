@@ -14,7 +14,8 @@ class CLIUtils
         if (php_sapi_name() === "cli")
             return print(join("", array_map(fn($x) => $x . "\n", $mixed)));
 
-        return Logger::getInstance()->info(...$mixed);
+        foreach ($mixed as $element)
+            Logger::getInstance()->info($element);
     }
 
     /**

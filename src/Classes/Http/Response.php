@@ -54,7 +54,10 @@ class Response
     public function logSelf(Logger $logger=null): void
     {
         $logger ??= Logger::getInstance();
-        $logger->info($this->responseCode . " ". ($this->headers["content-type"] ?? "Unknown MIME"));
+        $logger->info("{status} {mime}", [
+            "status" => $this->responseCode,
+            "mime" => $this->headers["content-type"] ?? "Unknown MIME"
+        ]);
     }
 
     /**

@@ -4,12 +4,14 @@ namespace YonisSavary\Sharp\Classes\Core;
 
 use InvalidArgumentException;
 use JsonException;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use YonisSavary\Sharp\Classes\Core\Component;
 use YonisSavary\Sharp\Classes\Env\Storage;
 use Throwable;
 use YonisSavary\Sharp\Classes\Http\Request;
 
-class Logger
+class Logger implements LoggerInterface
 {
     use Component;
 
@@ -99,6 +101,9 @@ class Logger
      */
     protected function toString(mixed $content): string
     {
+        if ($content instanceof Throwable)
+            return $this->getThrowableAsString($content);
+
         if (is_string($content) || is_numeric($content))
             return strval($content);
 
@@ -114,11 +119,8 @@ class Logger
 
     /**
      * Directly log a line(s) into the output stream
-     *
-     * @param string $level Log level, can be a custom one
-     * @param mixed ...$content Information/Objects to log (can be of any type)
      */
-    public function log(string $level, mixed ...$content): void
+    public function log($level, mixed $message, array $context=[]): void
     {
         if (!$this->stream)
             return;
@@ -130,102 +132,71 @@ class Logger
         $method = $currentRequest->getMethod();
         $now = date('Y-m-d H:i:s');
 
-        foreach ($content as $line)
-        {
-            if ($line instanceof Throwable)
-            {
-                $this->logThrowable($level, $line);
-                continue;
-            }
+        $message = $this->toString($message);
 
-            $lineString = $this->toString($line);
-            fputcsv($this->stream, [$now, $ip, $method, $level, $lineString], "\t");
+        foreach ($context as $key => $value)
+        {
+            $value = $this->toString($value);
+            $message = str_replace('{'.$key.'}', $value, $message);
         }
+
+        foreach (explode("\n", $message) as $line)
+            fputcsv($this->stream, [$now, $ip, $method, $level, $line], "\t");
     }
 
     /**
      * Log a throwable message into the output plus its trace
      * (Useful to debug a trace and/or errors)
      */
-    protected function logThrowable(string $level, Throwable $throwable): void
+    protected function getThrowableAsString(Throwable $throwable): string
     {
-        $this->log(
-            $level,
-            "Got an [". $throwable::class ."] Throwable: ". $throwable->getMessage(),
-            sprintf("#- %s(%s)", $throwable->getFile(), $throwable->getLine()),
-            ...explode("\n", $throwable->getTraceAsString())
-        );
+        return "Got an [". $throwable::class ."] Throwable: ". $throwable->getMessage() . "\n".
+            sprintf("#- %s(%s)", $throwable->getFile(), $throwable->getLine()) . "\n" .
+            $throwable->getTraceAsString();
     }
 
     /**
      * Log a "debug" level line
      * @param mixed ...$messages Information/Objects to log (can be of any type)
      */
-    public function debug(mixed ...$messages): void
+    public function debug(mixed $message, array $context=[]): void
     {
-        $this->log("debug", ...$messages);
+        $this->log(LogLevel::DEBUG, $message, $context);
     }
 
-    /**
-     * Log a "info" level line
-     * @param mixed ...$messages Information/Objects to log (can be of any type)
-     */
-    public function info(mixed ...$messages): void
+    public function info(mixed $message, array $context=[]): void
     {
-        $this->log("info", ...$messages);
+        $this->log(LogLevel::INFO, $message, $context);
     }
 
-    /**
-     * Log a "notice" level line
-     * @param mixed ...$messages Information/Objects to log (can be of any type)
-     */
-    public function notice(mixed ...$messages): void
+    public function notice(mixed $message, array $context=[]): void
     {
-        $this->log("notice", ...$messages);
+        $this->log(LogLevel::NOTICE, $message, $context);
     }
 
-    /**
-     * Log a "warning" level line
-     * @param mixed ...$messages Information/Objects to log (can be of any type)
-     */
-    public function warning(mixed ...$messages): void
+    public function warning(mixed $message, array $context=[]): void
     {
-        $this->log("warning", ...$messages);
+        $this->log(LogLevel::WARNING, $message, $context);
     }
 
-    /**
-     * Log a "error" level line
-     * @param mixed ...$messages Information/Objects to log (can be of any type)
-     */
-    public function error(mixed ...$messages): void
+    public function error(mixed $message, array $context=[]): void
     {
-        $this->log("error", ...$messages);
+        $this->log(LogLevel::ERROR, $message, $context);
     }
 
-    /**
-     * Log a "critical" level line
-     * @param mixed ...$messages Information/Objects to log (can be of any type)
-     */
-    public function critical(mixed ...$messages): void
+    public function critical(mixed $message, array $context=[]): void
     {
-        $this->log("critical", ...$messages);
+        $this->log(LogLevel::CRITICAL, $message, $context);
     }
 
-    /**
-     * Log a "alert" level line
-     * @param mixed ...$messages Information/Objects to log (can be of any type)
-     */
-    public function alert(mixed ...$messages): void
+    public function alert(mixed $message, array $context=[]): void
     {
-        $this->log("alert", ...$messages);
+        $this->log(LogLevel::ALERT, $message, $context);
     }
 
-    /**
-     * Log a "emergency" level line
-     * @param mixed ...$messages Information/Objects to log (can be of any type)
-     */
-    public function emergency(mixed ...$messages): void
+    public function emergency(mixed $message, array $context=[]): void
     {
-        $this->log("emergency", ...$messages);
+        $this->log(LogLevel::EMERGENCY, $message, $context);
     }
+
 }

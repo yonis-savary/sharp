@@ -50,7 +50,7 @@ class Scheduler
         $dateTimeString = $dateTime->format("Y-m-d H:i:s");
 
         $logger = new Logger("schedule/scheduler.csv");
-        $logger->info("Execution at $dateTimeString");
+        $logger->info("Execution at {datetime}", ["datetime" => $dateTimeString]);
 
         ObjectArray::fromArray(array_values($this->handlers))
         ->forEach(fn(SchedulerHandler $handler) => $handler->launchIfValid($dateTime));
