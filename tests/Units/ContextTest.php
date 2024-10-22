@@ -5,7 +5,7 @@ namespace YonisSavary\Sharp\Tests\Units;
 use PHPUnit\Framework\TestCase;
 use YonisSavary\Sharp\Classes\Core\Context;
 use YonisSavary\Sharp\Classes\Data\ObjectArray;
-use YonisSavary\Sharp\Tests\Components\TestComponent;
+use YonisSavary\Sharp\Tests\TestApp\Components\TestComponent;
 
 class ContextTest extends TestCase
 {

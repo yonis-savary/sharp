@@ -3,7 +3,7 @@
 namespace YonisSavary\Sharp\Tests\Units;
 
 use PHPUnit\Framework\TestCase;
-use YonisSavary\Sharp\Tests\Classes\TestUserId;
+use YonisSavary\Sharp\Tests\TestApp\Classes\TestUserId;
 
 class SessionStrawTest extends TestCase
 {

@@ -1,1 +1,0 @@
-{"database":{"driver":"sqlite","database":null},"authentication":{"model":"YonisSavary\\Sharp\\Tests\\Models\\TestUser","login-field":"login","password-field":"password","salt-field":"salt"}}

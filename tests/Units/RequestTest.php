@@ -83,11 +83,11 @@ class RequestTest extends TestCase
         $this->assertEquals(["content-type" => "application/json"], $req->getHeaders());
     }
 
-    public function test_buildFromGlobals()
+    public function test_fromGlobals()
     {
         $this->assertInstanceOf(
             Request::class,
-            Request::buildFromGlobals()
+            Request::fromGlobals()
         );
     }
 

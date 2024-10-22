@@ -103,6 +103,21 @@ class ResponseTest extends TestCase
 
         $response = new Response(null, 200);
         $this->assertTrue($response->isOK());
+
+        $response = new Response(null, 201);
+        $this->assertTrue($response->isOK());
+
+        $response = new Response(null, 203);
+        $this->assertTrue($response->isOK());
+    }
+
+    public function test_isJSON()
+    {
+        $response = Response::html("Hello");
+        $this->assertFalse($response->isJSON());
+
+        $response = Response::json("Hello");
+        $this->assertTrue($response->isJSON());
     }
 
     public function test_getHeader()

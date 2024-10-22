@@ -9,14 +9,14 @@ use YonisSavary\Sharp\Classes\Env\Configuration;
 use YonisSavary\Sharp\Classes\Env\Storage;
 use YonisSavary\Sharp\Core\Autoloader;
 use YonisSavary\Sharp\Core\Utils;
-use YonisSavary\Sharp\Tests\Classes\A;
-use YonisSavary\Sharp\Tests\Classes\AA;
-use YonisSavary\Sharp\Tests\Classes\AB;
-use YonisSavary\Sharp\Tests\Classes\B;
-use YonisSavary\Sharp\Tests\Classes\BA;
-use YonisSavary\Sharp\Tests\Classes\Interfaces\InterfaceA;
-use YonisSavary\Sharp\Tests\Classes\Interfaces\InterfaceB;
-use YonisSavary\Sharp\Tests\Classes\Traits\TraitA;
+use YonisSavary\Sharp\Tests\TestApp\Classes\A;
+use YonisSavary\Sharp\Tests\TestApp\Classes\AA;
+use YonisSavary\Sharp\Tests\TestApp\Classes\AB;
+use YonisSavary\Sharp\Tests\TestApp\Classes\B;
+use YonisSavary\Sharp\Tests\TestApp\Classes\BA;
+use YonisSavary\Sharp\Tests\TestApp\Classes\Interfaces\InterfaceA;
+use YonisSavary\Sharp\Tests\TestApp\Classes\Interfaces\InterfaceB;
+use YonisSavary\Sharp\Tests\TestApp\Classes\Traits\TraitA;
 
 class UtilsTest extends TestCase
 {

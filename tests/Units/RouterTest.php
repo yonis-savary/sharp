@@ -9,7 +9,7 @@ use YonisSavary\Sharp\Classes\Http\Request;
 use YonisSavary\Sharp\Classes\Http\Response;
 use YonisSavary\Sharp\Classes\Web\Route;
 use YonisSavary\Sharp\Classes\Web\Router;
-use YonisSavary\Sharp\Tests\Middlewares\RequestHasPostData;
+use YonisSavary\Sharp\Tests\TestApp\Middlewares\RequestHasPostData;
 
 class RouterTest extends TestCase
 {
@@ -132,6 +132,7 @@ class RouterTest extends TestCase
     public function test_issue_cached_same_path_different_methods()
     {
         $cache = new Cache(Storage::getInstance()->getSubStorage("test_router_issue_1"));
+        $cache->deleteAll();
 
         $router = new Router($cache);
         $router->setConfiguration(["cached" => true]);

@@ -7,8 +7,8 @@ use YonisSavary\Sharp\Classes\Http\Request;
 use YonisSavary\Sharp\Classes\Http\Response;
 use YonisSavary\Sharp\Classes\Web\Route;
 use YonisSavary\Sharp\Core\Utils;
-use YonisSavary\Sharp\Tests\Classes\MiddlewareA;
-use YonisSavary\Sharp\Tests\Classes\MiddlewareB;
+use YonisSavary\Sharp\Tests\TestApp\Classes\MiddlewareA;
+use YonisSavary\Sharp\Tests\TestApp\Classes\MiddlewareB;
 
 class RouteTest extends TestCase
 {
@@ -124,7 +124,7 @@ class RouteTest extends TestCase
 
     public function test_file()
     {
-        $relPath = "tests/Classes/A.php";
+        $relPath = "TestApp/Classes/A.php";
         $absPath = Utils::relativePath($relPath);
 
         $route = Route::file("/my-file", $relPath);

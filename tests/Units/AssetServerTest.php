@@ -25,8 +25,8 @@ class AssetServerTest extends TestCase
     {
         $s = $this->getNewAssetServer();
 
-        $script = Utils::relativePath("/tests/Assets/sharp-tests/sharp-tests-script.js");
-        $style = Utils::relativePath("/tests/Assets/sharp-tests/sharp-tests-style.css");
+        $script = Utils::relativePath("/TestApp/Assets/sharp-tests/sharp-tests-script.js");
+        $style = Utils::relativePath("/TestApp/Assets/sharp-tests/sharp-tests-style.css");
 
         $this->assertEquals($script, $s->findAsset("sharp-tests-script.js"));
         $this->assertEquals($style, $s->findAsset("sharp-tests-style.css"));

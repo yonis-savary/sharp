@@ -8,9 +8,9 @@ use YonisSavary\Sharp\Classes\Data\AbstractModel;
 use YonisSavary\Sharp\Classes\Data\Classes\QueryField;
 use YonisSavary\Sharp\Classes\Data\Database;
 use YonisSavary\Sharp\Classes\Data\ModelQuery;
-use YonisSavary\Sharp\Tests\Models\TestSampleData;
-use YonisSavary\Sharp\Tests\Models\TestUser;
-use YonisSavary\Sharp\Tests\Models\TestUserData;
+use YonisSavary\Sharp\Tests\TestApp\Models\TestSampleData;
+use YonisSavary\Sharp\Tests\TestApp\Models\TestUser;
+use YonisSavary\Sharp\Tests\TestApp\Models\TestUserData;
 
 class ModelQueryTest extends TestCase
 {

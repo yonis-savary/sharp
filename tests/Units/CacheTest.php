@@ -92,6 +92,25 @@ class CacheTest extends TestCase
         $this->assertNull($cache->get("key"));
     }
 
+    public function test_deleteAll()
+    {
+        $cache = $this->getDummyCache();
+
+        $cache->set("key-A", "A");
+        $cache->set("key-B", "A");
+        $cache->set("key-C", "A");
+        $this->assertCount(3, $cache->getKeys());
+
+        $cache->delete("key-A");
+        $this->assertCount(2, $cache->getKeys());
+
+        $cache->deleteAll();
+        $this->assertCount(0, $cache->getKeys());
+
+        $cache->set("key-D", "A");
+        $this->assertCount(1, $cache->getKeys());
+    }
+
     public function test_expire()
     {
         $storage = Storage::getInstance();

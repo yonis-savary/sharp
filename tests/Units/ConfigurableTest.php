@@ -4,7 +4,7 @@ namespace YonisSavary\Sharp\Tests\Units;
 
 use PHPUnit\Framework\TestCase;
 use YonisSavary\Sharp\Classes\Env\Configuration;
-use YonisSavary\Sharp\Tests\Classes\DummyConfigurable;
+use YonisSavary\Sharp\Tests\TestApp\Classes\DummyConfigurable;
 
 class ConfigurableTest extends TestCase
 {

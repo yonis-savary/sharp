@@ -12,9 +12,9 @@ use YonisSavary\Sharp\Classes\Data\DatabaseField;
 use YonisSavary\Sharp\Classes\Http\Request;
 use YonisSavary\Sharp\Classes\Web\Route;
 use YonisSavary\Sharp\Classes\Web\Router;
-use YonisSavary\Sharp\Tests\Models\TestSampleData;
-use YonisSavary\Sharp\Tests\Models\TestUser;
-use YonisSavary\Sharp\Tests\Models\TestUserData;
+use YonisSavary\Sharp\Tests\TestApp\Models\TestSampleData;
+use YonisSavary\Sharp\Tests\TestApp\Models\TestUser;
+use YonisSavary\Sharp\Tests\TestApp\Models\TestUserData;
 
 class AbstractModelTest extends TestCase
 {

@@ -5,7 +5,7 @@ namespace YonisSavary\Sharp\Tests\Units;
 use PHPUnit\Framework\TestCase;
 use YonisSavary\Sharp\Classes\CLI\Args;
 use YonisSavary\Sharp\Classes\CLI\Command;
-use YonisSavary\Sharp\Tests\Commands\DummyCommand;
+use YonisSavary\Sharp\Tests\TestApp\Commands\DummyCommand;
 
 class CommandTest extends TestCase
 {
@@ -17,13 +17,13 @@ class CommandTest extends TestCase
     public function test_getOrigin()
     {
         $command = $this->getDummyCommand();
-        $this->assertEquals("tests", $command->getOrigin());
+        $this->assertEquals("test-app", $command->getOrigin());
     }
 
     public function test_getIdentifier()
     {
         $command = $this->getDummyCommand();
-        $this->assertEquals("tests@dummy-command", $command->getIdentifier());
+        $this->assertEquals("test-app@dummy-command", $command->getIdentifier());
     }
 
     public function test_getName()
@@ -46,7 +46,7 @@ class CommandTest extends TestCase
         $command(new Args());
         $output = ob_get_clean();
 
-        $this->assertEquals("Hello", $output);
+        $this->assertEquals("Hello\n", $output);
     }
 
     public function test_execute()
@@ -55,6 +55,6 @@ class CommandTest extends TestCase
         DummyCommand::execute();
         $output = ob_get_clean();
 
-        $this->assertEquals("Hello", $output);
+        $this->assertEquals("Hello\n", $output);
     }
 }

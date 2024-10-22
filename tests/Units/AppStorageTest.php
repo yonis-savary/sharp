@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 namespace YonisSavary\Sharp\Tests\Units;
 
 use PHPUnit\Framework\TestCase;
-use YonisSavary\Sharp\Tests\Classes\AppStorageA;
-use YonisSavary\Sharp\Tests\Classes\AppStorageB;
+use YonisSavary\Sharp\Tests\TestApp\Classes\AppStorageA;
+use YonisSavary\Sharp\Tests\TestApp\Classes\AppStorageB;
 
 class AppStorageTest extends TestCase
 {

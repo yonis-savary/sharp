@@ -12,7 +12,7 @@ class RendererTest extends TestCase
     {
         $r = Renderer::getInstance();
 
-        $expectedPath = Utils::relativePath("/tests/Views/sharp-tests/sharp-tests-child.php");
+        $expectedPath = Utils::relativePath("/TestApp/Views/sharp-tests/sharp-tests-child.php");
 
         $this->assertEquals($expectedPath, $r->findTemplate("sharp-tests-child"));
         $this->assertEquals($expectedPath, $r->findTemplate("sharp-tests/sharp-tests-child"));

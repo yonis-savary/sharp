@@ -2,20 +2,18 @@
 
 use YonisSavary\Sharp\Classes\Core\EventListener;
 use YonisSavary\Sharp\Classes\Core\Logger;
-use YonisSavary\Sharp\Classes\Data\Database;
 use YonisSavary\Sharp\Classes\Data\ModelGenerator\ModelGenerator;
-use YonisSavary\Sharp\Classes\Data\ObjectArray;
 use YonisSavary\Sharp\Classes\Env\Cache;
 use YonisSavary\Sharp\Classes\Env\Configuration;
 use YonisSavary\Sharp\Classes\Env\Storage;
+use YonisSavary\Sharp\Classes\Test\SharpServer;
 use YonisSavary\Sharp\Core\Autoloader;
 use YonisSavary\Sharp\Core\Utils;
 
-$GLOBALS["sharp-root"] = realpath(".");
-$GLOBALS["sharp-src"] = realpath( __DIR__ . "/../src");
+$GLOBALS["sharp-root"] = realpath(__DIR__);
+$GLOBALS["sharp-src"] = realpath(__DIR__ . "/../src");
 
 require_once __DIR__ . "/../vendor/autoload.php";
-require_once __DIR__ . "/../src/bootstrap.php";
 
 /*
 
@@ -28,37 +26,36 @@ The goal is to make a good envrionment to Test (with Database, Configuration...e
 
 EventListener::removeInstance();
 
-$defaultStorage = Storage::getInstance();
-Logger::setInstance(new Logger("test-suite.csv", $defaultStorage->getSubStorage("Logs")));
+$testLogger = new Logger("test-suite.csv", new Storage(__DIR__));
+Logger::setInstance($testLogger);
 
-$testStoragePath = __DIR__ ;
+$testLogger->info("Starting test suite");
+$testLogger->info("Sharp root directory : {dir}", ["dir" => $GLOBALS["sharp-root"]]);
+$testLogger->info("Sharp src directory : {dir}", ["dir" => $GLOBALS["sharp-src"]]);
+
+$testStoragePath = __DIR__ . "/TestApp" ;
 Autoloader::loadApplication($testStoragePath);
 
-$testStorage = new Storage(Utils::relativePath("$testStoragePath/tmp_test_storage"));
+$testStorage = new Storage(Utils::relativePath( __DIR__ ."/Storage"));
 Storage::setInstance($testStorage);
 
-$testConfig = new Configuration(Utils::relativePath("$testStoragePath/config.json"));
+$testConfig = new Configuration(Utils::relativePath(__DIR__ . "/sharp.json"));
 Configuration::getInstance()->merge($testConfig->dump());
 Cache::setInstance(new Cache($testStorage, "Cache"));
 
 resetTestDatabase();
 
 $generator = ModelGenerator::getInstance();
-$generator->generateAll(Utils::relativePath($testStoragePath), 'YonisSavary\\Sharp\\Tests\\Models');
+$generator->generateAll(Utils::relativePath($testStoragePath), 'YonisSavary\\Sharp\\Tests\\TestApp\\Models');
 
-/**
- * Remove every files in the Test Storage before deleting the directory
- */
-register_shutdown_function(function () use (&$testStorage){
 
-    $files = array_reverse($testStorage->exploreDirectory(mode: Storage::ONLY_FILES));
-    $dirs = array_reverse($testStorage->exploreDirectory(mode: Storage::ONLY_DIRS));
+register_shutdown_function(function(){
+    if (!SharpServer::hasInstance())
+        return;
 
-    foreach ($files as $file)
-        $testStorage->unlink($file);
+    $server = SharpServer::getInstance();
 
-    foreach ($dirs as $directory)
-        $testStorage->removeDirectory($directory);
-
-    $testStorage->removeDirectory($testStorage->getRoot());
+    $logger = Logger::getInstance();
+    $logger->info($server->getOutput());
+    $logger->info($server->getErrorOutput());
 });

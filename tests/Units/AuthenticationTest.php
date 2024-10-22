@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use YonisSavary\Sharp\Classes\Core\EventListener;
 use YonisSavary\Sharp\Classes\Events\AuthenticatedUser;
 use YonisSavary\Sharp\Classes\Security\Authentication;
-use YonisSavary\Sharp\Tests\Models\TestUser;
+use YonisSavary\Sharp\Tests\TestApp\Models\TestUser;
 
 class AuthenticationTest extends TestCase
 {

@@ -9,7 +9,7 @@ use YonisSavary\Sharp\Classes\Http\Request;
 use YonisSavary\Sharp\Classes\Data\Database;
 use YonisSavary\Sharp\Classes\Extras\Autobahn;
 use YonisSavary\Sharp\Classes\Web\Router;
-use YonisSavary\Sharp\Tests\Models\TestUserData;
+use YonisSavary\Sharp\Tests\TestApp\Models\TestUserData;
 use YonisSavary\Sharp\Classes\Events\AutobahnEvents\AutobahnCreateBefore;
 use YonisSavary\Sharp\Classes\Events\AutobahnEvents\AutobahnCreateAfter;
 use YonisSavary\Sharp\Classes\Events\AutobahnEvents\AutobahnMultipleCreateBefore;
