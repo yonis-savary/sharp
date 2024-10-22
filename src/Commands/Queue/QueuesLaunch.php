@@ -3,11 +3,11 @@
 namespace YonisSavary\Sharp\Commands\Queue;
 
 use YonisSavary\Sharp\Classes\CLI\Args;
-use YonisSavary\Sharp\Classes\CLI\Command;
+use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 use YonisSavary\Sharp\Core\Autoloader;
 use YonisSavary\Sharp\Classes\Extras\QueueHandler;
 
-class QueuesLaunch extends Command
+class QueuesLaunch extends AbstractCommand
 {
     public function getHelp(): string
     {

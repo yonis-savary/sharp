@@ -3,10 +3,10 @@
 namespace YonisSavary\Sharp\Commands\Schedule;
 
 use YonisSavary\Sharp\Classes\CLI\Args;
-use YonisSavary\Sharp\Classes\CLI\Command;
+use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 use YonisSavary\Sharp\Classes\Extras\Scheduler;
 
-class SchedulerLaunch extends Command
+class SchedulerLaunch extends AbstractCommand
 {
     public function __invoke(Args $args)
     {

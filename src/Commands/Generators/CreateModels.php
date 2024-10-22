@@ -3,11 +3,11 @@
 namespace YonisSavary\Sharp\Commands\Generators;
 
 use YonisSavary\Sharp\Classes\CLI\Args;
-use YonisSavary\Sharp\Classes\CLI\Command;
+use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 use YonisSavary\Sharp\Classes\CLI\Terminal;
 use YonisSavary\Sharp\Classes\Data\ModelGenerator\ModelGenerator;
 
-class CreateModels extends Command
+class CreateModels extends AbstractCommand
 {
     public function getHelp(): string
     {

@@ -14,9 +14,9 @@ Creating a command is very simple, all you have to do is to create a file in you
 namespace SuperApp\Commands;
 
 use YonisSavary\Sharp\Classes\CLI\Args;
-use YonisSavary\Sharp\Classes\CLI\Command;
+use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 
-class ClearCaches extends Command
+class ClearCaches extends AbstractCommand
 {
     public function __invoke(Args $args)
     {

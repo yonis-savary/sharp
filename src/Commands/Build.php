@@ -4,10 +4,10 @@ namespace YonisSavary\Sharp\Commands;
 
 use YonisSavary\Sharp\Classes\CLI\AbstractBuildTask;
 use YonisSavary\Sharp\Classes\CLI\Args;
-use YonisSavary\Sharp\Classes\CLI\Command;
+use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 use YonisSavary\Sharp\Core\Autoloader;
 
-class Build extends Command
+class Build extends AbstractCommand
 {
     public function getHelp(): string
     {

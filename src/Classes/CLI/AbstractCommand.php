@@ -6,7 +6,7 @@ namespace YonisSavary\Sharp\Classes\CLI;
  * Command classes can be executed through the CLI,
  * the only method you have to override is `__invoke()` and `getHelp()`
  */
-abstract class Command extends CLIUtils
+abstract class AbstractCommand extends CLIUtils
 {
     final public function getOrigin(): string
     {

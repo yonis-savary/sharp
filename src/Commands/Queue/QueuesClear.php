@@ -3,12 +3,12 @@
 namespace YonisSavary\Sharp\Commands\Queue;
 
 use YonisSavary\Sharp\Classes\CLI\Args;
-use YonisSavary\Sharp\Classes\CLI\Command;
+use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 use YonisSavary\Sharp\Classes\CLI\Terminal;
 use YonisSavary\Sharp\Classes\Extras\QueueHandler;
 use YonisSavary\Sharp\Core\Autoloader;
 
-class QueuesClear extends Command
+class QueuesClear extends AbstractCommand
 {
     public function getHelp(): string
     {

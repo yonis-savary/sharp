@@ -3,7 +3,6 @@
 namespace YonisSavary\Sharp\Classes\CLI;
 
 use YonisSavary\Sharp\Classes\CLI\Args;
-use YonisSavary\Sharp\Classes\CLI\Command;
 use YonisSavary\Sharp\Classes\Core\Component;
 use YonisSavary\Sharp\Classes\Core\EventListener;
 use YonisSavary\Sharp\Classes\Data\ObjectArray;
@@ -16,23 +15,23 @@ class Console extends CLIUtils
     use Component;
 
     /**
-     * @return array<Command>
+     * @return array<AbstractCommand>
      */
     public static function listCommands(): array
     {
-        return ObjectArray::fromArray(Autoloader::classesThatExtends(Command::class))
+        return ObjectArray::fromArray(Autoloader::classesThatExtends(AbstractCommand::class))
         ->map(fn($x) => new $x())
-        ->filter(fn(Command $x) => $x->getOrigin() != "tests")
+        ->filter(fn(AbstractCommand $x) => $x->getOrigin() != "tests")
         ->collect();
     }
 
     /**
-     * @return array<Command>
+     * @return array<AbstractCommand>
      */
     public function findCommands(string $identifier): array
     {
         return ObjectArray::fromArray(self::listCommands())
-        ->filter(fn (Command $command) => in_array($identifier, [$command->getName(), $command->getIdentifier()]))
+        ->filter(fn (AbstractCommand $command) => in_array($identifier, [$command->getName(), $command->getIdentifier()]))
         ->collect();
     }
 

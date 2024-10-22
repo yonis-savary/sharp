@@ -3,12 +3,12 @@
 namespace YonisSavary\Sharp\Commands\Schedule;
 
 use YonisSavary\Sharp\Classes\CLI\Args;
-use YonisSavary\Sharp\Classes\CLI\Command;
+use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 use YonisSavary\Sharp\Classes\Data\ObjectArray;
 use YonisSavary\Sharp\Classes\Extras\Scheduler;
 use YonisSavary\Sharp\Classes\Extras\SchedulerHandler;
 
-class SchedulerList extends Command
+class SchedulerList extends AbstractCommand
 {
     public function __invoke(Args $args)
     {

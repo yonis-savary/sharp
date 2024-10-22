@@ -3,7 +3,7 @@
 namespace YonisSavary\Sharp\Commands\Generators;
 
 use YonisSavary\Sharp\Classes\CLI\Args;
-use YonisSavary\Sharp\Classes\CLI\Command;
+use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 use YonisSavary\Sharp\Classes\CLI\Terminal;
 use YonisSavary\Sharp\Classes\Env\Storage;
 use YonisSavary\Sharp\Classes\Http\Request;
@@ -12,7 +12,7 @@ use YonisSavary\Sharp\Classes\Web\Controller;
 use YonisSavary\Sharp\Classes\Web\MiddlewareInterface;
 use YonisSavary\Sharp\Core\Utils;
 
-class CreateMiddleware extends Command
+class CreateMiddleware extends AbstractCommand
 {
     use Controller;
 

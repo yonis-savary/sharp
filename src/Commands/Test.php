@@ -3,11 +3,11 @@
 namespace YonisSavary\Sharp\Commands;
 
 use YonisSavary\Sharp\Classes\CLI\Args;
-use YonisSavary\Sharp\Classes\CLI\Command;
+use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 use YonisSavary\Sharp\Classes\Env\Configuration;
 use YonisSavary\Sharp\Core\Utils;
 
-class Test extends Command
+class Test extends AbstractCommand
 {
     public function getHelp(): string
     {

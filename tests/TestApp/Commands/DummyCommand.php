@@ -3,9 +3,9 @@
 namespace YonisSavary\Sharp\Tests\TestApp\Commands;
 
 use YonisSavary\Sharp\Classes\CLI\Args;
-use YonisSavary\Sharp\Classes\CLI\Command;
+use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 
-class DummyCommand extends Command
+class DummyCommand extends AbstractCommand
 {
     public function __invoke(Args $args)
     {

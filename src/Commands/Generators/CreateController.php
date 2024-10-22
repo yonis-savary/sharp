@@ -3,14 +3,14 @@
 namespace YonisSavary\Sharp\Commands\Generators;
 
 use YonisSavary\Sharp\Classes\CLI\Args;
-use YonisSavary\Sharp\Classes\CLI\Command;
+use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 use YonisSavary\Sharp\Classes\CLI\Terminal;
 use YonisSavary\Sharp\Classes\Env\Storage;
 use YonisSavary\Sharp\Classes\Web\Controller;
 use YonisSavary\Sharp\Classes\Web\Router;
 use YonisSavary\Sharp\Core\Utils;
 
-class CreateController extends Command
+class CreateController extends AbstractCommand
 {
     use Controller;
 

@@ -3,13 +3,13 @@
 namespace YonisSavary\Sharp\Commands\Cache;
 
 use YonisSavary\Sharp\Classes\CLI\Args;
-use YonisSavary\Sharp\Classes\CLI\Command;
+use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 use YonisSavary\Sharp\Classes\Env\Cache;
 use YonisSavary\Sharp\Classes\Env\Classes\CacheElement;
 use YonisSavary\Sharp\Classes\Env\Storage;
 use YonisSavary\Sharp\Core\Utils;
 
-class CacheClear extends Command
+class CacheClear extends AbstractCommand
 {
     public function getHelp(): string
     {

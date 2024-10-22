@@ -3,12 +3,12 @@
 namespace YonisSavary\Sharp\Commands\Configuration;
 
 use YonisSavary\Sharp\Classes\CLI\Args;
-use YonisSavary\Sharp\Classes\CLI\Command;
+use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 use YonisSavary\Sharp\Classes\Env\Configuration;
 use YonisSavary\Sharp\Core\Autoloader;
 use YonisSavary\Sharp\Classes\Core\Configurable;
 
-class CreateConfiguration extends Command
+class CreateConfiguration extends AbstractCommand
 {
     public function getHelp(): string
     {

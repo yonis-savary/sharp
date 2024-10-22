@@ -3,10 +3,10 @@
 namespace YonisSavary\Sharp\Commands\Cache;
 
 use YonisSavary\Sharp\Classes\CLI\Args;
-use YonisSavary\Sharp\Classes\CLI\Command;
+use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 use YonisSavary\Sharp\Core\Autoloader;
 
-class CacheAutoload extends Command
+class CacheAutoload extends AbstractCommand
 {
     public function getHelp(): string
     {

@@ -3,12 +3,12 @@
 namespace YonisSavary\Sharp\Commands\Generators;
 
 use YonisSavary\Sharp\Classes\CLI\Args;
-use YonisSavary\Sharp\Classes\CLI\Command;
+use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 use YonisSavary\Sharp\Classes\CLI\Terminal;
 use YonisSavary\Sharp\Classes\Env\Configuration;
 use YonisSavary\Sharp\Core\Utils;
 
-class CreateApplication extends Command
+class CreateApplication extends AbstractCommand
 {
     public function createApplication(string $appName)
     {

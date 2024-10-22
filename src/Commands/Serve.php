@@ -3,9 +3,9 @@
 namespace YonisSavary\Sharp\Commands;
 
 use YonisSavary\Sharp\Classes\CLI\Args;
-use YonisSavary\Sharp\Classes\CLI\Command;
+use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 
-class Serve extends Command
+class Serve extends AbstractCommand
 {
     public function getHelp(): string
     {

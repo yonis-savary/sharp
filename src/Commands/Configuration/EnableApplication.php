@@ -3,13 +3,13 @@
 namespace YonisSavary\Sharp\Commands\Configuration;
 
 use YonisSavary\Sharp\Classes\CLI\Args;
-use YonisSavary\Sharp\Classes\CLI\Command;
+use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 use YonisSavary\Sharp\Classes\CLI\Terminal;
 use YonisSavary\Sharp\Classes\Data\ObjectArray;
 use YonisSavary\Sharp\Classes\Env\Configuration;
 use YonisSavary\Sharp\Commands\Build;
 
-class EnableApplication extends Command
+class EnableApplication extends AbstractCommand
 {
     public function getHelp(): string
     {

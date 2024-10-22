@@ -3,11 +3,11 @@
 namespace YonisSavary\Sharp\Commands;
 
 use YonisSavary\Sharp\Classes\CLI\Args;
-use YonisSavary\Sharp\Classes\CLI\Command;
+use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 use YonisSavary\Sharp\Classes\CLI\Console;
 use YonisSavary\Sharp\Classes\Data\ObjectArray;
 
-class Help extends Command
+class Help extends AbstractCommand
 {
     public function getHelp(): string
     {
@@ -18,7 +18,7 @@ class Help extends Command
     {
         /** @var array<Command> $commands */
         $commands = ObjectArray::fromArray(Console::listCommands())
-        ->sortByKey(fn(Command $command) => $command->getName())
+        ->sortByKey(fn(AbstractCommand $command) => $command->getName())
         ->collect();
 
         $maxLength = [

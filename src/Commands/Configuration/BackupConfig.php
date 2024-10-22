@@ -3,11 +3,11 @@
 namespace YonisSavary\Sharp\Commands\Configuration;
 
 use YonisSavary\Sharp\Classes\CLI\Args;
-use YonisSavary\Sharp\Classes\CLI\Command;
+use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 use YonisSavary\Sharp\Classes\Env\Storage;
 use YonisSavary\Sharp\Core\Utils;
 
-class BackupConfig extends Command
+class BackupConfig extends AbstractCommand
 {
     public function __invoke(Args $args)
     {

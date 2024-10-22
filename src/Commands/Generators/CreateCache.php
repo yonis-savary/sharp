@@ -3,13 +3,13 @@
 namespace YonisSavary\Sharp\Commands\Generators;
 
 use YonisSavary\Sharp\Classes\CLI\Args;
-use YonisSavary\Sharp\Classes\CLI\Command;
+use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 use YonisSavary\Sharp\Classes\CLI\Terminal;
 use YonisSavary\Sharp\Classes\Env\Storage;
 use YonisSavary\Sharp\Classes\Utils\AppCache;
 use YonisSavary\Sharp\Core\Utils;
 
-class CreateCache extends Command
+class CreateCache extends AbstractCommand
 {
     public function __invoke(Args $args)
     {

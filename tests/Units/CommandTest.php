@@ -4,12 +4,12 @@ namespace YonisSavary\Sharp\Tests\Units;
 
 use PHPUnit\Framework\TestCase;
 use YonisSavary\Sharp\Classes\CLI\Args;
-use YonisSavary\Sharp\Classes\CLI\Command;
+use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 use YonisSavary\Sharp\Tests\TestApp\Commands\DummyCommand;
 
 class CommandTest extends TestCase
 {
-    protected function getDummyCommand(): Command
+    protected function getDummyCommand(): AbstractCommand
     {
         return new DummyCommand();
     }

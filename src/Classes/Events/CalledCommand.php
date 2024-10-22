@@ -2,7 +2,7 @@
 
 namespace YonisSavary\Sharp\Classes\Events;
 
-use YonisSavary\Sharp\Classes\CLI\Command;
+use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 use YonisSavary\Sharp\Classes\Core\AbstractEvent;
 
 /**
@@ -11,7 +11,7 @@ use YonisSavary\Sharp\Classes\Core\AbstractEvent;
 class CalledCommand extends AbstractEvent
 {
     public function __construct(
-        public Command $command,
+        public AbstractCommand $command,
         public mixed $returnedValue = null
     ) {}
 }
