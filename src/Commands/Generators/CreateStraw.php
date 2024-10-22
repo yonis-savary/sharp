@@ -13,7 +13,7 @@ class CreateStraw extends Command
     protected function createStraw(string $name, string $app)
     {
         if (!preg_match("/^[A-Z][a-zA-Z0-9]*$/", $name))
-            return print("Given straw name must be in PascalCase\n");
+            return $this->log("Given straw name must be in PascalCase");
 
         $directory = Utils::joinPath($app, "Classes/Straws");
         $file = Utils::joinPath($directory, $name. ".php");
@@ -21,7 +21,7 @@ class CreateStraw extends Command
         $namespace = Utils::pathToNamespace($directory);
 
         if (file_exists($file))
-            return print("[$file] file already exists !\n");
+            return $this->log("[$file] file already exists !");
 
         if (!is_dir($directory))
             mkdir($directory, recursive: true);
@@ -39,7 +39,7 @@ class CreateStraw extends Command
         }
         ", 2));
 
-        return print("File created at [$file]\n");
+        return $this->log("File created at [$file]");
     }
 
     public function __invoke(Args $args)

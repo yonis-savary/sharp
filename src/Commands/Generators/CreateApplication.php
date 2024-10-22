@@ -13,14 +13,14 @@ class CreateApplication extends Command
     public function createApplication(string $appName)
     {
         if (!preg_match("/^(\/?[A-Z][a-zA-Z0-9]*)+$/", $appName))
-            return print("Given app name must be made of PascalName words (can be separated by '/')\n");
+            return $this->log("Given app name must be made of PascalName words (can be separated by '/')");
 
         $appDirectory = Utils::relativePath($appName);
 
         if (is_dir($appDirectory))
-            return print("[$appName] already exists\n");
+            return $this->log("[$appName] already exists");
 
-        print("Making [$appName]\n");
+        $this->log("Making [$appName]");
         mkdir($appName, recursive:true);
     }
 
@@ -34,7 +34,7 @@ class CreateApplication extends Command
         foreach($values as $app)
             $this->createApplication($app);
 
-        print("Enabling new applications\n");
+        $this->log("Enabling new applications");
 
         $config = new Configuration(Configuration::DEFAULT_FILENAME);
         $config->edit("applications", function($applications) use ($values) {

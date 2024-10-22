@@ -16,7 +16,7 @@ In most cases, you won't have the need to create a Request
 
 ```php
 // Build from PHP Global variables
-$request = Request::buildFromGlobals();
+$request = Request::fromGlobals();
 
 // Manually build a response
 // $get, $post, $headers must be associative

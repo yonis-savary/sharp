@@ -34,9 +34,9 @@ class CreateConfiguration extends Command
 
             $invalidKeys = array_diff(array_keys($actual), array_keys($default));
 
-            echo "Merging $configKey configuration...\n";
+            $this->log("Merging $configKey configuration...");
             foreach ($invalidKeys as $key)
-                echo " - Unsupported key [$key]\n";
+                $this->log(" - Unsupported key [$key]");
         }
 
         $config->save();

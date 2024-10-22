@@ -16,16 +16,16 @@ class Serve extends Command
     {
         $port = intval($args->values()[0] ?? 8000);
 
-        echo join("\n", [
+        $this->log(
             "",
-            "Serving on port $port (http://localhost:$port)...\n",
+            "Serving on port $port (http://localhost:$port)...",
             ""
-        ]);
+        );
 
         chdir("Public");
         $proc = popen("php -S localhost:$port", "r");
 
         while (!feof($proc))
-            echo fread($proc, 1024);
+            $this->log(fread($proc, 1024));
     }
 }

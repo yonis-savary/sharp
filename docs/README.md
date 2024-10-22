@@ -6,7 +6,7 @@ The goals behind Sharp are :
 3. Don't hide the code behind Facades objects
 4. Make a framework that doesn't break your IDE
 5. Let you code apps quickly without worrying about setup/build
-6. Have as few dependencies as possible (So far, only [PHPUnit](https://phpunit.de/) is required)
+6. Have as few dependencies as possible (So far, only [PHPUnit](https://phpunit.de/) and [`symfony/process`](https://symfony.com/doc/current/components/process.html) are required)
 7. Automate tedious task (like model creation)
 
 You can browse this documentation with an IDE like Visual Studio Code with the markdown preview,

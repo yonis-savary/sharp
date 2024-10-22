@@ -122,11 +122,11 @@ class Logger implements LoggerInterface
      */
     public function log($level, mixed $message, array $context=[]): void
     {
-        if (!$this->stream)
+        if (!is_resource($this->stream))
             return;
 
         /** @var Request */
-        $currentRequest = Context::get(Request::class, Request::buildFromGlobals());
+        $currentRequest = Context::get(Request::class, Request::fromGlobals());
 
         $ip = $currentRequest->getIp();
         $method = $currentRequest->getMethod();

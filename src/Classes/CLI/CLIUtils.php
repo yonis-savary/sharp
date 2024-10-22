@@ -64,15 +64,22 @@ class CLIUtils
      */
     protected function progressBar(array $array, callable $callback, int $progressBarSize=40, string $filledChar="█", string $emptyChar="░")
     {
-        echo "\e7";
+        $log = str_contains(php_sapi_name(), "cli") ?
+            fn($text) => $this->log($text):
+            fn($_) => null
+        ;
+
+        $log("\e7");
+
         $arraySize = count($array);
         for ($i=0; $i<$arraySize; $i++)
         {
             $iteration=$i+1;
             $progress = round(($i*$progressBarSize)/$arraySize);
             $remain = $progressBarSize - $progress;
-            echo "\e8";
-            echo "[". str_repeat($filledChar, $progress) . str_repeat($emptyChar, $remain) ."] $iteration/$arraySize";
+
+            $log("\e8");
+            $log("[". str_repeat($filledChar, $progress) . str_repeat($emptyChar, $remain) ."] $iteration/$arraySize");
 
             ob_start();
             $callback($array[$i], $i, $array);
@@ -83,10 +90,10 @@ class CLIUtils
                 if (!str_ends_with($output, "\n"))
                     $output .= "\n";
 
-                echo "\e8\e[0K" . $output . "\e7";
+                $log("\e8\e[0K" . $output . "\e7");
             }
         }
-        echo "\e8\e[0K";
+        $log("\e8\e[0K");
     }
 
 

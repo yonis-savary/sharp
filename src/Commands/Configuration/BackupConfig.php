@@ -14,7 +14,7 @@ class BackupConfig extends Command
         $currentConfig = Utils::relativePath("sharp.json");
 
         if (!is_file($currentConfig))
-            return print("No configuration to backup");
+            return $this->log("No configuration to backup");
 
         $copyBasename =
             "sharp-json-".
@@ -26,7 +26,7 @@ class BackupConfig extends Command
         $copyPath = Storage::getInstance()->path($copyBasename);
 
         copy($currentConfig, $copyPath);
-        echo "Configuration backup written to ./Storage/$copyBasename\n";
+        $this->log("Configuration backup written to ./Storage/$copyBasename");
     }
 
     public function getHelp(): string

@@ -12,8 +12,6 @@ use YonisSavary\Sharp\Core\Utils;
  */
 class Context
 {
-    use Component;
-
     private static array $context = [];
 
     /**

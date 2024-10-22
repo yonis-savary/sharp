@@ -45,7 +45,7 @@ trait QueueHandler
         $logger = self::getQueueProcessingLogger();
         $capacity = self::getQueueProcessCapacity();
 
-        $logger->info("Processing [{class}] queue items", ["class" => self::class]);
+        $logger->info("Processing [{class}] queue items", ["class" => basename(self::class)]);
 
         # "Reserved" item are renamed, "#~" is put before their original name
         # A filename begining with "#~" must be ignored as it can be processed in another process

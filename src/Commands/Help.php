@@ -32,14 +32,16 @@ class Help extends Command
             $maxLength["identifier"] = max($maxLength["identifier"], strlen($command->getIdentifier()));
         }
 
-        echo "Available commands with their identifier and purposes:\n";
+        $this->log("Available commands with their identifier and purposes:");
 
         foreach ($commands as $command)
         {
-            printf(" - %s %s : %s\n",
-                str_pad($command->getName(), $maxLength["name"]),
-                str_pad("(". $command->getIdentifier() .")", $maxLength["identifier"]+2),
-                $command->getHelp()
+            $this->log(
+                sprintf(" - %s %s : %s\n",
+                    str_pad($command->getName(), $maxLength["name"]),
+                    str_pad("(". $command->getIdentifier() .")", $maxLength["identifier"]+2),
+                    $command->getHelp()
+                )
             );
         }
     }

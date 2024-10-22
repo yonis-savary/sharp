@@ -17,12 +17,12 @@ class CreateMap extends Command
 
         $name = $args->values()[0] ?? readline("Map Name ?");
         if (!preg_match("/^([A-Z][a-zA-Z0-9]*)+$/", $name))
-            return print("Given name must be made of PascalName words\n");
+            return $this->log("Given name must be made of PascalName words");
         $filename = $name . ".php";
 
         $mapsStorage = new Storage(Utils::joinPath($application, "Classes/App/Maps"));
         if ($mapsStorage->isFile($filename))
-            return print("$filename already exists !\n");
+            return $this->log("$filename already exists !");
 
         $applicationNamespace = str_replace("/", "\\", $application);
 
@@ -39,7 +39,7 @@ class CreateMap extends Command
             }
         "));
 
-        echo "File written at : " . $mapsStorage->path($filename) . "\n";
+        $this->log("File written at : " . $mapsStorage->path($filename));
     }
 
     public function getHelp(): string

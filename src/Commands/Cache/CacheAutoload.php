@@ -16,7 +16,9 @@ class CacheAutoload extends Command
     public function __invoke(Args $args)
     {
         Autoloader::writeAutoloadCache();
-        echo "File written : " . Autoloader::CACHE_FILE . "\n";
-        echo "Delete it to switch to classic autoload\n";
+        $this->log(
+            "File written : " . Autoloader::CACHE_FILE,
+            "Delete it to switch to classic autoload",
+        );
     }
 }

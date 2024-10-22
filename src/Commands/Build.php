@@ -16,17 +16,17 @@ class Build extends Command
 
     public function __invoke(Args $args)
     {
-        echo "Building app...\n\n";
+        $this->log("Building app...");
 
         /** @var AbstractBuildTask $class */
         foreach (Autoloader::classesThatExtends(AbstractBuildTask::class) as $class)
         {
-            printf("Executing [%s]\n", $class);
+            $this->log(sprintf("Executing [%s]\n", $class));
 
             $task = new $class();
             $task->execute();
 
-            echo "\n";
+            $this->log("");
         }
     }
 }

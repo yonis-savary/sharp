@@ -26,8 +26,7 @@ class Test extends Command
     {
         $toTest = Configuration::getInstance()->toArray("applications");
 
-        // The framework need to be tested too
-        array_unshift($toTest, "vendor/yonis-savary/sharp");
+        array_unshift($toTest, ".");
 
         foreach ($toTest as $application)
         {
@@ -53,9 +52,9 @@ class Test extends Command
                 $lastLine = end($lines);
 
                 if (str_starts_with($lastLine, "OK"))
-                    echo " - OK ($application, " . substr($lastLine, 4) ." in $durationMilliseconds ms\n";
+                    $this->log(" - OK ($application, " . substr($lastLine, 4) ." in $durationMilliseconds ms");
                 else
-                    echo "Errors/Warnings while testing [$application] :\n$output";
+                    $this->log("Errors/Warnings while testing [$application] :", $output);
 
             }, $application);
         }

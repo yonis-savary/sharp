@@ -10,9 +10,11 @@ class SchedulerGenerate extends Command
 {
     public function __invoke(Args $args)
     {
-        echo "Here's the CRON syntax to launch your app scheduler\n";
-        echo "\n";
-        echo "* * * * * cd ".Autoloader::projectRoot() ." && php do scheduler-launch\n";
-        echo "\n";
+        $this->log(
+            "Here's the CRON syntax to launch your app scheduler",
+            "",
+            "* * * * * cd ".Autoloader::projectRoot() ." && php do scheduler-launch",
+            "",
+        );
     }
 }

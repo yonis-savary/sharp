@@ -127,7 +127,10 @@ class Autoloader
             $applications = $config->toArray("applications", []);
 
             // The framework is loaded as an application
-            array_unshift($applications, $GLOBALS["sharp-src"] ?? "vendor/yonis-savary/sharp/src");
+            if ($customSrc = $GLOBALS["sharp-src"] ?? false)
+                self::loadApplication($customSrc);
+            else
+                array_unshift($applications, "vendor/yonis-savary/sharp/src");
 
             foreach ($applications as $app)
                 self::loadApplication(Utils::relativePath($app), false);

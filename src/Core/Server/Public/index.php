@@ -12,7 +12,7 @@ require_once "../vendor/autoload.php";
 EventListener::getInstance()->dispatch(new LoadingFramework());
 EventListener::getInstance()->dispatch(new LoadedFramework());
 
-$request = Request::buildFromGlobals();
+$request = Request::fromGlobals();
 $request->logSelf();
 Context::set($request);
 

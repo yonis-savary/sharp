@@ -25,11 +25,10 @@ class QueuesClear extends Command
         {
             $storage = $class::getQueueStorage();
 
-            foreach ($storage->listFiles() as $file)
-            {
+            $this->progressBar($storage->listFiles(), function($file){
                 $this->log("Deleting $file");
                 unlink($file);
-            }
+            });
         }
     }
 }

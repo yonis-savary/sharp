@@ -27,14 +27,14 @@ class CreateMiddleware extends Command
         foreach ($names as $name)
         {
             if (!preg_match("/^[A-Z][\d\w]*$/", $name))
-                return print("Name be must a PascalCase string\n");
+                return $this->log("Name be must a PascalCase string");
 
             $middlewarePath = Utils::joinPath($application, "Middlewares");
             $storage = new Storage($middlewarePath);
             $filename = $name . ".php";
 
             if ($storage->isFile($name))
-                return print($storage->path($filename) . " already exists !");
+                return $this->log($storage->path($filename) . " already exists !");
 
             $storage->write($filename, Terminal::stringToFile(
             "<?php
@@ -54,7 +54,7 @@ class CreateMiddleware extends Command
             }
             "));
 
-            echo "File written at ". $storage->path($filename) . "\n";
+            $this->log("File written at ". $storage->path($filename));
         }
     }
 

@@ -154,6 +154,17 @@ class Cache
     }
 
     /**
+     * Delete every items of the Cache
+     */
+    public function deleteAll(): void
+    {
+        foreach ($this->getKeys() as $key)
+            $this->delete($key);
+
+        $this->index = [];
+    }
+
+    /**
      * Get a new Cache instance from a subdirectory created by the parent Cache
      */
     public function getSubCache(string $name): self

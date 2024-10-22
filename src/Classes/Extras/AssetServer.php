@@ -43,7 +43,7 @@ class AssetServer
         if ($this->isCached())
             $this->cacheIndex = &Cache::getInstance()->getReference("sharp.asset-server");
 
-        $req = Request::buildFromGlobals();
+        $req = Request::fromGlobals();
         $this->handleRequest($req);
     }
 

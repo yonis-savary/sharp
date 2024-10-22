@@ -20,8 +20,8 @@ class CacheDisable extends Command
     {
         if (!$args->isPresent("-k", "--keep-files"))
         {
-            echo "Clearing all cache files...";
-            ClearCaches::execute("--all");
+            $this->log("Clearing all cache files...");
+            CacheClear::execute("--all");
         }
 
         $config = new Configuration(Configuration::DEFAULT_FILENAME);
@@ -34,7 +34,7 @@ class CacheDisable extends Command
             if (!array_key_exists("cached", $configurable::getDefaultConfiguration()))
                 continue;
 
-            echo "Disabling [$key] cache\n";
+            $this->log("Disabling [$key] cache");
 
             $config->edit($key, function($config){
                 $config["cached"] = false;

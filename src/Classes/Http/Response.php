@@ -93,11 +93,19 @@ class Response
     }
 
     /**
-     * @return bool Return true if the response is a 200 HTTP Response
+     * @return bool Return true if the response is a 2xx HTTP Response
      */
     public function isOK(): bool
     {
-        return $this->responseCode == 200;
+        return 200 <= $this->responseCode && $this->responseCode < 300;
+    }
+
+    /**
+     * @return bool `true` if the response content-type contains `application/json`
+     */
+    public function isJSON(): bool
+    {
+        return str_contains($this->getHeader("content-type") ?? "", "application/json");
     }
 
     /**
@@ -294,19 +302,6 @@ class Response
     public static function view(string $template, array $context=[], int $responseCode=ResponseCodes::OK): Response
     {
         return self::html(Renderer::getInstance()->render($template, $context), $responseCode);
-    }
-
-    /**
-     * Build an HTML response with a rendered view inside
-     *
-     * @deprecated Please use `Response::view` instead
-     * @param string $template Template name
-     * @param array $context Context variable for the view
-     * @param int $responseCode HTTP response code
-     */
-    public static function render(string $template, array $context=[], int $responseCode=ResponseCodes::OK): Response
-    {
-        return self::view($template, $context, $responseCode);
     }
 
     /**

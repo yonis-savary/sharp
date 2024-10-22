@@ -57,7 +57,7 @@ class Router
         if (!($this->isCached() && $this->configuration["quick-routing"]))
             return;
 
-        $request ??= Request::buildFromGlobals();
+        $request ??= Request::fromGlobals();
         $request->logSelf();
 
         if (!($route = $this->getCachedRouteForRequest($request)))
@@ -87,7 +87,6 @@ class Router
             try { serialize($route); }
             catch (Throwable $thrown) { error($thrown); return; }
         }
-
 
         $this->cache->set(
             $this->getCacheKey($request),
@@ -197,9 +196,7 @@ class Router
             }
 
             if ($extras = $group["extras"] ?? false)
-            {
                 $route->setExtras(array_merge($route->getExtras(), $extras));
-            }
 
             if ($middlewares = $group["middlewares"] ?? false)
             {
@@ -228,8 +225,7 @@ class Router
 
     protected function findFirstMatchingRoute(Request $req): ?Route
     {
-        $this->loadRoutes();
-        foreach ($this->routes as $route)
+        foreach ($this->getRoutes() as $route)
         {
             if (!$route->match($req))
                 continue;
@@ -247,15 +243,17 @@ class Router
         $route = $this->getCachedRouteForRequest($request)
               ?? $this->findFirstMatchingRoute($request);
 
+        $listener = EventListener::getInstance();
+
         if (!$route)
         {
             $response = new Response("Page not found", 404, ["Content-Type" => "text/plain"]);
-            EventListener::getInstance()->dispatch(new RouteNotFound($request, $response));
+            $listener->dispatch(new RouteNotFound($request, $response));
             return $response;
         }
 
         Context::set($route);
-        EventListener::getInstance()->dispatch(new RoutedRequest($request, $route));
+        $listener->dispatch(new RoutedRequest($request, $route));
 
         $response = Response::adapt($route($request));
         Context::set($response);
@@ -268,14 +266,7 @@ class Router
      */
     public function getRoutes(): array
     {
+        $this->loadRoutes();
         return $this->routes;
-    }
-
-    /**
-     * @deprecated Use Route->match instead
-     */
-    public function match(Route $route, Request $request): bool
-    {
-        return $route->match($request);
     }
 }

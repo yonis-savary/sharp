@@ -11,7 +11,7 @@ use YonisSavary\Sharp\Classes\Events\CalledCommand;
 use YonisSavary\Sharp\Commands\Help;
 use YonisSavary\Sharp\Core\Autoloader;
 
-class Console
+class Console extends CLIUtils
 {
     use Component;
 
@@ -55,7 +55,7 @@ class Console
 
         if (!count($argv))
         {
-            print("A command name is needed !\n");
+            $this->log("A command name is needed !");
             $this->printCommandList();
             return;
         }
@@ -65,22 +65,24 @@ class Console
 
         if (!count($commands))
         {
-            print("No command with [$commandName] identifier found !\n");
+            $this->log("No command with [$commandName] identifier found !");
             $this->printCommandList();
             return;
         }
 
         if (count($commands) > 1)
         {
-            echo "Multiple commands for identifier [$commandName] found !\n";
+            $this->log("Multiple commands for identifier [$commandName] found !");
             foreach ($commands as $command)
-                echo " - " . $command->getIdentifier() . "\n";
+                $this->log(" - " . $command->getIdentifier());
             return;
         }
 
         $command = $commands[0];
 
-        printf("%s[ %s ]%s\n", str_repeat("-", 5), $command->getIdentifier() , str_repeat("-", 25));
+        $this->log(
+            sprintf("%s[ %s ]%s\n", str_repeat("-", 5), $command->getIdentifier() , str_repeat("-", 25))
+        );
         $return = $command(Args::fromArray($argv));
 
         EventListener::getInstance()->dispatch(new CalledCommand($command, $return));

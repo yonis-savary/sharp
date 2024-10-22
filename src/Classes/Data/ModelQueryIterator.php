@@ -43,7 +43,10 @@ class ModelQueryIterator
         if ($this->index >= $this->count)
             return false;
 
-        $array = $this->query->limit(1, $this->index)->fetch()[0]["data"] ?? false;
+        $array = $this->query
+            ->limit(1, $this->index)
+            ->fetch()
+            [0]["data"] ?? false;
 
         $this->index++;
         return $array;

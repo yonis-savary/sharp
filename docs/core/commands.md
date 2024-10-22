@@ -20,7 +20,7 @@ class ClearCaches extends Command
 {
     public function __invoke(Args $args)
     {
-        echo "I'am clearing caches !";
+        $this->log("I'am clearing caches !");
     }
 }
 ```

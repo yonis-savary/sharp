@@ -27,7 +27,7 @@ class CacheEnable extends Command
             if (!array_key_exists("cached", $configurable::getDefaultConfiguration()))
                 continue;
 
-            echo "Enabling [$key] cache\n";
+            $this->log("Enabling [$key] cache");
 
             $config->edit($key, function($config){
                 $config["cached"] = true;

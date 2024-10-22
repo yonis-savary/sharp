@@ -55,4 +55,13 @@ trait Component
     {
         self::$instance = null;
     }
+
+
+    /**
+     * @return bool `true` is an instance of the component exists, `false` otherwise
+     */
+    final public static function hasInstance(): bool
+    {
+        return self::$instance !== null;
+    }
 }

@@ -25,14 +25,14 @@ class CreateController extends Command
         foreach ($names as $name)
         {
             if (!preg_match("/^[A-Z][\d\w]*$/", $name))
-                return print("Name be must a PascalCase string\n");
+                return $this->log("Name be must a PascalCase string");
 
             $controllerPath = Utils::joinPath($application, "Controllers");
             $storage = new Storage($controllerPath);
             $filename = $name . ".php";
 
             if ($storage->isFile($name))
-                return print($storage->path($filename) . " already exists !");
+                return $this->log($storage->path($filename) . " already exists !");
 
             $storage->write($filename, Terminal::stringToFile(
             "<?php
@@ -56,7 +56,7 @@ class CreateController extends Command
             }
             "));
 
-            echo "File written at ". $storage->path($filename) . "\n";
+            $this->log("File written at ". $storage->path($filename));
         }
     }
 

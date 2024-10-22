@@ -16,7 +16,7 @@ use Stringable;
 
 /**
  * This component purpose is to hold information about a HTTP Request,
- * a default one can be built with `Request::buildFromGlobals()`
+ * a default one can be built with `Request::fromGlobals()`
  */
 class Request
 {
@@ -119,7 +119,7 @@ class Request
     /**
      * Build a Request object from PHP's global variables and return it
      */
-    public static function buildFromGlobals(bool $fixParametersTypes=true): Request
+    public static function fromGlobals(bool $fixParametersTypes=true): Request
     {
         $headers = function_exists("getallheaders") ?
             getallheaders() :
@@ -573,6 +573,9 @@ class Request
     }
 
 
+    /**
+     * @return float Last `fetch()` duration in ms
+     */
     public function getLastFetchDuration(): float
     {
         return $this->lastFetchDurationMicro;

@@ -13,7 +13,7 @@ class SchedulerList extends Command
     public function __invoke(Args $args)
     {
         $handlers = Scheduler::getInstance()->listAll();
-        echo "List of scheduler handlers\n";
+        $this->log("List of scheduler handlers");
 
         ObjectArray::fromArray(array_values($handlers))
         ->forEach(function(SchedulerHandler $handler) {
@@ -32,7 +32,7 @@ class SchedulerList extends Command
 
             $description = ucfirst($description);
 
-            echo " - " . $handler->identifier . " : $description\n";
+            $this->log(" - " . $handler->identifier . " : $description");
         });
     }
 

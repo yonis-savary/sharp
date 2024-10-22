@@ -17,12 +17,12 @@ class CreateStorage extends Command
 
         $name = $args->values()[0] ?? readline("Storage Name ?");
         if (!preg_match("/^([A-Z][a-zA-Z0-9]*)+$/", $name))
-            return print("Given name must be made of PascalName words\n");
+            return $this->log("Given name must be made of PascalName words");
         $filename = $name . ".php";
 
         $storagePath = new Storage(Utils::joinPath($application, "Classes/App/Storages"));
         if ($storagePath->isFile($filename))
-            return print("$filename already exists !\n");
+            return $this->log("$filename already exists !");
 
         $applicationNamespace = str_replace("/", "\\", $application);
 
@@ -39,7 +39,7 @@ class CreateStorage extends Command
             }
         "));
 
-        echo "File written at : " . $storagePath->path($filename) . "\n";
+        $this->log("File written at : " . $storagePath->path($filename));
     }
 
     public function getHelp(): string

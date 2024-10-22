@@ -28,11 +28,11 @@ class EnableApplication extends Command
             if (is_dir($app))
                 return true;
 
-            print("Skipping, [$app] is not a directory)\n");
+            $this->log("Skipping, [$app] is not a directory)");
             return false;
         })->collect();
 
-        print("Enabling new applications\n");
+        $this->log("Enabling new applications");
 
         $config = new Configuration(Configuration::DEFAULT_FILENAME);
 
@@ -44,8 +44,6 @@ class EnableApplication extends Command
         }, []);
 
         $config->save();
-
-
 
         $build = new Build();
         $build(new Args());

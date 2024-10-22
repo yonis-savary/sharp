@@ -15,7 +15,7 @@ class InstallDependencies extends AbstractBuildTask
 {
     public function execute()
     {
-        echo "Installing dependencies...\n";
+        $this->log("Installing dependencies...");
 
         $applications = Autoloader::getLoadedApplications();
 
@@ -40,9 +40,11 @@ class InstallDependencies extends AbstractBuildTask
         if ($app->isDirectory("vendor"))
             return print("Skipping [$relPathName] (Already installed)\n");
 
-        echo "Installing in [$appName]\n";
-        echo "---\n";
+        $this->log(
+            "Installing in [$appName]",
+            "---",
+        );
         $this->shellInDirectory("composer install", $appPath);
-        echo "---\n";
+        $this->log("---");
     }
 }

@@ -31,7 +31,7 @@ class QueuesList extends Command
                 continue;
 
             foreach ($files as $file)
-                echo " - $file\n";
+                $this->log(" - $file");
         }
 
     }

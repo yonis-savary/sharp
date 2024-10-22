@@ -18,7 +18,10 @@ class CacheElement
     public readonly string $key;
     protected int $creationDate;
     protected int $timeToLive;
+
     protected ?string $file;
+
+    protected bool $loaded = false;
     protected mixed $content = null;
 
     protected ?string $baseMD5 = null;
@@ -68,19 +71,20 @@ class CacheElement
      */
     public function getContent(): mixed
     {
-        if ($this->content)
-            return $this->content;
-
-        if ($this->file)
+        if ((!$this->loaded) && $this->file)
             $this->content = unserialize(file_get_contents($this->file));
 
+        $this->loaded = true;
         return $this->content;
     }
 
     public function setContent(mixed $content, int $timeToLive=null): void
     {
-        $this->timeToLive = $timeToLive ?? $this->timeToLive;
+        $this->loaded = true;
         $this->content = $content;
+
+        if ($timeToLive)
+            $this->timeToLive = $timeToLive;
     }
 
     /**
@@ -88,9 +92,7 @@ class CacheElement
      */
     public function &getReference(): mixed
     {
-        if (!$this->content)
-            $this->getContent();
-
+        $this->getContent(); // Load content if not loaded yet
         return $this->content;
     }
 
