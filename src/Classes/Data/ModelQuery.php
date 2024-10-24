@@ -122,7 +122,7 @@ class ModelQuery
      * @param string $alias Alias for the selected column
      * @param int $type How is the field parsed (DatabaseField type constant)
      */
-    protected function addField(string $table, string $field, string $alias=null, int $type=DatabaseField::STRING): self
+    public function addField(string $table, string $field, string $alias=null, int $type=DatabaseField::STRING): self
     {
         $this->fields[] = new QueryField($table, $field, $alias, $type);
         return $this;
@@ -419,7 +419,10 @@ class ModelQuery
 
     public function createModel(string $table): AbstractModel
     {
-        $class = $this->tablesModels[$table];
+        $class =
+            array_key_exists($table, $this->tablesModels) ?
+            $this->tablesModels[$table]:
+            new class extends AbstractModel {};
 
         return new $class();
     }
@@ -498,7 +501,7 @@ class ModelQuery
     public function forEach(callable $function): self
     {
         if ($this->mode !== self::SELECT)
-            throw new Exception("ModelQuery::forEach method only works with SELECT queries");
+            throw new Exception('ModelQuery::forEach method only works with SELECT queries');
 
         ModelQueryIterator::forEach($this, $function);
         return $this;
