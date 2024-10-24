@@ -13,38 +13,40 @@ use YonisSavary\Sharp\Core\Utils;
  */
 class InstallDependencies extends AbstractBuildTask
 {
-    public function execute()
+    public function execute(): bool
     {
-        $this->log("Installing dependencies...");
+        $this->log('Installing dependencies...');
 
         $applications = Autoloader::getLoadedApplications();
 
         foreach ($applications as $appName)
             $this->installDependenciesInApp($appName);
+
+        return true;
     }
 
     protected function installDependenciesInApp(string $appName)
     {
         $appPath = Utils::relativePath($appName);
 
-        $relPathName = str_replace(Autoloader::projectRoot(), "", $appPath);
+        $relPathName = str_replace(Autoloader::projectRoot(), '', $appPath);
 
         $app = new Storage($appPath);
 
         if (!is_dir($appPath))
-            return print("Cannot read [$relPathName], inexistent directory");
+            return $this->log("Cannot read [$relPathName], inexistent directory");
 
-        if (!$app->isFile("composer.json"))
-            return print("Skipping [$relPathName] (no composer.json)\n");
+        if (!$app->isFile('composer.json'))
+            return $this->log("Skipping [$relPathName] (no composer.json)");
 
-        if ($app->isDirectory("vendor"))
-            return print("Skipping [$relPathName] (Already installed)\n");
+        if ($app->isDirectory('vendor'))
+            return $this->log("Skipping [$relPathName] (Already installed)");
 
         $this->log(
             "Installing in [$appName]",
-            "---",
+            '---',
         );
-        $this->shellInDirectory("composer install", $appPath);
-        $this->log("---");
+        $this->shellInDirectory('composer install', $appPath);
+        $this->log('---');
     }
 }
