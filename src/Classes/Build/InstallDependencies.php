@@ -27,14 +27,16 @@ class InstallDependencies extends AbstractBuildTask
 
     protected function installDependenciesInApp(string $appName)
     {
-        $appPath = Utils::relativePath($appName);
-
-        $relPathName = str_replace(Autoloader::projectRoot(), '', $appPath);
-
-        $app = new Storage($appPath);
+        $appPath = $appName;
 
         if (!is_dir($appPath))
-            return $this->log("Cannot read [$relPathName], inexistent directory");
+            $appPath = Utils::relativePath($appName);
+
+        if (!is_dir($appPath))
+            return $this->log("Cannot read [$appPath], inexistent directory");
+
+        $relPathName = str_replace(Autoloader::projectRoot(), '', $appPath);
+        $app = new Storage($appPath);
 
         if (!$app->isFile('composer.json'))
             return $this->log("Skipping [$relPathName] (no composer.json)");
