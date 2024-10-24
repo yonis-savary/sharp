@@ -2,18 +2,18 @@
 
 use YonisSavary\Sharp\Classes\Extras\Scheduler;
 
-const CRON_EVERY_MINUTE = "* * * * *";
-const CRON_EVERY_HOUR   = "0 * * * *";
-const CRON_EVERY_DAY    = "0 0 * * *";
-const CRON_EVERY_MONTH  = "0 0 1 * *";
-const CRON_TWICE_A_DAY  = "0 0,12 * * *";
-const CRON_ON_MONDAY    = "0 0 * * 1";
-const CRON_ON_TUESDAY   = "0 0 * * 2";
-const CRON_ON_WEDNESDAY = "0 0 * * 3";
-const CRON_ON_THURSDAY  = "0 0 * * 4";
-const CRON_ON_FRIDAY    = "0 0 * * 5";
-const CRON_ON_SATURDAY  = "0 0 * * 6";
-const CRON_ON_SUNDAY    = "0 0 * * 0";
+const CRON_EVERY_MINUTE = '* * * * *';
+const CRON_EVERY_HOUR   = '0 * * * *';
+const CRON_EVERY_DAY    = '0 0 * * *';
+const CRON_EVERY_MONTH  = '0 0 1 * *';
+const CRON_TWICE_A_DAY  = '0 0,12 * * *';
+const CRON_ON_MONDAY    = '0 0 * * 1';
+const CRON_ON_TUESDAY   = '0 0 * * 2';
+const CRON_ON_WEDNESDAY = '0 0 * * 3';
+const CRON_ON_THURSDAY  = '0 0 * * 4';
+const CRON_ON_FRIDAY    = '0 0 * * 5';
+const CRON_ON_SATURDAY  = '0 0 * * 6';
+const CRON_ON_SUNDAY    = '0 0 * * 0';
 
 function scheduleEveryMinute(callable $callback, string $identifier) { Scheduler::getInstance()->schedule(CRON_EVERY_MINUTE, $callback, $identifier); }
 function scheduleEveryHour  (callable $callback, string $identifier) { Scheduler::getInstance()->schedule(CRON_EVERY_HOUR, $callback, $identifier); }

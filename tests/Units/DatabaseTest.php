@@ -28,7 +28,7 @@ class DatabaseTest extends TestCase
     {
         $db = Database::getInstance();
 
-        $db->query("SELECT fk_user FROM test_user_data");
+        $db->query('SELECT fk_user FROM test_user_data');
 
         /** @var PDOStatement $statement */
         $statement = $db->getLastStatement();
@@ -41,29 +41,29 @@ class DatabaseTest extends TestCase
     {
         $db = Database::getInstance();
         $db->query("DELETE FROM sqlite_sequence WHERE name = 'test_user_data'");
-        $db->query("DELETE FROM test_user_data");
+        $db->query('DELETE FROM test_user_data');
 
-        $db->query("INSERT INTO test_user_data (fk_user, data) VALUES ({}, {})", [1, 'next_id_test']);
+        $db->query('INSERT INTO test_user_data (fk_user, data) VALUES ({}, {})', [1, 'next_id_test']);
         $this->assertEquals(1, $db->lastInsertId());
     }
 
     public function test_build()
     {
         $db = Database::getInstance();
-        $this->assertEquals("SELECT '1'", $db->build("SELECT {}", [1]));
-        $this->assertEquals("SELECT '1'", $db->build("SELECT {}", ['1']));
+        $this->assertEquals("SELECT '1'", $db->build('SELECT {}', [1]));
+        $this->assertEquals("SELECT '1'", $db->build('SELECT {}', ['1']));
         $this->assertEquals("SELECT '1'", $db->build("SELECT '{}'", [1]));
         $this->assertEquals("SELECT '1'", $db->build("SELECT '{}'", ['1']));
 
-        $this->assertEquals("SELECT ('1','2','3')", $db->build("SELECT {}", [[1,2,3]]));
+        $this->assertEquals("SELECT ('1','2','3')", $db->build('SELECT {}', [[1,2,3]]));
 
         $injection = "'; DELETE FROM user; --";
         $goodQuery = "SELECT ... WHERE login = '''; DELETE FROM user; --'";
-        $this->assertEquals($goodQuery, $db->build("SELECT ... WHERE login = {}", [$injection]));
+        $this->assertEquals($goodQuery, $db->build('SELECT ... WHERE login = {}', [$injection]));
         $this->assertEquals($goodQuery, $db->build("SELECT ... WHERE login = '{}'", [$injection]));
 
-        $this->assertEquals("SELECT TRUE", $db->build("SELECT {}", [true]));
-        $this->assertEquals("SELECT FALSE", $db->build("SELECT {}", [false]));
+        $this->assertEquals('SELECT TRUE', $db->build('SELECT {}', [true]));
+        $this->assertEquals('SELECT FALSE', $db->build('SELECT {}', [false]));
         $this->assertEquals("SELECT 'TRUE'", $db->build("SELECT '{}'", [true]));
         $this->assertEquals("SELECT 'FALSE'", $db->build("SELECT '{}'", [false]));
     }
@@ -74,31 +74,31 @@ class DatabaseTest extends TestCase
 
         $this->assertEquals(
             [[
-                "id" => 1,
-                "login" => "admin",
-                "password" => '$2y$08$pxfA4LlzVyXRPYVZH7czvu.gQQ8BNfzRdhejln2dwB7Bv6QafwAua',
-                "salt" => "dummySalt",
+                'id' => 1,
+                'login' => 'admin',
+                'password' => '$2y$08$pxfA4LlzVyXRPYVZH7czvu.gQQ8BNfzRdhejln2dwB7Bv6QafwAua',
+                'salt' => 'dummySalt',
                 'blocked' => false
             ]],
-            $db->query("SELECT * FROM test_user")
+            $db->query('SELECT * FROM test_user')
         );
     }
 
     public function test_hasTable()
     {
         $db = Database::getInstance();
-        $this->assertTrue($db->hasTable("test_user"));
-        $this->assertTrue($db->hasTable("test_user_data"));
-        $this->assertFalse($db->hasTable("test_user_favorite"));
+        $this->assertTrue($db->hasTable('test_user'));
+        $this->assertTrue($db->hasTable('test_user_data'));
+        $this->assertFalse($db->hasTable('test_user_favorite'));
     }
 
     public function test_hasField()
     {
         $db = Database::getInstance();
-        $this->assertTrue($db->hasField("test_user", "id"));
-        $this->assertFalse($db->hasField("test_user", "inexistent"));
-        $this->assertTrue($db->hasField("test_user_data", "fk_user"));
-        $this->assertFalse($db->hasField("test_user_data", "inexistent"));
-        $this->assertFalse($db->hasField("test_user_favorite", "id"));
+        $this->assertTrue($db->hasField('test_user', 'id'));
+        $this->assertFalse($db->hasField('test_user', 'inexistent'));
+        $this->assertTrue($db->hasField('test_user_data', 'fk_user'));
+        $this->assertFalse($db->hasField('test_user_data', 'inexistent'));
+        $this->assertFalse($db->hasField('test_user_favorite', 'id'));
     }
 }

@@ -26,10 +26,10 @@ class Scheduler
             $match = [];
             preg_match(
                 "/\w+\.php\(\d+\)/",
-                (new Exception("thing"))->getTraceAsString(),
+                (new Exception('thing'))->getTraceAsString(),
                 $match
             );
-            $identifier = $match[0] ?? "generic-identifier";
+            $identifier = $match[0] ?? 'generic-identifier';
         }
 
         if (array_key_exists($identifier, $this->handlers))
@@ -47,10 +47,10 @@ class Scheduler
     public function executeAll(DateTime $dateTime=null)
     {
         $dateTime ??= new DateTime();
-        $dateTimeString = $dateTime->format("Y-m-d H:i:s");
+        $dateTimeString = $dateTime->format('Y-m-d H:i:s');
 
-        $logger = new Logger("schedule/scheduler.csv");
-        $logger->info("Execution at {datetime}", ["datetime" => $dateTimeString]);
+        $logger = new Logger('schedule/scheduler.csv');
+        $logger->info('Execution at {datetime}', ['datetime' => $dateTimeString]);
 
         ObjectArray::fromArray(array_values($this->handlers))
         ->forEach(fn(SchedulerHandler $handler) => $handler->launchIfValid($dateTime));

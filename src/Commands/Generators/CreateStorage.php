@@ -15,16 +15,16 @@ class CreateStorage extends AbstractCommand
     {
         $application = Terminal::chooseApplication();
 
-        $name = $args->values()[0] ?? readline("Storage Name ?");
+        $name = $args->values()[0] ?? readline('Storage Name ?');
         if (!preg_match("/^([A-Z][a-zA-Z0-9]*)+$/", $name))
-            return $this->log("Given name must be made of PascalName words");
-        $filename = $name . ".php";
+            return $this->log('Given name must be made of PascalName words');
+        $filename = $name . '.php';
 
-        $storagePath = new Storage(Utils::joinPath($application, "Classes/App/Storages"));
+        $storagePath = new Storage(Utils::joinPath($application, 'Classes/App/Storages'));
         if ($storagePath->isFile($filename))
             return $this->log("$filename already exists !");
 
-        $applicationNamespace = str_replace("/", "\\", $application);
+        $applicationNamespace = str_replace('/', "\\", $application);
 
         $storagePath->write($filename, Terminal::stringToFile(
             "<?php
@@ -39,11 +39,11 @@ class CreateStorage extends AbstractCommand
             }
         "));
 
-        $this->log("File written at : " . $storagePath->path($filename));
+        $this->log('File written at : ' . $storagePath->path($filename));
     }
 
     public function getHelp(): string
     {
-        return "Create a AppStorage utility class in your application";
+        return 'Create a AppStorage utility class in your application';
     }
 }

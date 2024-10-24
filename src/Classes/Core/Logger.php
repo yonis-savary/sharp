@@ -21,7 +21,7 @@ class Logger implements LoggerInterface
 
     public static function getDefaultInstance()
     {
-        return new self("sharp.csv");
+        return new self('sharp.csv');
     }
 
     /**
@@ -48,17 +48,17 @@ class Logger implements LoggerInterface
         if (!$filename)
             return;
 
-        $storage ??= Storage::getInstance()->getSubStorage("Logs");
+        $storage ??= Storage::getInstance()->getSubStorage('Logs');
 
         $exists = $storage->isFile($filename);
         if (!$exists)
             $storage->assertIsWritable();
 
         $this->filename = $storage->path($filename);
-        $this->stream = $storage->getStream($filename, "a", false);
+        $this->stream = $storage->getStream($filename, 'a', false);
 
         if (!$exists)
-            fputcsv($this->stream, ["DateTime", "IP", "Method", "Level", "Message"], "\t");
+            fputcsv($this->stream, ['DateTime', 'IP', 'Method', 'Level', 'Message'], "\t");
     }
 
     public function __destruct()
@@ -140,7 +140,7 @@ class Logger implements LoggerInterface
             $message = str_replace('{'.$key.'}', $value, $message);
         }
 
-        foreach (explode("\n", $message) as $line)
+        foreach (explode("\n", trim($message)) as $line)
             fputcsv($this->stream, [$now, $ip, $method, $level, $line], "\t");
     }
 
@@ -150,13 +150,13 @@ class Logger implements LoggerInterface
      */
     protected function getThrowableAsString(Throwable $throwable): string
     {
-        return "Got an [". $throwable::class ."] Throwable: ". $throwable->getMessage() . "\n".
-            sprintf("#- %s(%s)", $throwable->getFile(), $throwable->getLine()) . "\n" .
+        return 'Got an ['. $throwable::class .'] Throwable: '. $throwable->getMessage() . "\n".
+            sprintf('#- %s(%s)', $throwable->getFile(), $throwable->getLine()) . "\n" .
             $throwable->getTraceAsString();
     }
 
     /**
-     * Log a "debug" level line
+     * Log a 'debug' level line
      * @param mixed ...$messages Information/Objects to log (can be of any type)
      */
     public function debug(mixed $message, array $context=[]): void

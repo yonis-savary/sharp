@@ -17,16 +17,16 @@ class ModelGenerator
 
     public static function getDefaultInstance()
     {
-        $dbConfig = Configuration::getInstance()->get("database", []);
+        $dbConfig = Configuration::getInstance()->get('database', []);
 
-        $driver = match($dbConfig["driver"] ?? null) {
-            "mysql" => MySQL::class,
-            "sqlite" => SQLite::class,
-            default => null
+        $driver = match(strtolower($dbConfig['driver']) ?? null) {
+            'mysql'  => MySQL::class,
+            'sqlite' => SQLite::class,
+            default  => null
         };
 
         if (!$driver)
-            throw new Exception("Cannot adapt [". $dbConfig["driver"] ."] database tables");
+            throw new Exception('Cannot adapt ['. $dbConfig['driver'] .'] database tables');
 
         return new self($driver);
     }

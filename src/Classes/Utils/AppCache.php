@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace YonisSavary\Sharp\Classes\Utils;
 
@@ -12,7 +12,7 @@ trait AppCache
     public static function &get(): Cache
     {
         self::$instance ??= new Cache(
-            Storage::getInstance()->getSubStorage("Cache/Sharp/AppCaches/". md5(get_called_class()))
+            Storage::getInstance()->getSubStorage('Cache/Sharp/AppCaches/'. md5(get_called_class()))
         );
         return self::$instance;
     }

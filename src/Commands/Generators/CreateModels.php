@@ -11,7 +11,7 @@ class CreateModels extends AbstractCommand
 {
     public function getHelp(): string
     {
-        return "Create model classes from your database tables";
+        return 'Create model classes from your database tables';
     }
 
     public function __invoke(Args $args)

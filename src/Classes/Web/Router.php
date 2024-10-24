@@ -39,12 +39,12 @@ class Router
     public function __construct(Cache $cache=null)
     {
         $this->loadConfiguration();
-        $this->cache = $cache ?? Cache::getInstance()->getSubCache("router");
+        $this->cache = $cache ?? Cache::getInstance()->getSubCache('router');
     }
 
     public static function getDefaultConfiguration(): array
     {
-        return ["cached" => false, "quick-routing" => false];
+        return ['cached' => false, 'quick-routing' => false];
     }
 
     protected function getCacheKey(Request $request): string
@@ -54,7 +54,7 @@ class Router
 
     public function executeQuickRouting(Request $request=null)
     {
-        if (!($this->isCached() && $this->configuration["quick-routing"]))
+        if (!($this->isCached() && $this->configuration['quick-routing']))
             return;
 
         $request ??= Request::fromGlobals();
@@ -126,7 +126,7 @@ class Router
 
     protected function loadAutoloaderFiles(): void
     {
-        foreach (Autoloader::getListFiles(Autoloader::ROUTES) as $file)
+        foreach (Autoloader::getList(Autoloader::ROUTES) as $file)
         {
             $router = $this; // Can be used in routes files
             require_once $file;
@@ -136,7 +136,7 @@ class Router
     protected function loadControllersRoutes(): void
     {
         ObjectArray::fromArray(Autoloader::getClassesList())
-        ->filter(fn($file) => str_contains($file, "Controllers"))
+        ->filter(fn($file) => str_contains($file, 'Controllers'))
         ->filter(fn($class) => Utils::uses($class, Controller::class))
         ->forEach(fn($class) => $class::declareRoutes($this));
     }
@@ -147,8 +147,8 @@ class Router
     public function createGroup(string|array $urlPrefix, string|array $middlewares): array
     {
         return [
-            "path" => Utils::toArray($urlPrefix),
-            "middlewares" => Utils::toArray($middlewares),
+            'path' => Utils::toArray($urlPrefix),
+            'middlewares' => Utils::toArray($middlewares),
         ];
     }
 
@@ -187,18 +187,18 @@ class Router
 
         foreach ($routes as &$route)
         {
-            if ($groupPrefix = $group["path"] ?? false)
+            if ($groupPrefix = $group['path'] ?? false)
             {
                 $groupPrefix = Utils::toArray($groupPrefix);
 
-                $prefix = "/" . join("/", $groupPrefix);
-                $route->setPath(str_replace("//", "/", $prefix . $route->getPath()));
+                $prefix = '/' . join('/', $groupPrefix);
+                $route->setPath(str_replace('//', '/', $prefix . $route->getPath()));
             }
 
-            if ($extras = $group["extras"] ?? false)
+            if ($extras = $group['extras'] ?? false)
                 $route->setExtras(array_merge($route->getExtras(), $extras));
 
-            if ($middlewares = $group["middlewares"] ?? false)
+            if ($middlewares = $group['middlewares'] ?? false)
             {
                 $middlewares = Utils::toArray($middlewares);
                 $route->addMiddlewares(...$middlewares);
@@ -247,7 +247,7 @@ class Router
 
         if (!$route)
         {
-            $response = new Response("Page not found", 404, ["Content-Type" => "text/plain"]);
+            $response = new Response('Page not found', 404, ['Content-Type' => 'text/plain']);
             $listener->dispatch(new RouteNotFound($request, $response));
             return $response;
         }

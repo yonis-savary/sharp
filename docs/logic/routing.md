@@ -20,15 +20,15 @@ through its statical shortucts used to define which HTTP method the route allow
 
 ```php
 # Directly using the constructor (not quite efficient)
-new Route("/", function(){ /* Functions can be used too ! */ });
+new Route('/', function(){ /* Functions can be used too ! */ });
 
 # Using shortcuts (which make them more readable)
-Route::any("/", [MyClass::class, "greets"]);
-Route::get("/", [MyClass::class, "greets"]);
-Route::post("/", [MyClass::class, "greets"]);
-Route::patch("/", [MyClass::class, "greets"]);
-Route::put("/", [MyClass::class, "greets"]);
-Route::delete("/", [MyClass::class, "greets"]);
+Route::any('/', [MyClass::class, 'greets']);
+Route::get('/', [MyClass::class, 'greets']);
+Route::post('/', [MyClass::class, 'greets']);
+Route::patch('/', [MyClass::class, 'greets']);
+Route::put('/', [MyClass::class, 'greets']);
+Route::delete('/', [MyClass::class, 'greets']);
 
 ```
 
@@ -36,8 +36,8 @@ Then, to add them to your router, call the `addRoutes()` method of any router:
 ```php
 $router = Router::getInstance();
 $router->addRoutes(
-    Router::get("/login", [LoginController::class, "renderPage"]),
-    Router::post("/login", [LoginController::class, "handleLogin"])
+    Router::get('/login', [LoginController::class, 'renderPage']),
+    Router::post('/login', [LoginController::class, 'handleLogin'])
 );
 ```
 
@@ -53,15 +53,15 @@ A group can apply a path prefix, middlewares and extras to a set of routes
 
 ```php
 $router = Router::getInstance();
-$group = ["path" => "api", "middlewares" => IsAuthenticated::class];
+$group = ['path' => 'api', 'middlewares' => IsAuthenticated::class];
 
 # ########## METHOD 1 ##########
 
 # This is the simplest way to group routes
 $router->addGroup(
     $group,
-    Route::get("/user/actives", [UserController::class, "actives"]),
-    Route::get("/user/blocked", [UserController::class, "blocked"])
+    Route::get('/user/actives', [UserController::class, 'actives']),
+    Route::get('/user/blocked', [UserController::class, 'blocked'])
 );
 
 # ########## METHOD 2 ##########
@@ -72,20 +72,20 @@ $router->addGroup(
 $router->groupCallback($group, function(Router $router)
 {
     # Routes here
-    # - starts with "/api"
+    # - starts with '/api'
     # - have the IsAuthenticated middleware
     $router->addRoutes(
-        Route::get("/user/actives", [UserController::class, "actives"]),
-        Route::get("/user/blocked", [UserController::class, "blocked"])
+        Route::get('/user/actives', [UserController::class, 'actives']),
+        Route::get('/user/blocked', [UserController::class, 'blocked'])
     );
 
-    $router->groupCallback(["path" => "shipping"], function(Router $router)
+    $router->groupCallback(['path' => 'shipping'], function(Router $router)
     {
         # Routes here
-        # - starts with "/api/shipping"
+        # - starts with '/api/shipping'
         # - have the IsAuthenticated middleware
         $router->addRoutes(
-            Route::get("/to-ship", [ShippingController::class, "toShip"])
+            Route::get('/to-ship', [ShippingController::class, 'toShip'])
         );
     });
 });
@@ -96,8 +96,8 @@ $router->groupCallback($group, function(Router $router)
 $router->addRoutes(
     ...$router->group(
         $group,
-        Route::get("/user/actives", [UserController::class, "actives"]),
-        Route::get("/user/blocked", [UserController::class, "blocked"])
+        Route::get('/user/actives', [UserController::class, 'actives']),
+        Route::get('/user/blocked', [UserController::class, 'blocked'])
     )
 );
 ```
@@ -126,14 +126,14 @@ The `Route` class has a support for path slugs (generic routes)
 
 Here is a basic usage of it :
 ```php
-Route::get("/contact/{id}", function(Request $req, int $id){
+Route::get('/contact/{id}', function(Request $req, int $id){
     # One way to get slug values it through parameters
     # They are passed in order after the Request
-    echo "ContactId: " . $id;
+    echo 'ContactId: ' . $id;
 
     # The other way is through the Request object
     # in this case you need to specify the name of the slug
-    echo "ContactId: " . $req->getSlug("id");
+    echo 'ContactId: ' . $req->getSlug('id');
 });
 ```
 
@@ -143,12 +143,12 @@ format to respect
 To address this, `Route` also support predefined formats and custom regular expressions
 ```php
 # Using predefined format
-Route::get("/contact/{int:id}", function($req, $id){
-    return "id is ".$id;
+Route::get('/contact/{int:id}', function($req, $id){
+    return 'id is '.$id;
 });
 # Using custom regex
-Route::get("/binary/{[01]+:number}", function($req, $number) {
-    return "bin number is".$number;
+Route::get('/binary/{[01]+:number}', function($req, $number) {
+    return 'bin number is'.$number;
 });
 ```
 

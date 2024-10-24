@@ -7,6 +7,7 @@ use Psr\Log\LoggerInterface;
 use Throwable;
 use YonisSavary\Sharp\Classes\Core\Logger;
 use YonisSavary\Sharp\Classes\Data\ObjectArray;
+use YonisSavary\Sharp\Classes\Extras\Cron\CronExpression;
 
 class SchedulerHandler
 {
@@ -25,8 +26,8 @@ class SchedulerHandler
     {
         if (!$this->logger)
         {
-            $fileSafeidentifier = preg_replace("/[^\w]/", "_", $this->identifier);
-            $this->logger = new Logger("schedule/" . $fileSafeidentifier . ".csv");
+            $fileSafeidentifier = preg_replace("/[^\w]/", '_', $this->identifier);
+            $this->logger = new Logger('schedule/' . $fileSafeidentifier . '.csv');
         }
         return $this->logger;
     }
@@ -46,7 +47,7 @@ class SchedulerHandler
         }
         catch (Throwable $err)
         {
-            $this->logger->warning("Could not transform cron expression [{expression}] into a sentence", ["expression" => $this->cronExpression]);
+            $this->logger->warning('Could not transform cron expression [{expression}] into a sentence', ['expression' => $this->cronExpression]);
             $this->logger->warning($err);
         }
     }
@@ -62,7 +63,7 @@ class SchedulerHandler
         $dateTime ??= new DateTime();
 
         $logger = $this->getLogger();
-        $logger->info("Launching task at " . $dateTime->format("Y-m-d H:i:s"));
+        $logger->info('Launching task at ' . $dateTime->format('Y-m-d H:i:s'));
 
         ob_start();
 
@@ -72,14 +73,14 @@ class SchedulerHandler
         }
         catch (Throwable $err)
         {
-            $logger->error("Error while launching task");
+            $logger->error('Error while launching task');
             $logger->error($err);
         }
 
         if ($output = ob_get_clean())
         {
             ObjectArray::fromExplode("\n", $output)
-            ->filter(fn($x) => $x !== "")
+            ->filter(fn($x) => $x !== '')
             ->forEach(fn($x) => $logger->info($x));
         }
 

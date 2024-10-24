@@ -7,7 +7,7 @@ The [`Logger`](../../src/Classes/Core/Logger.php) class is a [`Component`](./com
 By default, you can log by calling the `log()` method
 
 ```php
-$logger->log("DEBUG", "Hello there");
+$logger->log('DEBUG', 'Hello there');
 ```
 
 But writing log level can be quite tedious, that is why the `Logger` class got some shortcuts
@@ -22,11 +22,11 @@ $logger->alert("I'm an alert line");
 $logger->emergency("I'm an emergency line");
 
 # It can also be used to log error/traces in a more verbose way
-$logger->info(new Exception("Something went wrong"));
+$logger->info(new Exception('Something went wrong'));
 
 # Note : your can log everything that can somehow be represented as a string
 $logger->info([1,2,3]);
-$logger->info(["A"=>1, "B"=>2, "C"=>3]);
+$logger->info(['A'=>1, 'B'=>2, 'C'=>3]);
 ```
 
 > [!NOTE]
@@ -38,21 +38,21 @@ You can create new `Logger` objects to log information inside other files
 
 ```php
 # Everything this logger get will be logged to Storage/errors.csv
-$logger = new Logger("errors.csv");
+$logger = new Logger('errors.csv');
 
 # A custom Storage can also be given
 # this one will log everything in /var/log/shippingService/service.csv
-$logger = new Logger("service.csv", new Storage("/var/log/shippingService"))
+$logger = new Logger('service.csv', new Storage('/var/log/shippingService'))
 ```
 
 You can also work with streams directly !
 
 ```php
-$stdLogger = Logger::fromStream(fopen("php://output", "w"));
-$stdLogger->info("Hello!"); // Display Hello! in the console/page
+$stdLogger = Logger::fromStream(fopen('php://output', 'w'));
+$stdLogger->info('Hello!'); // Display Hello! in the console/page
 
 // Now logs into a file
-$stdLogger->replaceStream(fopen("myFile.txt", "a"), true);
+$stdLogger->replaceStream(fopen('myFile.txt', 'a'), true);
 ```
 
 [< Back to summary](../README.md)

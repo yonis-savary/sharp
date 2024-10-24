@@ -68,7 +68,7 @@ class DatabaseField
             self::DECIMAL   => is_numeric($value),
             self::FLOAT     => is_numeric($value),
             self::INTEGER   => is_numeric($value),
-            self::BOOLEAN   => in_array(strtolower("$value"), ["1", "0", "true", "false"]),
+            self::BOOLEAN   => in_array(strtolower("$value"), ['1', '0', 'true', 'false']),
             default         => true
         };
     }

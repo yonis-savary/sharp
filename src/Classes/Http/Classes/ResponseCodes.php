@@ -8,7 +8,7 @@ namespace YonisSavary\Sharp\Classes\Http\Classes;
 class ResponseCodes
 {
     /**
-     * The request succeeded. The result meaning of "success" depends on the HTTP method:
+     * The request succeeded. The result meaning of 'success' depends on the HTTP method:
      *     - GET: The resource has been fetched and transmitted in the message body.
      *     - HEAD: The representation headers are included in the response without any message body.
      *     - PUT or POST: The resource describing the result of the action is transmitted in the message body.
@@ -67,7 +67,7 @@ class ResponseCodes
     /** The server cannot or will not process the request due to something that is perceived to be a client error (e.g., malformed request syntax, invalid request message framing, or deceptive request routing). */
     const BAD_REQUEST = 400;
 
-    /** Although the HTTP standard specifies "unauthorized", semantically this response means "unauthenticated". That is, the client must authenticate itself to get the requested response. */
+    /** Although the HTTP standard specifies 'unauthorized', semantically this response means 'unauthenticated'. That is, the client must authenticate itself to get the requested response. */
     const UNAUTHORIZED = 401;
 
     /** The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource. Unlike 401 Unauthorized, the client's identity is known to the server. */
@@ -91,7 +91,7 @@ class ResponseCodes
     /** This response is sent when a request conflicts with the current state of the server. */
     const CONFLICT = 409;
 
-    /** This response is sent when the requested content has been permanently deleted from server, with no forwarding address. Clients are expected to remove their caches and links to the resource. The HTTP specification intends this status code to be used for "limited-time, promotional services". APIs should not feel compelled to indicate resources that have been deleted with this status code. */
+    /** This response is sent when the requested content has been permanently deleted from server, with no forwarding address. Clients are expected to remove their caches and links to the resource. The HTTP specification intends this status code to be used for 'limited-time, promotional services'. APIs should not feel compelled to indicate resources that have been deleted with this status code. */
     const GONE = 410;
 
     /** Server rejected the request because the Content-Length header field is not defined and the server requires it. */
@@ -136,7 +136,7 @@ class ResponseCodes
     /** The origin server requires the request to be conditional. This response is intended to prevent the 'lost update' problem, where a client GETs a resource's state, modifies it and PUTs it back to the server, when meanwhile a third party has modified the state on the server, leading to a conflict. */
     const PRECONDITION_REQUIRED = 428;
 
-    /** The user has sent too many requests in a given amount of time ("rate limiting"). */
+    /** The user has sent too many requests in a given amount of time ('rate limiting'). */
     const TOO_MANY_REQUESTS = 429;
 
     /** The server is unwilling to process the request because its header fields are too large. The request may be resubmitted after reducing the size of the request header fields. */

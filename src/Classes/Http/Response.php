@@ -54,9 +54,9 @@ class Response
     public function logSelf(Logger $logger=null): void
     {
         $logger ??= Logger::getInstance();
-        $logger->info("{status} {mime}", [
-            "status" => $this->responseCode,
-            "mime" => $this->headers["content-type"] ?? "Unknown MIME"
+        $logger->info('{status} {mime}', [
+            'status' => $this->responseCode,
+            'mime' => $this->headers['content-type'] ?? 'Unknown MIME'
         ]);
     }
 
@@ -75,7 +75,7 @@ class Response
     {
         $toDisplay = $this->content;
 
-        if (str_starts_with($this->headers["content-type"] ?? "", 'application/json'))
+        if (str_starts_with($this->headers['content-type'] ?? '', 'application/json'))
             $toDisplay = json_encode($toDisplay, JSON_THROW_ON_ERROR);
 
         if ($callback = $this->responseTransformer)
@@ -105,12 +105,12 @@ class Response
      */
     public function isJSON(): bool
     {
-        return str_contains($this->getHeader("content-type") ?? "", "application/json");
+        return str_contains($this->getHeader('content-type') ?? '', 'application/json');
     }
 
     /**
      * @return string Transformed header name to lower case
-     * @example NULL `headerName("Content-Type") // returns "content-type"`
+     * @example NULL `headerName('Content-Type') // returns 'content-type'`
      */
     protected function headerName(string $original): string
     {
@@ -194,7 +194,7 @@ class Response
                 header("$name: $value");
 
             // @todo Make this an option (configurable)
-            $this->removeHeaders(["x-powered-by"]);
+            $this->removeHeaders(['x-powered-by']);
 
             foreach ($this->headersToRemove as $header)
                 header_remove($header);
@@ -209,7 +209,7 @@ class Response
      */
     public static function html(string $content, int $responseCode=ResponseCodes::OK): Response
     {
-        return new Response($content, $responseCode, ["Content-Type" => "text/html"]);
+        return new Response($content, $responseCode, ['Content-Type' => 'text/html']);
     }
 
     /**
@@ -224,15 +224,15 @@ class Response
             throw new InvalidArgumentException("Inexistent file [$file] !");
 
         $headers = [
-            "Content-Type" => "application/octet-stream",
-            "Expires" => "0",
-            "Cache-Control" => "must-revalidate",
-            "Pragma" => "public",
-            "Content-Length" => filesize($file),
+            'Content-Type' => 'application/octet-stream',
+            'Expires' => '0',
+            'Cache-Control' => 'must-revalidate',
+            'Pragma' => 'public',
+            'Content-Length' => filesize($file),
         ];
 
         if ($attachmentName)
-            $headers["Content-Disposition"] = "attachment; filename=$attachmentName";
+            $headers['Content-Disposition'] = "attachment; filename=$attachmentName";
 
         return new Response(
             $file,
@@ -258,15 +258,15 @@ class Response
     public static function octetStream(mixed $content, string $attachmentName=null, int $responseCode=ResponseCodes::OK): Response
     {
         $headers = [
-            "Content-Type"   => "application/octet-stream",
-            "Expires"        => "0",
-            "Cache-Control"  => "must-revalidate",
-            "Pragma"         => "public",
-            "Content-Length" => strlen($content),
+            'Content-Type'   => 'application/octet-stream',
+            'Expires'        => '0',
+            'Cache-Control'  => 'must-revalidate',
+            'Pragma'         => 'public',
+            'Content-Length' => strlen($content),
         ];
 
         if ($attachmentName)
-            $headers["Content-Disposition"] = "attachment; filename=$attachmentName";
+            $headers['Content-Disposition'] = "attachment; filename=$attachmentName";
 
         return new Response($content, $responseCode, $headers);
     }
@@ -278,7 +278,7 @@ class Response
      */
     public static function json(mixed $content, int $responseCode=ResponseCodes::OK): Response
     {
-        return new Response($content, $responseCode, ["Content-Type" => "application/json"]);
+        return new Response($content, $responseCode, ['Content-Type' => 'application/json']);
     }
 
     /**
@@ -289,7 +289,7 @@ class Response
      */
     public static function redirect(string $location, int $responseCode=ResponseCodes::SEE_OTHER): Response
     {
-        return new Response(null, $responseCode, ["Location" => $location]);
+        return new Response(null, $responseCode, ['Location' => $location]);
     }
 
     /**

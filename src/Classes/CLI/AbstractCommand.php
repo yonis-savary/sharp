@@ -11,30 +11,30 @@ abstract class AbstractCommand extends CLIUtils
     final public function getOrigin(): string
     {
         $class = get_called_class();
-        $origin = preg_replace("/(\\\\Commands)?\\\\[^\\\\]+$/", "", $class);
-        $origin = preg_replace("/.+\\\\/", "", $origin);
-        $origin = preg_replace("/([a-z])([A-Z])/", "$1-$2", $origin);
+        $origin = preg_replace('/(\\\\Commands)?\\\\[^\\\\]+$/', '', $class);
+        $origin = preg_replace('/.+\\\\/', '', $origin);
+        $origin = preg_replace('/([a-z])([A-Z])/', "$1-$2", $origin);
         $origin = strtolower($origin);
         return $origin;
     }
 
     final public function getIdentifier(): string
     {
-        return $this->getOrigin() . "@" . $this->getName();
+        return $this->getOrigin() . '@' . $this->getName();
     }
 
     final public function getName(): string
     {
         $class = get_called_class();
-        $class = preg_replace("/.+\\\\/", "", $class);
-        $class = preg_replace("/([a-z])([A-Z])/", "$1-$2", $class);
+        $class = preg_replace('/.+\\\\/', '', $class);
+        $class = preg_replace('/([a-z])([A-Z])/', "$1-$2", $class);
         $class = strtolower($class);
         return $class;
     }
 
     public function getHelp(): string
     {
-        return "";
+        return '';
     }
 
     /**
@@ -46,7 +46,7 @@ abstract class AbstractCommand extends CLIUtils
      * Directly execute a command without having to instanciate an object
      * @param string $argv Console parameters
      */
-    final public static function execute(string $argv="")
+    final public static function execute(string $argv='')
     {
         $class = get_called_class();
         return (new $class)(new Args($argv));

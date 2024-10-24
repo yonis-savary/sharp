@@ -11,12 +11,12 @@ class QueuesLaunch extends AbstractCommand
 {
     public function getHelp(): string
     {
-        return "Tell your applications queues to process one batch of items";
+        return 'Tell your applications queues to process one batch of items';
     }
 
     public function __invoke(Args $args)
     {
-        $this->log("Processing application queues");
+        $this->log('Processing application queues');
 
         /** @var QueueHandler $class */
         foreach (Autoloader::classesThatUses(QueueHandler::class) as $class)

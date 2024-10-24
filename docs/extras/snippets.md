@@ -20,7 +20,7 @@ tags: routing, routes, routing
 ```php
 # YourAppName/Routes/anyfile.php
 Router::getInstance()->addRoutes(
-    Route::get("/path", [Controller::class, "method"])
+    Route::get('/path', [Controller::class, 'method'])
 );
 
 # Helper global function
@@ -40,7 +40,7 @@ class MyController
     public static function declareRoutes(Router $router)
     {
         $router->addRoutes(
-            Route::get("/some-path", [self::class, "myMethod"])
+            Route::get('/some-path', [self::class, 'myMethod'])
         );
     }
 
@@ -57,7 +57,7 @@ tags: data, database, query
 
 ```php
 Database::getInstance()->query(
-    "SELECT * FROM user WHERE login = {}",
+    'SELECT * FROM user WHERE login = {}',
     ['admin']
 );
 
@@ -71,15 +71,15 @@ tags: view, template, html, render
 
 ```php
 (new Renderer)->render(
-    "directory/view_name",
-    ["name" => "Paul"]
+    'directory/view_name',
+    ['name' => 'Paul']
 );
 
 # Global query function
 render(/*...*/);
 
 # Return a Response
-Response::view("view_name");
+Response::view('view_name');
 ```
 `view_name.php`:
 ```php

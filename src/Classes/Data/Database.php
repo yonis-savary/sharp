@@ -21,13 +21,13 @@ class Database
     public static function getDefaultConfiguration(): array
     {
         return [
-            "driver" => "mysql",
-            "database" => "database",
-            "host" => "localhost",
-            "port" => 3306,
-            "user" => "root",
-            "password" => null,
-            "charset" => "utf8"
+            'driver' => 'mysql',
+            'database' => 'database',
+            'host' => 'localhost',
+            'port' => 3306,
+            'user' => 'root',
+            'password' => null,
+            'charset' => 'utf8'
         ];
     }
 
@@ -35,13 +35,13 @@ class Database
     {
         $configuration = self::readConfiguration();
         return new self(
-            $configuration["driver"],
-            $configuration["database"],
-            $configuration["host"],
-            $configuration["port"],
-            $configuration["user"],
-            $configuration["password"],
-            $configuration["charset"]
+            $configuration['driver'],
+            $configuration['database'],
+            $configuration['host'],
+            $configuration['port'],
+            $configuration['user'],
+            $configuration['password'],
+            $configuration['charset']
         );
     }
 
@@ -52,7 +52,7 @@ class Database
         public ?int $port=null,
         public ?string $user=null,
         protected ?string $password=null,
-        public string $charset="utf8"
+        public string $charset='utf8'
     )
     {
         $this->loadConfiguration();
@@ -64,9 +64,9 @@ class Database
         $charset = $this->charset;
         switch ($this->driver)
         {
-            case "sqlite":
-                $this->query("PRAGMA encoding={}", [$charset]);
-                $this->query("PRAGMA foreign_keys=ON"); // Manually enable foreign keys constraints
+            case 'sqlite':
+                $this->query('PRAGMA encoding={}', [$charset]);
+                $this->query('PRAGMA foreign_keys=ON'); // Manually enable foreign keys constraints
                 break;
             default :
                 $this->query("SET NAMES $charset");
@@ -134,7 +134,7 @@ class Database
     {
         if (is_array($value))
             return $this->build(
-                "(". join(",", array_map(fn()=>"{}", $value)) .")",
+                '('. join(',', array_map(fn()=>'{}', $value)) .')',
                 $value
             );
 
@@ -221,7 +221,7 @@ class Database
     {
         try
         {
-            $this->query("SELECT 1 FROM `{}` LIMIT 1", [$table]);
+            $this->query('SELECT 1 FROM `{}` LIMIT 1', [$table]);
             return true;
         }
         catch (PDOException)
@@ -237,7 +237,7 @@ class Database
     {
         try
         {
-            $this->query("SELECT `{}` FROM `{}` LIMIT 1", [$field, $table]);
+            $this->query('SELECT `{}` FROM `{}` LIMIT 1', [$field, $table]);
             return true;
         }
         catch (PDOException)

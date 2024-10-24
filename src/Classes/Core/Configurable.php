@@ -39,8 +39,8 @@ trait Configurable
     public static function getConfigurationKey(): string
     {
         $class = self::class;
-        $class = preg_replace("/.+\\\\/", "", $class);
-        $class = preg_replace("/([a-z])([A-Z])/", '$1-$2', $class);
+        $class = preg_replace("/.+\\\\/", '', $class);
+        $class = preg_replace('/([a-z])([A-Z])/', '$1-$2', $class);
         $class = strtolower($class);
         return $class;
     }
@@ -54,10 +54,12 @@ trait Configurable
     final public static function readConfiguration(Configuration $config=null): array
     {
         $config ??= Configuration::getInstance();
+        $configKey = self::getConfigurationKey();
+        $defaultConfig = self::getDefaultConfiguration();
 
         return array_merge(
-            self::getDefaultConfiguration(),
-            $config->get(self::getConfigurationKey(), [])
+            $defaultConfig,
+            $config->get($configKey, [])
         );
     }
 
@@ -100,7 +102,7 @@ trait Configurable
      */
     final public function is(string $key): bool
     {
-        return boolval($this->getConfiguration()[$key] ?? false);
+        return (bool) ($this->getConfiguration()[$key] ?? false);
     }
 
     /**
@@ -110,7 +112,7 @@ trait Configurable
      */
     final public function isEnabled(): bool
     {
-        return $this->is("enabled");
+        return $this->is('enabled');
     }
 
     /**
@@ -120,6 +122,6 @@ trait Configurable
      */
     final public function isCached(): bool
     {
-        return $this->is("cached");
+        return $this->is('cached');
     }
 }

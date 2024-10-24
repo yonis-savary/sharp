@@ -13,28 +13,28 @@ class EventListenerTest extends TestCase
         $myVar = 0;
 
         $handlerA = new EventListener();
-        $handlerA->on("change", function() use (&$myVar) { $myVar = 1; });
+        $handlerA->on('change', function() use (&$myVar) { $myVar = 1; });
 
         $handlerB = new EventListener();
-        $handlerB->on("change", function() use (&$myVar) { $myVar = 2; });
+        $handlerB->on('change', function() use (&$myVar) { $myVar = 2; });
 
-        $handlerA->dispatch(new CustomEvent("change"));
+        $handlerA->dispatch(new CustomEvent('change'));
         $this->assertEquals(1, $myVar);
 
-        $handlerB->dispatch(new CustomEvent("change"));
+        $handlerB->dispatch(new CustomEvent('change'));
         $this->assertEquals(2, $myVar);
 
-        $handlerA->dispatch(new CustomEvent("change"));
+        $handlerA->dispatch(new CustomEvent('change'));
         $this->assertEquals(1, $myVar);
 
         $handlerC = new EventListener();
-        $handlerC->on("change", function(CustomEvent $value) use (&$myVar) {
-            $myVar = $value->extra["value"];
+        $handlerC->on('change', function(CustomEvent $value) use (&$myVar) {
+            $myVar = $value->extra['value'];
         });
 
         for($i=0; $i<5; $i++)
         {
-            $handlerC->dispatch(new CustomEvent("change", ["value" => $i]));
+            $handlerC->dispatch(new CustomEvent('change', ['value' => $i]));
             $this->assertEquals($i, $myVar);
         }
     }
@@ -45,19 +45,19 @@ class EventListenerTest extends TestCase
 
         $myVar = 0;
 
-        $listener->on("increment", function() use (&$myVar){ $myVar++; });
-        $listener->on("increment-once", function() use (&$myVar){ $myVar++; }, true);
+        $listener->on('increment', function() use (&$myVar){ $myVar++; });
+        $listener->on('increment-once', function() use (&$myVar){ $myVar++; }, true);
 
         $this->assertEquals(0, $myVar);
-        $listener->dispatch(new CustomEvent("increment"));
+        $listener->dispatch(new CustomEvent('increment'));
         $this->assertEquals(1, $myVar);
-        $listener->dispatch(new CustomEvent("increment"));
+        $listener->dispatch(new CustomEvent('increment'));
         $this->assertEquals(2, $myVar);
 
 
-        $listener->dispatch(new CustomEvent("increment-once"));
+        $listener->dispatch(new CustomEvent('increment-once'));
         $this->assertEquals(3, $myVar);
-        $listener->dispatch(new CustomEvent("increment-once"));
+        $listener->dispatch(new CustomEvent('increment-once'));
         $this->assertEquals(3, $myVar);
     }
 
@@ -67,14 +67,14 @@ class EventListenerTest extends TestCase
 
         $myVar = 0;
 
-        $subscriptionId = $listener->on("increment", function() use (&$myVar){ $myVar++; });
+        $subscriptionId = $listener->on('increment', function() use (&$myVar){ $myVar++; });
 
         $this->assertEquals(0, $myVar);
-        $listener->dispatch(new CustomEvent("increment"));
+        $listener->dispatch(new CustomEvent('increment'));
         $this->assertEquals(1, $myVar);
 
         $listener->removeSubscription($subscriptionId);
-        $listener->dispatch(new CustomEvent("increment"));
+        $listener->dispatch(new CustomEvent('increment'));
         $this->assertEquals(1, $myVar);
     }
 }

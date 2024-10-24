@@ -1,6 +1,6 @@
 <?php
 
-namespace YonisSavary\Sharp\Classes\Extras;
+namespace YonisSavary\Sharp\Classes\Extras\Cron;
 
 abstract class AbstractCronExpressionPart
 {

@@ -13,11 +13,11 @@ class AppMapTest extends TestCase
         $a = AppMapA::get();
         $b = AppMapB::get();
 
-        $a->set("key", "abc");
-        $b->set("key", "123");
+        $a->set('key', 'abc');
+        $b->set('key', '123');
 
-        $this->assertEquals("abc", $a->get("key"));
-        $this->assertEquals("123", $b->get("key"));
+        $this->assertEquals('abc', $a->get('key'));
+        $this->assertEquals('123', $b->get('key'));
     }
 
     public function test_reference()
@@ -26,8 +26,8 @@ class AppMapTest extends TestCase
         $second = AppMapA::get();
 
 
-        $first->set("refTest", "Hello!");
+        $first->set('refTest', 'Hello!');
 
-        $this->assertEquals("Hello!", $second->get("refTest"));
+        $this->assertEquals('Hello!', $second->get('refTest'));
     }
 }

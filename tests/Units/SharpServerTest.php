@@ -13,12 +13,12 @@ class SharpServerTest extends SharpTestCase
         $this->assertTrue(true);
 
         $response = $this->fetch(
-            "GET", "/root"
+            'GET', '/root'
         );
 
         $response->logSelf();
 
-        $this->assertJsonResponse("Hello!", "GET", "/root");
+        $this->assertJsonResponse('Hello!', 'GET', '/root');
     }
 
     public function test_startAndStop()
@@ -26,12 +26,12 @@ class SharpServerTest extends SharpTestCase
         $server = new SharpServer();
 
         $this->assertTrue($server->isRunning());
-        $this->assertJsonResponse("Hello!", "GET", "/root", server: $server);
+        $this->assertJsonResponse('Hello!', 'GET', '/root', server: $server);
 
         $server->stop();
         $this->assertFalse($server->isRunning());
 
         $this->expectException(RuntimeException::class); // Cannot connect to server
-        $this->assertJsonResponse("Hello!", "GET", "/root", server: $server);
+        $this->assertJsonResponse('Hello!', 'GET', '/root', server: $server);
     }
 }

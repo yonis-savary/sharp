@@ -5,10 +5,10 @@ use YonisSavary\Sharp\Classes\Data\ObjectArray;
 
 function resetTestDatabase()
 {
-    $newDB = new Database("sqlite", null);
+    $newDB = new Database('sqlite', null);
 
-    $schema = file_get_contents( __DIR__."/../schema.sql");
-    $schema = ObjectArray::fromExplode(";", $schema)
+    $schema = file_get_contents( __DIR__.'/../schema.sql');
+    $schema = ObjectArray::fromExplode(';', $schema)
     ->map(trim(...))
     ->filter()
     ->collect();

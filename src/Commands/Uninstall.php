@@ -15,14 +15,14 @@ class Uninstall extends AbstractCommand
     public function __invoke(Args $args)
     {
         $projectRoot = Autoloader::projectRoot();
-        $this->shellInDirectory("git clean -dfXn", $projectRoot);
+        $this->shellInDirectory('git clean -dfXn', $projectRoot);
 
-        if (Terminal::confirm("Git : Delete every untracked files ? This action cannot be undone"))
-            $this->shellInDirectory("git clean -dfX", $projectRoot);
+        if (Terminal::confirm('Git : Delete every untracked files ? This action cannot be undone'))
+            $this->shellInDirectory('git clean -dfX', $projectRoot);
 
-        $this->log("Uninstalling dependencies...");
+        $this->log('Uninstalling dependencies...');
 
-        $applications = Configuration::getInstance()->toArray("applications");
+        $applications = Configuration::getInstance()->toArray('applications');
 
         foreach ($applications as $appName)
             $this->uninstallAppVendor($appName);
@@ -30,20 +30,20 @@ class Uninstall extends AbstractCommand
 
     public function getHelp(): string
     {
-        return "Delete every ignored files and vendor directories (Preview before deletion for ignored files)";
+        return 'Delete every ignored files and vendor directories (Preview before deletion for ignored files)';
     }
 
     protected function recursiveDeleteDirectory(Storage $rootDirectory)
     {
-        $subFiles = $rootDirectory->exploreDirectory("/", Utils::ONLY_FILES);
+        $subFiles = $rootDirectory->exploreDirectory('/', Utils::ONLY_FILES);
         foreach (array_reverse($subFiles) as $file)
             unlink($file);
-        $this->log(" - Deleted " . count($subFiles) . " files");
+        $this->log(' - Deleted ' . count($subFiles) . ' files');
 
-        $subDirectories = $rootDirectory->exploreDirectory("/", Utils::ONLY_DIRS);
+        $subDirectories = $rootDirectory->exploreDirectory('/', Utils::ONLY_DIRS);
         foreach (array_reverse($subDirectories) as $directory)
             rmdir($directory);
-        $this->log(" - Deleted " . count($subDirectories) . " directories");
+        $this->log(' - Deleted ' . count($subDirectories) . ' directories');
 
         rmdir($rootDirectory->getRoot());
     }
@@ -53,12 +53,12 @@ class Uninstall extends AbstractCommand
         $appPath = Utils::relativePath($appName);
         $app = new Storage($appPath);
 
-        if (!$app->isDirectory("vendor"))
-            return $this->log("No vendor directory in " . $appName);
+        if (!$app->isDirectory('vendor'))
+            return $this->log('No vendor directory in ' . $appName);
 
-        $this->log("Uninstalling vendor in ". $app->getRoot());
+        $this->log('Uninstalling vendor in '. $app->getRoot());
 
-        $vendorDir = $app->getSubStorage("vendor");
+        $vendorDir = $app->getSubStorage('vendor');
         $this->recursiveDeleteDirectory($vendorDir);
     }
 }

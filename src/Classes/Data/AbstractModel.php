@@ -58,7 +58,7 @@ abstract class AbstractModel implements JsonSerializable
             $this->data = $object->data;
         }
 
-        if ($name === "data")
+        if ($name === 'data')
             return $this->data;
 
         if (property_exists($this->foreignObjects, $name))
@@ -82,7 +82,7 @@ abstract class AbstractModel implements JsonSerializable
 
     public function toArray(): array
     {
-        $result = [ "data" => (array) $this->data ];
+        $result = [ 'data' => (array) $this->data ];
 
         foreach ($this->foreignObjects as $key => $model)
             $result[$key] = $model->toArray();
@@ -107,7 +107,7 @@ abstract class AbstractModel implements JsonSerializable
         $currentData = (array) $this->data;
 
         if (! $id = $currentData[$primaryKey] ?? false)
-            throw new Exception("Cannot update ". $self::getTable() ." without $primaryKey");
+            throw new Exception('Cannot update '. $self::getTable() ." without $primaryKey");
 
         $newData = [];
 
@@ -130,26 +130,18 @@ abstract class AbstractModel implements JsonSerializable
     /**
      * @return string The table name in your database
      */
-    public static function getTable(): string
-    {
-        return "table";
-    }
+    public static abstract function getTable(): string;
 
     /**
      * @return string|null The primary key field name (or null if none)
      */
-    public static function getPrimaryKey(): string|null
-    {
-        return "id";
-    }
+    public static abstract function getPrimaryKey(): string|null;
 
     /**
      * @return array<string,DatabaseField> Associative array with name => field description (DatabaseField object)
      */
-    public static function getFields(): array
-    {
-        return [];
-    }
+    public static abstract function getFields(): array;
+
 
     final public static function getFieldNames(): array
     {
@@ -195,9 +187,9 @@ abstract class AbstractModel implements JsonSerializable
      *
      * @param array $conditions Column conditions as <column> => <value>
      * @param bool $recursive Explore foreign keys to fetch references
-     * @param array $foreignKeyIgnores List of foreign keys to ignore while exploring model as "table&foreign_key_column"
+     * @param array $foreignKeyIgnores List of foreign keys to ignore while exploring model as 'table&foreign_key_column'
      * @return array<static> Array of result rows
-     * @example base `Model::selectWhere(["id" => 309, "user" => 585])`
+     * @example base `Model::selectWhere(['id' => 309, 'user' => 585])`
      */
     public static function selectWhere(array $conditions=[], bool $recursive=true, array $foreignKeyIgnores=[]): array
     {
@@ -238,7 +230,7 @@ abstract class AbstractModel implements JsonSerializable
     public static function insertArray(array $data, Database $database=null): int|false
     {
         if (!Utils::isAssoc($data))
-            throw new InvalidArgumentException("Given data must be an associative array !");
+            throw new InvalidArgumentException('Given data must be an associative array !');
 
         $self = get_called_class();
         $dataFields = array_keys($data);
@@ -247,7 +239,7 @@ abstract class AbstractModel implements JsonSerializable
         $invalidFields = array_diff($dataFields, $modelFields);
         if (count($invalidFields))
         {
-            $invalidFields = join(", ", $invalidFields);
+            $invalidFields = join(', ', $invalidFields);
             throw new InvalidArgumentException($self . " model does not contains these fields: $invalidFields");
         }
 
@@ -295,7 +287,7 @@ abstract class AbstractModel implements JsonSerializable
      * @param array $conditions Column conditions as <column> => <value>
      * @param bool $explore Explore foreign keys to fetch references
      * @return ?static Matching row or `null`
-     * @example base `Model::findWhere(["id" => 309, "user" => 585])`
+     * @example base `Model::findWhere(['id' => 309, 'user' => 585])`
      */
     public static function findWhere(array $conditions, bool $explore=true): ?self
     {
@@ -380,7 +372,7 @@ abstract class AbstractModel implements JsonSerializable
      *
      * @param array $conditions Column conditions as <column> => <value>
      * @param bool $explore Explore foreign keys to fetch references
-     * @example base `Model::deleteWhere(["id" => 309, "user" => 585])`
+     * @example base `Model::deleteWhere(['id' => 309, 'user' => 585])`
      */
     public static function deleteWhere(array $conditions): void
     {

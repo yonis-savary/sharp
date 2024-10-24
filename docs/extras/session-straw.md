@@ -9,7 +9,7 @@ one of the first solutions that comes to mind is to use the session to store it
 
 ```php
 # Constant allow us to have autocompletion in the IDE
-const USER_PERMISSION = "session.user.permission";
+const USER_PERMISSION = 'session.user.permission';
 
 $session = Session::getInstance();
 

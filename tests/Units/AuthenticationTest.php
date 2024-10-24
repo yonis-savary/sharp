@@ -16,16 +16,16 @@ class AuthenticationTest extends TestCase
         $authentication->logout();
 
         // Good credentials
-        $this->assertTrue($authentication->attempt("admin", "admin"));
+        $this->assertTrue($authentication->attempt('admin', 'admin'));
 
         // Bad credentials/password
-        $this->assertFalse($authentication->attempt("root", "admin"));
-        $this->assertFalse($authentication->attempt("admin", "root"));
-        $this->assertFalse($authentication->attempt("root", "root"));
-        $this->assertFalse($authentication->attempt("root", "pleaseUseAGoodPassword"));
+        $this->assertFalse($authentication->attempt('root', 'admin'));
+        $this->assertFalse($authentication->attempt('admin', 'root'));
+        $this->assertFalse($authentication->attempt('root', 'root'));
+        $this->assertFalse($authentication->attempt('root', 'pleaseUseAGoodPassword'));
 
-        $this->assertFalse($authentication->attempt("'); DELETE FROM user; --", "root"));
-        $this->assertFalse($authentication->attempt("root", "'); DELETE FROM user; --"));
+        $this->assertFalse($authentication->attempt("'); DELETE FROM user; --", 'root'));
+        $this->assertFalse($authentication->attempt('root', "'); DELETE FROM user; --"));
 
         $this->assertCount(
             1,
@@ -38,7 +38,7 @@ class AuthenticationTest extends TestCase
         $authentication = new Authentication();
         $authentication->logout();
 
-        $authentication->attempt("admin", "admin");
+        $authentication->attempt('admin', 'admin');
         $this->assertTrue($authentication->isLogged());
 
         $authentication->logout();
@@ -53,14 +53,14 @@ class AuthenticationTest extends TestCase
 
         $eventVar = null;
         $events->on(AuthenticatedUser::class, function(AuthenticatedUser $event) use (&$eventVar) {
-            $eventVar = $event->user["data"]["login"];
+            $eventVar = $event->user['data']['login'];
         });
 
-        $authentication->attempt("admin", "root");
+        $authentication->attempt('admin', 'root');
         $this->assertNull($eventVar);
 
-        $authentication->attempt("admin", "admin");
-        $this->assertEquals("admin", $eventVar);
+        $authentication->attempt('admin', 'admin');
+        $this->assertEquals('admin', $eventVar);
 
         EventListener::removeInstance();
     }
@@ -71,13 +71,13 @@ class AuthenticationTest extends TestCase
         $authentication = new Authentication();
         $authentication->logout();
 
-        $authentication->attempt("admin", "admin");
+        $authentication->attempt('admin', 'admin');
         $this->assertTrue($authentication->isLogged());
 
-        $authentication->attempt("root", "pleaseUseAGoodPassword");
+        $authentication->attempt('root', 'pleaseUseAGoodPassword');
         $this->assertFalse($authentication->isLogged());
 
-        $authentication->attempt("admin", "admin");
+        $authentication->attempt('admin', 'admin');
         $this->assertTrue($authentication->isLogged());
 
         $authentication->logout();
@@ -89,12 +89,12 @@ class AuthenticationTest extends TestCase
         $authentication = new Authentication();
         $authentication->logout();
 
-        $authentication->attempt("admin", "admin");
+        $authentication->attempt('admin', 'admin');
         $this->assertEquals(0, $authentication->attemptNumber());
 
-        $authentication->attempt("root", "pleaseUseAGoodPassword");
-        $authentication->attempt("root", "pleaseUseAGoodPassword");
-        $authentication->attempt("root", "pleaseUseAGoodPassword");
+        $authentication->attempt('root', 'pleaseUseAGoodPassword');
+        $authentication->attempt('root', 'pleaseUseAGoodPassword');
+        $authentication->attempt('root', 'pleaseUseAGoodPassword');
         $this->assertEquals(3, $authentication->attemptNumber());
     }
 
@@ -105,28 +105,28 @@ class AuthenticationTest extends TestCase
 
         $this->assertFalse($authentication->isLogged());
 
-        $authentication->login(["A" => 5]);
+        $authentication->login(['A' => 5]);
         $this->assertTrue($authentication->isLogged());
 
-        $this->assertEquals(["A" => 5], $authentication->getUser());
+        $this->assertEquals(['A' => 5], $authentication->getUser());
     }
 
     public function test_getTestUser()
     {
         $authentication = new Authentication();
 
-        $authentication->attempt("admin", "admin");
+        $authentication->attempt('admin', 'admin');
         $this->assertEquals([
-            "data" => [
-                "id" => 1,
-                "login" => "admin",
-                "password" => '$2y$08$pxfA4LlzVyXRPYVZH7czvu.gQQ8BNfzRdhejln2dwB7Bv6QafwAua',
-                "salt" => "dummySalt",
+            'data' => [
+                'id' => 1,
+                'login' => 'admin',
+                'password' => '$2y$08$pxfA4LlzVyXRPYVZH7czvu.gQQ8BNfzRdhejln2dwB7Bv6QafwAua',
+                'salt' => 'dummySalt',
                 'blocked' => false
             ]
         ], $authentication->getUser());
 
-        $authentication->attempt("root", "root");
+        $authentication->attempt('root', 'root');
         $this->assertNull($authentication->getUser());
     }
 }

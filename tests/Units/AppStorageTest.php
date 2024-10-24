@@ -13,10 +13,10 @@ class AppStorageTest extends TestCase
         $a = AppStorageA::get();
         $b = AppStorageB::get();
 
-        $a->write("text.txt", "Hello");
-        $b->write("text.txt", "Goodbye");
+        $a->write('text.txt', 'Hello');
+        $b->write('text.txt', 'Goodbye');
 
-        $this->assertEquals("Hello", $a->read("text.txt"));
-        $this->assertEquals("Goodbye", $b->read("text.txt"));
+        $this->assertEquals('Hello', $a->read('text.txt'));
+        $this->assertEquals('Goodbye', $b->read('text.txt'));
     }
 }

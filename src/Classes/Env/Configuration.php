@@ -10,7 +10,7 @@ use YonisSavary\Sharp\Core\Utils;
 
 class Configuration extends AbstractMap
 {
-    const DEFAULT_FILENAME = "sharp.json";
+    const DEFAULT_FILENAME = 'sharp.json';
 
     use Component;
 
@@ -20,7 +20,7 @@ class Configuration extends AbstractMap
     public static function getDefaultInstance()
     {
         $config = new self(self::DEFAULT_FILENAME);
-        $config->mergeWithFile("env.json", false);
+        $config->mergeWithFile('env.json', false);
         return $config;
     }
 
@@ -32,8 +32,11 @@ class Configuration extends AbstractMap
         if (!$filename)
             return;
 
+        if (!is_file($filename))
+            $filename = Utils::relativePath($filename);
+
         $this->storage = [];
-        $this->filename = $filename = Utils::relativePath($filename);
+        $this->filename = $filename;
 
         // Info: this verification comes after the previous assignment
         // because we can create a config from nothing then save it in a file
@@ -57,12 +60,12 @@ class Configuration extends AbstractMap
     }
 
     /**
-     * @param string $path This parameter can be used as a "Save As..." feature to copy a configuration, if `null`, the current path is used
+     * @param string $path This parameter can be used as a 'Save As...' feature to copy a configuration, if `null`, the current path is used
      */
     public function save(string $path=null): void
     {
         if ($this->merged)
-            throw new RuntimeException("Cannot save a configuration that comes from multiples files");
+            throw new RuntimeException('Cannot save a configuration that comes from multiples files');
 
         $path ??= $this->filename;
 

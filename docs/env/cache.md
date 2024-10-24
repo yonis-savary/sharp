@@ -8,21 +8,21 @@ The [`Cache`](../../src/Classes/Env/Cache.php) class can save [serialized](https
 $cache = Cache::getInstance();
 
 // Save an object in the Storage
-$cache->set("my-key", $anyObjectOfYours, Cache::HOUR * 3);
-$cache->set("permanent-object", [1,2,3], Cache::PERMANENT);
+$cache->set('my-key', $anyObjectOfYours, Cache::HOUR * 3);
+$cache->set('permanent-object', [1,2,3], Cache::PERMANENT);
 
 // Retrieve the serialized object
-$anyObjectOfYours = $cache->get("my-key");
-$anyObjectOfYours = $cache->get("my-key", $anyDefaultValue);
+$anyObjectOfYours = $cache->get('my-key');
+$anyObjectOfYours = $cache->get('my-key', $anyDefaultValue);
 
-if ($serialized = $cache->try("another-key"))
+if ($serialized = $cache->try('another-key'))
 {
     // It exists !
 }
 
-$exists = $cache->has("my-key");
+$exists = $cache->has('my-key');
 
-$cache->delete("key-to-delete");
+$cache->delete('key-to-delete');
 ```
 
 ## Working with references
@@ -34,13 +34,13 @@ The first solution is to read the cache and set it again when editing data
 ```php
 public function initialize()
 {
-    $this->data = Cache::getInstance()->get("my-key", []);
+    $this->data = Cache::getInstance()->get('my-key', []);
 }
 
 public function setData(mixed $data)
 {
     $this->data = $data;
-    Cache::getInstance()->set("my-key", $this->data);
+    Cache::getInstance()->set('my-key', $this->data);
 }
 ```
 
@@ -50,7 +50,7 @@ to get a reference to the cache, that we can directly edit
 ```php
 public function initialize()
 {
-    $this->data = &Cache::getInstance()->getReference("my-key");
+    $this->data = &Cache::getInstance()->getReference('my-key');
 }
 
 public function setData(mixed $data)

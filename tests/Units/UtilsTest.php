@@ -47,26 +47,26 @@ class UtilsTest extends TestCase
 
     public function test_normalizePath()
     {
-        $this->assertEquals("domain/class.php", Utils::normalizePath("domain/class.php"));
-        $this->assertEquals("domain/class.php", Utils::normalizePath("domain//class.php"));
-        $this->assertEquals("domain/class.php", Utils::normalizePath("domain\\class.php"));
-        $this->assertEquals("domain/class.php", Utils::normalizePath("domain\\\\class.php"));
+        $this->assertEquals('domain/class.php', Utils::normalizePath('domain/class.php'));
+        $this->assertEquals('domain/class.php', Utils::normalizePath('domain//class.php'));
+        $this->assertEquals('domain/class.php', Utils::normalizePath("domain\\class.php"));
+        $this->assertEquals('domain/class.php', Utils::normalizePath("domain\\\\class.php"));
     }
 
     public function test_joinPath()
     {
-        $this->assertEquals("domain/class.php", Utils::joinPath("domain", "class.php"));
-        $this->assertEquals("domain/class.php", Utils::joinPath("domain/", "class.php"));
-        $this->assertEquals("domain/class.php", Utils::joinPath("domain", '\class.php'));
-        $this->assertEquals("domain/class.php", Utils::joinPath("domain/", "/class.php"));
-        $this->assertEquals("domain/class.php", Utils::joinPath("domain/", '\class.php'));
+        $this->assertEquals('domain/class.php', Utils::joinPath('domain', 'class.php'));
+        $this->assertEquals('domain/class.php', Utils::joinPath('domain/', 'class.php'));
+        $this->assertEquals('domain/class.php', Utils::joinPath('domain', '\class.php'));
+        $this->assertEquals('domain/class.php', Utils::joinPath('domain/', '/class.php'));
+        $this->assertEquals('domain/class.php', Utils::joinPath('domain/', '\class.php'));
     }
 
     public function test_relativePath()
     {
         $this->assertEquals(
-            Utils::joinPath(Autoloader::projectRoot(), "domain/class.php"),
-            Utils::relativePath("domain/class.php")
+            Utils::joinPath(Autoloader::projectRoot(), 'domain/class.php'),
+            Utils::relativePath('domain/class.php')
         );
     }
 
@@ -74,14 +74,14 @@ class UtilsTest extends TestCase
     {
         $this->assertEquals(
             Utils::classnameToPath('Domain\Subdomain\Class'),
-            Utils::relativePath("Domain/Subdomain/Class.php")
+            Utils::relativePath('Domain/Subdomain/Class.php')
         );
     }
 
     public function test_classnameToPath()
     {
         $this->assertEquals(
-            Utils::relativePath("Domain/Subdomain/Class.php"),
+            Utils::relativePath('Domain/Subdomain/Class.php'),
             Utils::classnameToPath('Domain\Subdomain\Class')
         );
     }
@@ -95,14 +95,14 @@ class UtilsTest extends TestCase
     {
         $storage = Storage::getInstance()->getSubStorage(uniqid());
         foreach ([
-            "(disc 1) title.mp3",
-            "a.txt",
-            "b.txt",
-            "dir/c.txt",
-            "dir/d.txt",
-            "dir/subDirectory/e.txt",
-            "dir/subDirectory/f.txt"
-        ] as $file) $storage->write($file, "text");
+            '(disc 1) title.mp3',
+            'a.txt',
+            'b.txt',
+            'dir/c.txt',
+            'dir/d.txt',
+            'dir/subDirectory/e.txt',
+            'dir/subDirectory/f.txt'
+        ] as $file) $storage->write($file, 'text');
         return $storage;
     }
 
@@ -111,30 +111,30 @@ class UtilsTest extends TestCase
         $storage = $this->getDummyStorage();
 
         $FILES = $this->arrayOfPaths([
-            "(disc 1) title.mp3",
-            "a.txt",
-            "b.txt",
-            "dir/c.txt",
-            "dir/d.txt",
-            "dir/subDirectory/e.txt",
-            "dir/subDirectory/f.txt"
+            '(disc 1) title.mp3',
+            'a.txt',
+            'b.txt',
+            'dir/c.txt',
+            'dir/d.txt',
+            'dir/subDirectory/e.txt',
+            'dir/subDirectory/f.txt'
         ], $storage);
 
         $DIRS = $this->arrayOfPaths([
-            "dir",
-            "dir/subDirectory"
+            'dir',
+            'dir/subDirectory'
         ], $storage);
 
         $ALL = $this->arrayOfPaths([
-            "(disc 1) title.mp3",
-            "a.txt",
-            "b.txt",
-            "dir",
-            "dir/c.txt",
-            "dir/d.txt",
-            "dir/subDirectory",
-            "dir/subDirectory/e.txt",
-            "dir/subDirectory/f.txt"
+            '(disc 1) title.mp3',
+            'a.txt',
+            'b.txt',
+            'dir',
+            'dir/c.txt',
+            'dir/d.txt',
+            'dir/subDirectory',
+            'dir/subDirectory/e.txt',
+            'dir/subDirectory/f.txt'
         ], $storage);
 
         $this->assertEquals($ALL, Utils::exploreDirectory($storage->getRoot(), Storage::NO_FILTER));
@@ -146,17 +146,17 @@ class UtilsTest extends TestCase
     {
         $storage = $this->getDummyStorage();
 
-        $this->assertEquals($this->arrayOfPaths(["(disc 1) title.mp3", "a.txt", "b.txt"], $storage), Utils::listFiles($storage->getRoot()));
-        $this->assertEquals($this->arrayOfPaths(["dir/c.txt", "dir/d.txt"], $storage), Utils::listFiles($storage->path("dir")));
-        $this->assertEquals($this->arrayOfPaths(["dir/subDirectory/e.txt", "dir/subDirectory/f.txt"], $storage), Utils::listFiles($storage->path("dir/subDirectory")));
+        $this->assertEquals($this->arrayOfPaths(['(disc 1) title.mp3', 'a.txt', 'b.txt'], $storage), Utils::listFiles($storage->getRoot()));
+        $this->assertEquals($this->arrayOfPaths(['dir/c.txt', 'dir/d.txt'], $storage), Utils::listFiles($storage->path('dir')));
+        $this->assertEquals($this->arrayOfPaths(['dir/subDirectory/e.txt', 'dir/subDirectory/f.txt'], $storage), Utils::listFiles($storage->path('dir/subDirectory')));
     }
 
     public function test_listDirectories()
     {
         $storage = $this->getDummyStorage();
 
-        $this->assertEquals($this->arrayOfPaths(["dir"], $storage), Utils::listDirectories($storage->getRoot()));
-        $this->assertEquals($this->arrayOfPaths(["dir/subDirectory"], $storage), Utils::listDirectories($storage->path("dir")));
+        $this->assertEquals($this->arrayOfPaths(['dir'], $storage), Utils::listDirectories($storage->getRoot()));
+        $this->assertEquals($this->arrayOfPaths(['dir/subDirectory'], $storage), Utils::listDirectories($storage->path('dir')));
     }
 
     public function test_valueHasFlag()
@@ -179,46 +179,46 @@ class UtilsTest extends TestCase
 
     public function test_isAssoc()
     {
-        $this->assertTrue(Utils::isAssoc(["A" => 5]));
-        $this->assertFalse(Utils::isAssoc([["A" => 5]]));
+        $this->assertTrue(Utils::isAssoc(['A' => 5]));
+        $this->assertFalse(Utils::isAssoc([['A' => 5]]));
         $this->assertFalse(Utils::isAssoc([]));
 
         $this->assertFalse(Utils::isAssoc([1, 2, 3]));
-        $this->assertFalse(Utils::isAssoc(["A", "B", "C"]));
+        $this->assertFalse(Utils::isAssoc(['A', 'B', 'C']));
     }
 
     public function test_toArray()
     {
         $this->assertEquals([5], Utils::toArray(5));
         $this->assertEquals([5], Utils::toArray([5]));
-        $this->assertEquals([["A" => 5]], Utils::toArray(["A"=>5]));
-        $this->assertEquals([["A" => 5]], Utils::toArray([["A"=>5]]));
+        $this->assertEquals([['A' => 5]], Utils::toArray(['A'=>5]));
+        $this->assertEquals([['A' => 5]], Utils::toArray([['A'=>5]]));
     }
 
     public function test_isProduction()
     {
-        $isActuallyProduction = Configuration::getInstance()->get("env", "debug") === "production";
+        $isActuallyProduction = Configuration::getInstance()->get('env', 'debug') === 'production';
 
         $this->assertEquals($isActuallyProduction, Utils::isProduction());
 
         $configInProduction = new Configuration();
-        $configInProduction->set("env", "production");
+        $configInProduction->set('env', 'production');
         $this->assertTrue(Utils::isProduction($configInProduction));
 
         $configInDebug = new Configuration();
-        $configInDebug->set("env", "debug");
+        $configInDebug->set('env', 'debug');
         $this->assertFalse(Utils::isProduction($configInDebug));
     }
 
     public function test_isApplicationEnabled()
     {
         $dummyConfig = new Configuration();
-        $dummyConfig->set("applications", ["A","B","C"]);
+        $dummyConfig->set('applications', ['A','B','C']);
 
-        $this->assertTrue(Utils::isApplicationEnabled("A", $dummyConfig));
-        $this->assertTrue(Utils::isApplicationEnabled("B", $dummyConfig));
-        $this->assertTrue(Utils::isApplicationEnabled("C", $dummyConfig));
-        $this->assertFalse(Utils::isApplicationEnabled("D", $dummyConfig));
+        $this->assertTrue(Utils::isApplicationEnabled('A', $dummyConfig));
+        $this->assertTrue(Utils::isApplicationEnabled('B', $dummyConfig));
+        $this->assertTrue(Utils::isApplicationEnabled('C', $dummyConfig));
+        $this->assertFalse(Utils::isApplicationEnabled('D', $dummyConfig));
     }
 
     public function test_randomHexString()

@@ -1,6 +1,6 @@
 <?php
 
-namespace YonisSavary\Sharp\Classes\Extras;
+namespace YonisSavary\Sharp\Classes\Extras\Cron;
 
 use YonisSavary\Sharp\Classes\Data\ObjectArray;
 
@@ -11,7 +11,7 @@ class CronValueList extends AbstractCronExpressionPart
     public function __construct(string $cronExpression, CronTimeType $type)
     {
         $this->type = $type;
-        $this->values = ObjectArray::fromExplode(",", $cronExpression)->asIntegers();
+        $this->values = ObjectArray::fromExplode(',', $cronExpression)->asIntegers();
         $this->values->forEach(fn($x) => CronTimeType::assertValueIsInRange($x, $type));
     }
 
@@ -27,6 +27,6 @@ class CronValueList extends AbstractCronExpressionPart
         $firstValues = array_slice($values, 0, $valuesCount-1);
         $lastValue = array_slice($values, $valuesCount-1);
 
-        return "at " . join(", ", $firstValues) . " and " . $lastValue . " " . CronTimeType::toString($this->type);
+        return 'at ' . join(', ', $firstValues) . ' and ' . $lastValue . ' ' . CronTimeType::toString($this->type);
     }
 }

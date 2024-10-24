@@ -44,21 +44,21 @@ class SQLite extends GeneratorDriver
 
     protected array $schemaCache = [];
     protected ?string $currentPrimaryKey = null;
-    protected ?string $currentDocumentation = "";
+    protected ?string $currentDocumentation = '';
     protected array $fieldExtras = [];
 
     public function listTables(): array
     {
-        $res = $this->connection->query("SELECT * FROM sqlite_master");
+        $res = $this->connection->query('SELECT * FROM sqlite_master');
 
         $tables = [];
         foreach ($res as &$row)
         {
-            if (str_starts_with($row["name"], "sqlite_"))
+            if (str_starts_with($row['name'], 'sqlite_'))
                 continue;
 
-            $table = $row["name"];
-            $this->schemaCache[$table] = $row["sql"];
+            $table = $row['name'];
+            $this->schemaCache[$table] = $row['sql'];
             $tables[] = $table;
         }
 
@@ -108,39 +108,39 @@ class SQLite extends GeneratorDriver
     {
         $sqlLine = trim($sqlLine);
 
-        $field = "";
+        $field = '';
 
         $matches = [];
         $typesNames = join('|', self::TYPES_REGEX);
         $columnRegex = "/^(.+?) ($typesNames)/";
 
-        $description = "";
+        $description = '';
 
         if (preg_match($columnRegex, $sqlLine, $matches))
         {
             $fieldName = $matches[1];
             $field = "'$fieldName' => (new DatabaseField('$fieldName'))";
 
-            $isGenerated = str_contains($sqlLine, "AUTOINCREMENT") || str_contains($sqlLine, "GENERATED");
+            $isGenerated = str_contains($sqlLine, 'AUTOINCREMENT') || str_contains($sqlLine, 'GENERATED');
             if ($isGenerated)
-                $field .= "->isGenerated()";
+                $field .= '->isGenerated()';
 
             $hasDefault = $isGenerated || str_contains($sqlLine, 'DEFAULT');
-            $field .= "->hasDefault(".($hasDefault ? "true": "false").")";
+            $field .= '->hasDefault('.($hasDefault ? 'true': 'false').')';
             if (str_contains($sqlLine, 'PRIMARY KEY'))
                 $this->currentPrimaryKey = $matches[1];
 
-            $canBeNull = !str_contains($sqlLine, "NOT NULL");
-            $field .= "->setNullable(". ($canBeNull ? "true": "false") .")";
+            $canBeNull = !str_contains($sqlLine, 'NOT NULL');
+            $field .= '->setNullable('. ($canBeNull ? 'true': 'false') .')';
 
-            $descriptionType = "string";
+            $descriptionType = 'string';
             $type = $matches[2];
-            $classType = "STRING";
-            if (preg_match("/smallint\(1\)/i", $type))  { $classType = "BOOLEAN"; $descriptionType = "bool"; }
-            else if (preg_match("/bool/i", $type))      { $classType = "BOOLEAN"; $descriptionType = "bool"; }
-            else if (preg_match("/int/i", $type))       { $classType = "INTEGER"; $descriptionType = "int"; }
-            else if (preg_match("/float\(/i", $type))   { $classType = "FLOAT"  ; $descriptionType = "float"; }
-            else if (preg_match("/decimal/i", $type))   { $classType = "DECIMAL"; $descriptionType = "string"; }
+            $classType = 'STRING';
+            if (preg_match("/smallint\(1\)/i", $type))  { $classType = 'BOOLEAN'; $descriptionType = 'bool'; }
+            else if (preg_match('/bool/i', $type))      { $classType = 'BOOLEAN'; $descriptionType = 'bool'; }
+            else if (preg_match('/int/i', $type))       { $classType = 'INTEGER'; $descriptionType = 'int'; }
+            else if (preg_match("/float\(/i", $type))   { $classType = 'FLOAT'  ; $descriptionType = 'float'; }
+            else if (preg_match('/decimal/i', $type))   { $classType = 'DECIMAL'; $descriptionType = 'string'; }
             $field .= "->setType(DatabaseField::$classType)";
 
             $matches = [];
@@ -158,7 +158,7 @@ class SQLite extends GeneratorDriver
 
         $matches = [];
         if (preg_match('/^FOREIGN KEY \((.+?)\) REFERENCES (.+?)\((.+?)\)$/', $sqlLine, $matches))
-            $this->fieldExtras[$matches[1]] = "->references(".$this->sqlToPHPName($matches[2])."::class, '".$matches[3]."')";
+            $this->fieldExtras[$matches[1]] = '->references('.$this->sqlToPHPName($matches[2])."::class, '".$matches[3]."')";
 
         return null;
     }
@@ -167,10 +167,10 @@ class SQLite extends GeneratorDriver
     {
         list($field, $type, $null, $key, $default, $extras) = array_values($fieldDescription);
 
-        $type = "string";
-        if (preg_match("/int\(/", $type))           $type = "int";
-        if (preg_match("/float\(/", $type))         $type = "float";
-        if (preg_match("/smallint\(1\)/", $type))   $type = "float";
+        $type = 'string';
+        if (preg_match("/int\(/", $type))           $type = 'int';
+        if (preg_match("/float\(/", $type))         $type = 'float';
+        if (preg_match("/smallint\(1\)/", $type))   $type = 'float';
 
         if ($ref = $foreignKey[$field] ?? false)
             $type =  "\\" . $namespace . "\\" .  $this->sqlToPHPName($ref[0]);
@@ -181,11 +181,11 @@ class SQLite extends GeneratorDriver
 
     public function generate(string $table, string $targetApplication, string $modelNamespace=null): void
     {
-        $this->currentDocumentation = "";
+        $this->currentDocumentation = '';
         $classBasename = $this->sqlToPHPName($table);
 
         $fileName = "$classBasename.php";
-        $fileDir = Utils::joinPath($targetApplication, "Models");
+        $fileDir = Utils::joinPath($targetApplication, 'Models');
         $filePath = Utils::joinPath($fileDir, $fileName);
 
         if (!is_dir($fileDir))
@@ -199,7 +199,7 @@ class SQLite extends GeneratorDriver
         foreach ($fields as &$field)
         {
             list($name, $string) = $field;
-            $string .= $this->fieldExtras[$name] ?? "";
+            $string .= $this->fieldExtras[$name] ?? '';
             $field = $string;
         }
 

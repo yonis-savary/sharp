@@ -1,6 +1,6 @@
 <?php
 
-namespace YonisSavary\Sharp\Classes\Extras;
+namespace YonisSavary\Sharp\Classes\Extras\Cron;
 
 use DateTime;
 use InvalidArgumentException;
@@ -15,10 +15,10 @@ class CronExpression
         if (!preg_match("/^((\d+|\d+\-\d+|(\d+,?)+|\*) ?){5}$/", $cronExpression))
             throw new InvalidArgumentException("Invalid cron syntax (\"$cronExpression\" do not respect regex)");
 
-        $parts = explode(" ", $cronExpression);
+        $parts = explode(' ', $cronExpression);
 
         if (count($parts) != 5)
-            throw new InvalidArgumentException("Invalid cron syntax (invalid part count, must be 5, actuall is ".count($parts).")");
+            throw new InvalidArgumentException('Invalid cron syntax (invalid part count, must be 5, actuall is '.count($parts).')');
 
         $types = [
             CronTimeType::MINUTE,
@@ -33,7 +33,7 @@ class CronExpression
             $part = &$parts[$i];
             $type = $types[$i];
 
-            if ($part === "*")
+            if ($part === '*')
                 $part = new CronAnyValue($part, $type);
             else if (preg_match("/^\d+$/", $part))
                 $part = new CronValue($part, $type);
@@ -53,11 +53,11 @@ class CronExpression
     public function matches(DateTime $datetime): bool
     {
         $datetimeParts = [
-            intval($datetime->format("i")),
-            intval($datetime->format("H")),
-            intval($datetime->format("d")),
-            intval($datetime->format("m")),
-            intval($datetime->format("w")),
+            (int)($datetime->format('i')),
+            (int)($datetime->format('H')),
+            (int)($datetime->format('d')),
+            (int)($datetime->format('m')),
+            (int)($datetime->format('w')),
         ];
 
         return $this->parts->all(
@@ -69,6 +69,6 @@ class CronExpression
     {
         return $this->parts
         ->map(fn(AbstractCronExpressionPart $x) => $x->toSentence())
-        ->join(", ");
+        ->join(', ');
     }
 }

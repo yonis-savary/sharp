@@ -37,7 +37,8 @@ class CacheElement
         $this->timeToLive = $timeToLive;
         $this->file = $file;
 
-        $this->baseMD5 = $file ? md5_file($this->file) : null;
+        if ($file)
+            $this->baseMD5 = md5_file($this->file);
     }
 
     /**
@@ -50,10 +51,10 @@ class CacheElement
         if (!preg_match("/^\d+_\d+_.+$/", $basename))
             return null;
 
-        list($creationDate, $timeToLive, $key) = explode("_", $basename, 3);
+        list($creationDate, $timeToLive, $key) = explode('_', $basename, 3);
 
-        $creationDate = intval($creationDate);
-        $timeToLive = intval($timeToLive);
+        $creationDate = (int)($creationDate);
+        $timeToLive   = (int)($timeToLive);
 
         if (
             ($timeToLive !== Cache::PERMANENT) &&
@@ -123,14 +124,11 @@ class CacheElement
      */
     public function save(Storage $storage): ?string
     {
-        if (!$this->content)
-            return null;
-
-        if (!$this->wasEdited())
-            return $this->file;
+        if ((!$this->loaded) || (!$this->wasEdited()))
+            return $this->file ?? null;
 
         $oldFilename = $this->file;
-        $filename = join("_", [$this->creationDate, $this->timeToLive, $this->key]);
+        $filename = join('_', [$this->creationDate, $this->timeToLive, $this->key]);
 
         // If the timeToLive or creationDate has changed,
         // we delete the old file to avoid duplicate keys

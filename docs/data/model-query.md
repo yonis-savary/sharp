@@ -58,32 +58,32 @@ User::delete(); // Return a ModelQuery object ready to delete from user table
 # Some examples of ModelQuery usage
 
 $users = User::select()
-->where("fk_country", 14)
-->whereSQL("creation_date > DATESUB(NOW(), INTERVAL 3 MONTH)")
+->where('fk_country', 14)
+->whereSQL('creation_date > DATESUB(NOW(), INTERVAL 3 MONTH)')
 ->limit(5)
 ->fetch();
 
 $someUser = User::select()
-->where("id", 168)
+->where('id', 168)
 ->first();
 
 // Same as the previous query
 $someUser = User::findId(168);
 
 User::update()
-->set("fk_type", 2)
-->where("fk_type", 5)
+->set('fk_type', 2)
+->where('fk_type', 5)
 ->first();
 
 User::delete()
-->whereSQL("fk_type IN (1, 12, 52, 4)")
-->order("id", "DESC")
+->whereSQL('fk_type IN (1, 12, 52, 4)')
+->order('id', 'DESC')
 ->fetch();
 
 # Collect data and put it in an object array
 User::delete()
-->whereSQL("fk_type IN (1, 12, 52, 4)")
-->order("id", "DESC")
+->whereSQL('fk_type IN (1, 12, 52, 4)')
+->order('id', 'DESC')
 ->toObjectArray();
 ```
 
@@ -94,8 +94,8 @@ The only type of insert that is supported is `INSERT INTO ... VALUES ...`
 
 ```php
 $query = new ModelQuery(UserData::class, ModelQuery::INSERT);
-$query->setInsertField(["fk_user", "data"]);
-$query->insertValues([1, "one-row"], [2, "another-one"]);
+$query->setInsertField(['fk_user', 'data']);
+$query->insertValues([1, 'one-row'], [2, 'another-one']);
 
 $res = $query->fetch();
 $sql = $query->build();
@@ -113,9 +113,9 @@ $query->exploreModel(User::class);
 
 
 # Manipulation
-$query->where("my_field", 5) ;
-$query->where("my_field", null, "<>");
-$query->whereSQL("creation_date > {}", ['2023-01-01']);
+$query->where('my_field', 5) ;
+$query->where('my_field', null, '<>');
+$query->whereSQL('creation_date > {}', ['2023-01-01']);
 $query->order('user', 'creation_date', 'DESC');
 $query->limit(1000);
 $query->offset(5);
@@ -126,7 +126,7 @@ $sql = $query->build();
 ```
 
 Tips:
-- The `where` method support "=" and "<>" comparison with `NULL` (converted to `IS` and `IS NOT`)
+- The `where` method support '=' and '<>' comparison with `NULL` (converted to `IS` and `IS NOT`)
 
 ### Select query return format
 
@@ -211,12 +211,12 @@ Exemple, giving `user&fk_person` will allow the exploration or `user` table but 
 ```php
 $query = new ModelQuery(User::class, ModelQuery::UPDATE);
 
-$query->set("created_this_year", true)
-$query->set("active", false)
+$query->set('created_this_year', true)
+$query->set('active', false)
 
-$query->where("my_field", 5) ;
-$query->where("my_field", null, "<>");
-$query->whereSQL("creation_date > {}", ['2023-01-01']);
+$query->where('my_field', 5) ;
+$query->where('my_field', null, '<>');
+$query->whereSQL('creation_date > {}', ['2023-01-01']);
 $query->order('user', 'creation_date', 'DESC');
 $query->limit(1000);
 
@@ -229,9 +229,9 @@ $sql = $query->build();
 ```php
 $query = new ModelQuery(User::class, ModelQuery::DELETE);
 
-$query->where("my_field", 5) ;
-$query->where("my_field", null, "<>");
-$query->whereSQL("creation_date > {}", ['2023-01-01']);
+$query->where('my_field', 5) ;
+$query->where('my_field', null, '<>');
+$query->whereSQL('creation_date > {}', ['2023-01-01']);
 $query->order('user', 'creation_date', 'DESC');
 $query->limit(1000);
 

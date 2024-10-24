@@ -73,8 +73,8 @@ abstract class SharpTestCase extends TestCase
         $response = $this->fetch($method, $url, $getParams, $postParams, $headers, $server);
 
         $this->assertEquals(
-            "text/html",
-            $response->getHeader("content-type")
+            'text/html',
+            $response->getHeader('content-type')
         );
 
         $this->assertEquals(

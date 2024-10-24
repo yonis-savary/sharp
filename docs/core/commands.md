@@ -47,14 +47,14 @@ The args object represent the arguments given to your command through the cli (l
 ```php
 # Return the parameter value or null if absent
 # public function get(string $short, string $long);
-$args->get("n", "number");
+$args->get('n', 'number');
 
 # public function isPresent(string $short, string $long);
-$args->isPresent("v", "verbose")
+$args->isPresent('v', 'verbose')
 
 # Return the value of the parameter, `null` if the parameter is present but has no value, `false` is the parameter is not present
 # public function getOption(string $short, string $long);
-$args->getOption("r", "replace")
+$args->getOption('r', 'replace')
 ```
 
 [< Back to summary](../README.md)

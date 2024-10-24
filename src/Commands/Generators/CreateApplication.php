@@ -29,15 +29,15 @@ class CreateApplication extends AbstractCommand
         $values = $args->values();
 
         if (!count($values))
-            $values = [Terminal::prompt("App name (PascalCase): ")];
+            $values = [Terminal::prompt('App name (PascalCase): ')];
 
         foreach($values as $app)
             $this->createApplication($app);
 
-        $this->log("Enabling new applications");
+        $this->log('Enabling new applications');
 
         $config = new Configuration(Configuration::DEFAULT_FILENAME);
-        $config->edit("applications", function($applications) use ($values) {
+        $config->edit('applications', function($applications) use ($values) {
             array_push($applications, ...$values);
             return array_values(array_unique($applications));
         }, []);
@@ -46,6 +46,6 @@ class CreateApplication extends AbstractCommand
 
     public function getHelp(): string
     {
-        return "Create an application directory and add it to your configuration";
+        return 'Create an application directory and add it to your configuration';
     }
 }

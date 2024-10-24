@@ -10,13 +10,13 @@ use YonisSavary\Sharp\Classes\Env\Storage;
  * @param string $label You can give the measurement a name
  * @return mixed Return the callback return value
  */
-function sharpDebugMeasure(callable $callback, string $label="Measurement"): mixed
+function sharpDebugMeasure(callable $callback, string $label='Measurement'): mixed
 {
     $start = hrtime(true);
     $returnValue = $callback();
     $deltaMicro = (hrtime(true) - $start) / 1000;
 
-    $infoString = "$label : $deltaMicro µs (". $deltaMicro/1000 ."ms)";
+    $infoString = "$label : $deltaMicro µs (". $deltaMicro/1000 .'ms)';
 
     Logger::getInstance()->debug($infoString);
 

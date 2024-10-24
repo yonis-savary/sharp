@@ -1,6 +1,6 @@
-<?= template("sharp-tests-parent") ?>
+<?= template('sharp-tests-parent') ?>
 
-<?= start("body") ?>
+<?= start('body') ?>
     CHILD
     <?= $variable ?>
-    <?= render("sharp-tests-component") ?>
+    <?= render('sharp-tests-component') ?>

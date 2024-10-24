@@ -1,6 +1,6 @@
 <?php
 
-namespace YonisSavary\Sharp\Classes\Extras;
+namespace YonisSavary\Sharp\Classes\Extras\Cron;
 
 class CronAnyValue extends AbstractCronExpressionPart
 {
@@ -16,6 +16,6 @@ class CronAnyValue extends AbstractCronExpressionPart
 
     public function toSentence(): string
     {
-        return "every " . CronTimeType::toString($this->type);
+        return 'every ' . CronTimeType::toString($this->type);
     }
 }

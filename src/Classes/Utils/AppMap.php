@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace YonisSavary\Sharp\Classes\Utils;
 
@@ -16,7 +16,7 @@ trait AppMap
 
     final protected static function getAppMapsStorage(): Storage
     {
-        return Storage::getInstance()->getSubStorage("Sharp/AppMaps");
+        return Storage::getInstance()->getSubStorage('Sharp/AppMaps');
     }
 
     public static function &get(): AbstractMap
@@ -32,7 +32,7 @@ trait AppMap
 
             self::$instance = new AppMapInstance($hashName, $data);
         }
-        
+
         return self::$instance;
     }
 }

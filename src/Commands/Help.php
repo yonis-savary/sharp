@@ -11,7 +11,7 @@ class Help extends AbstractCommand
 {
     public function getHelp(): string
     {
-        return "Display a list of commands with a short description";
+        return 'Display a list of commands with a short description';
     }
 
     public function __invoke(Args $args)
@@ -22,24 +22,24 @@ class Help extends AbstractCommand
         ->collect();
 
         $maxLength = [
-            "name" => 0,
-            "identifier" => 0
+            'name' => 0,
+            'identifier' => 0
         ];
 
         foreach ($commands as $command)
         {
-            $maxLength["name"] = max($maxLength["name"], strlen($command->getName()));
-            $maxLength["identifier"] = max($maxLength["identifier"], strlen($command->getIdentifier()));
+            $maxLength['name'] = max($maxLength['name'], strlen($command->getName()));
+            $maxLength['identifier'] = max($maxLength['identifier'], strlen($command->getIdentifier()));
         }
 
-        $this->log("Available commands with their identifier and purposes:");
+        $this->log('Available commands with their identifier and purposes:');
 
         foreach ($commands as $command)
         {
             $this->log(
-                sprintf(" - %s %s : %s\n",
-                    str_pad($command->getName(), $maxLength["name"]),
-                    str_pad("(". $command->getIdentifier() .")", $maxLength["identifier"]+2),
+                sprintf(" - %s %s : %s",
+                    str_pad($command->getName(), $maxLength['name']),
+                    str_pad('('. $command->getIdentifier() .')', $maxLength['identifier']+2),
                     $command->getHelp()
                 )
             );

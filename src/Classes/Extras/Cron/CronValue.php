@@ -1,6 +1,6 @@
 <?php
 
-namespace YonisSavary\Sharp\Classes\Extras;
+namespace YonisSavary\Sharp\Classes\Extras\Cron;
 
 class CronValue extends AbstractCronExpressionPart
 {
@@ -9,7 +9,7 @@ class CronValue extends AbstractCronExpressionPart
     public function __construct(string $cronExpression, CronTimeType $type)
     {
         $this->type = $type;
-        $this->value = intval($cronExpression);
+        $this->value = (int) $cronExpression;
         CronTimeType::assertValueIsInRange($this->value, $type);
     }
 

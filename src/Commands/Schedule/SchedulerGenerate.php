@@ -12,9 +12,9 @@ class SchedulerGenerate extends AbstractCommand
     {
         $this->log(
             "Here's the CRON syntax to launch your app scheduler",
-            "",
-            "* * * * * cd ".Autoloader::projectRoot() ." && php do scheduler-launch",
-            "",
+            '',
+            '* * * * * cd '.Autoloader::projectRoot() .' && php do scheduler-launch',
+            '',
         );
     }
 }

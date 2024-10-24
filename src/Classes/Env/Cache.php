@@ -28,7 +28,7 @@ class Cache
 
     public static function getDefaultInstance()
     {
-        $cacheStorage = Storage::getInstance()->getSubStorage("Cache");
+        $cacheStorage = Storage::getInstance()->getSubStorage('Cache');
         return new self($cacheStorage);
     }
 
@@ -56,10 +56,18 @@ class Cache
         }
     }
 
-    public function __destruct()
+    /**
+     * Save every cache elements as files
+     */
+    public function save()
     {
         foreach ($this->index as $object)
             $object->save($this->storage);
+    }
+
+    public function __destruct()
+    {
+        $this->save();
     }
 
     /**
@@ -104,7 +112,7 @@ class Cache
      *
      * @param mixed $defaultStarted default value to put in cache in case the key does not exists
      * @note don't forget to put '&' before calling this method
-     * @example NULL `$ref = &$cache->getReference("key")`
+     * @example NULL `$ref = &$cache->getReference('key')`
      */
     public function &getReference(string $key, mixed $defaultStarter=[]): mixed
     {

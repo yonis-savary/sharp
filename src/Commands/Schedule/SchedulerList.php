@@ -13,7 +13,7 @@ class SchedulerList extends AbstractCommand
     public function __invoke(Args $args)
     {
         $handlers = Scheduler::getInstance()->listAll();
-        $this->log("List of scheduler handlers");
+        $this->log('List of scheduler handlers');
 
         ObjectArray::fromArray(array_values($handlers))
         ->forEach(function(SchedulerHandler $handler) {
@@ -21,23 +21,23 @@ class SchedulerList extends AbstractCommand
             $description = $handler->toSentence();
 
             $description = trim(preg_replace_callback("/( ?every \w+(,|$)){2,}/", function($match) use ($description) {
-                $submatch = explode(",", $match[0])[0];
+                $submatch = explode(',', $match[0])[0];
 
-                return $submatch . ",";
+                return $submatch . ',';
             }, $description, 1));
 
 
-            $description = preg_replace("/,$/", "", $description);
-            if (!$description) $description = "every minute";
+            $description = preg_replace("/,$/", '', $description);
+            if (!$description) $description = 'every minute';
 
             $description = ucfirst($description);
 
-            $this->log(" - " . $handler->identifier . " : $description");
+            $this->log(' - ' . $handler->identifier . " : $description");
         });
     }
 
     public function getHelp(): string
     {
-        return "List every task registered in the scheduler";
+        return 'List every task registered in the scheduler';
     }
 }

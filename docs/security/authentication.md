@@ -33,7 +33,7 @@ $authentication = Authentication::getInstance();
 
 // attempt() tries to log the user
 // return true on success, false on failure
-if ($authentication->attempt("login", "password"))
+if ($authentication->attempt('login', 'password'))
 {
     // Success !
 }
@@ -101,27 +101,27 @@ class AuthController
     public static function declareRoutes()
     {
         Router::getInstance()->addRoutes(
-            Route::view("/login", "user/login"),
-            Route::post("/login", [self::class, "handleLogin"]),
-            Route::get("/logout", [self::class, "handleLogout"]),
+            Route::view('/login', 'user/login'),
+            Route::post('/login', [self::class, 'handleLogin']),
+            Route::get('/logout', [self::class, 'handleLogout']),
         );
     }
 
     public static function handleLogin(Request $request): Response
     {
         // Retrieve username & password fields from request body
-        list($username, $password) = $request->list("username", "password");
+        list($username, $password) = $request->list('username', 'password');
 
         if (Authentication::attempt($username, $password))
-            return Response::redirect("/");
+            return Response::redirect('/');
 
-        return Response::redirect("/?error=bad_login");
+        return Response::redirect('/?error=bad_login');
     }
 
     public static function handleLogout(): Response
     {
         Authentication::getInstance()->logout();
-        return Response::redirect("/login");
+        return Response::redirect('/login');
     }
 }
 ```
@@ -141,7 +141,7 @@ class AuthMiddleware extends Middleware
             return $request;
 
         // Redirect the client if not authenticated yet
-        return Response::redirect("/login");
+        return Response::redirect('/login');
     }
 }
 ```
@@ -152,8 +152,8 @@ in this example, we shall use the group feature
 `MagicShip/Routes/web.php`:
 ```php
 Router::getInstance()->addGroup(
-    ["middlewares" => AuthMiddleware::class],
-    Route::view("/", "home")
+    ['middlewares' => AuthMiddleware::class],
+    Route::view('/', 'home')
 );
 ```
 

@@ -23,7 +23,7 @@ class ModelQueryIterator
     {
         $sql = $query->build();
         $this->query = $query;
-        $this->count = Database::getInstance()->query("SELECT COUNT(*) as c FROM ($sql) as _ti")[0]["c"] ?? 0;
+        $this->count = Database::getInstance()->query("SELECT COUNT(*) as c FROM ($sql) as _ti")[0]['c'] ?? 0;
         $this->index = 0;
     }
 
@@ -46,7 +46,7 @@ class ModelQueryIterator
         $array = $this->query
             ->limit(1, $this->index)
             ->fetch()
-            [0]["data"] ?? false;
+            [0]['data'] ?? false;
 
         $this->index++;
         return $array;

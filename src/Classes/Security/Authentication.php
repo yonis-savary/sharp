@@ -16,10 +16,10 @@ class Authentication
 {
     use Component, Configurable;
 
-    const ATTEMPTS_NUMBER     = "failed-attempt-number";
-    const SESSION_EXPIRE_TIME = "session-expire-time";
-    const USER_DATA           = "user-data";
-    const IS_LOGGED           = "is-logged";
+    const ATTEMPTS_NUMBER     = 'failed-attempt-number';
+    const SESSION_EXPIRE_TIME = 'session-expire-time';
+    const USER_DATA           = 'user-data';
+    const IS_LOGGED           = 'is-logged';
 
     public readonly string $model;
     public readonly string $loginField;
@@ -33,17 +33,17 @@ class Authentication
     public static function getDefaultConfiguration(): array
     {
         return [
-            "model" => 'App\Models\User',
-            "login-field" => "login",
-            "password-field" => "password",
-            "salt-field" => null,
-            "session-duration" => 3600
+            'model' => 'App\Models\User',
+            'login-field' => 'login',
+            'password-field' => 'password',
+            'salt-field' => null,
+            'session-duration' => 3600
         ];
     }
 
     public function sessionKey(string $key)
     {
-        return "sharp.authentication." . $this->sessionNamespace . "." . $key;
+        return 'sharp.authentication.' . $this->sessionNamespace . '.' . $key;
     }
 
     protected function getSessionKey(string $key, mixed $defaultValue=null): mixed
@@ -65,13 +65,13 @@ class Authentication
 
         $this->loadConfiguration($config);
 
-        $model         = $this->model         = $this->configuration["model"];
-        $loginField    = $this->loginField    = $this->configuration["login-field"];
-        $passwordField = $this->passwordField = $this->configuration["password-field"];
-        $saltField     = $this->saltField     = $this->configuration["salt-field"];
+        $model         = $this->model         = $this->configuration['model'];
+        $loginField    = $this->loginField    = $this->configuration['login-field'];
+        $passwordField = $this->passwordField = $this->configuration['password-field'];
+        $saltField     = $this->saltField     = $this->configuration['salt-field'];
 
         $this->sessionNamespace =
-            $this->configuration["session-namespace"] ??
+            $this->configuration['session-namespace'] ??
             md5($this->model . $this->loginField . $this->passwordField)
         ;
 
@@ -101,6 +101,7 @@ class Authentication
 
     public function attempt(string $login,string $password): bool
     {
+        /** @var AbstractModel */
         $model = $this->model;
 
         if (!($user = $model::select()->where($this->loginField, $login)->first()))
@@ -157,7 +158,7 @@ class Authentication
 
     protected function refreshExpireTime(): void
     {
-        $sessionDuration = intval($this->configuration["session-duration"]);
+        $sessionDuration = (int) $this->configuration['session-duration'];
         $this->setSessionKey(self::SESSION_EXPIRE_TIME, time() + $sessionDuration);
     }
 
@@ -171,7 +172,7 @@ class Authentication
 
     public function isLogged(): bool
     {
-        return boolval($this->getSessionKey(self::IS_LOGGED, false));
+        return (bool) $this->getSessionKey(self::IS_LOGGED, false);
     }
 
     public function attemptNumber(): int

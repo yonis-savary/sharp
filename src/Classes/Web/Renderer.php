@@ -40,7 +40,7 @@ class Renderer
         if (!$this->isCached())
             return;
 
-        $this->pathCache = &Cache::getInstance()->getReference("sharp.renderer.path-cache");
+        $this->pathCache = &Cache::getInstance()->getReference('sharp.renderer.path-cache');
     }
 
     /**
@@ -58,13 +58,13 @@ class Renderer
         if (!str_ends_with($template, $ext))
             $template .= $ext;
 
-        if (!str_starts_with($template, "/"))
+        if (!str_starts_with($template, '/'))
             $template = "/$template";
 
         if (file_exists($template))
             return $template;
 
-        foreach (Autoloader::getListFiles(Autoloader::VIEWS) as $file)
+        foreach (Autoloader::getList(Autoloader::VIEWS) as $file)
         {
             if (!str_ends_with($file, $template))
                 continue;
@@ -103,7 +103,7 @@ class Renderer
         $events = EventListener::getInstance();
 
         if (!ob_start())
-            throw new Exception("Could not start a new output buffering");
+            throw new Exception('Could not start a new output buffering');
 
         $events->dispatch(new BeforeViewRender($templateName));
 

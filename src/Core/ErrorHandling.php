@@ -21,15 +21,15 @@ set_exception_handler(function(Throwable $exception)
         EventListener::getInstance()->dispatch(new UncaughtException($exception));
         Logger::getInstance()->error($exception);
 
-        if (php_sapi_name() === "cli")
+        if (php_sapi_name() === 'cli')
             die(
                 "\n".
                 "_____________________________________________ \n".
                 "Got an exception/error, please read your logs \n".
-                $exception->getMessage()." at ".$exception->getFile().":".$exception->getLine() . "\n"
+                $exception->getMessage().' at '.$exception->getFile().':'.$exception->getLine() . "\n"
             );
 
-        $errorMessage = "Internal Server Error";
+        $errorMessage = 'Internal Server Error';
 
         if (!Utils::isProduction())
         {
@@ -37,7 +37,7 @@ set_exception_handler(function(Throwable $exception)
             $errorMessage .= "\n" . $exception->getTraceAsString();
         }
 
-        (new Response($errorMessage, 500, ["Content-Type" => "text/plain"]))->display();
+        (new Response($errorMessage, 500, ['Content-Type' => 'text/plain']))->display();
         die;
     }
     catch (Throwable $err)
@@ -45,7 +45,7 @@ set_exception_handler(function(Throwable $exception)
         // In case everything went wrong even logging/events !
 
         http_response_code(500);
-        echo "Internal Server Error";
+        echo 'Internal Server Error';
         echo $err->getMessage();
         die;
     }

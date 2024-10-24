@@ -53,9 +53,9 @@ $theSameStorage = ProfilePicture::get();
 $alwaysTheSame = $storage;
 
 // Once we get the instance, we can use it as common Storage object
-$storage->write("foo.txt", "Hello!");
+$storage->write('foo.txt', 'Hello!');
 
-$theSameStorage->read("foo.txt") // Hello!
+$theSameStorage->read('foo.txt') // Hello!
 ```
 
 [< Back to Summary](../README.md)

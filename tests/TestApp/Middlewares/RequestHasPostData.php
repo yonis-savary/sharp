@@ -10,7 +10,8 @@ class RequestHasPostData implements MiddlewareInterface
 {
     public static function handle(Request $request): Request|Response
     {
-        $post = $request->post();
-        return count($post) ? $request: Response::json("Response must have POST data");
+        return count($request->post()) ?
+            $request:
+            Response::json('Response must have POST data');
     }
 }

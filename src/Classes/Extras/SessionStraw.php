@@ -13,7 +13,7 @@ trait SessionStraw
 
     final protected static function getKey(): string
     {
-        return "sharp.session-straw." . self::class;
+        return 'sharp.session-straw.' . self::class;
     }
 
     final public static function set(mixed $value): void
@@ -31,4 +31,8 @@ trait SessionStraw
         Session::getInstance()->unset(self::getKey());
     }
 
+    final public static function isset(): bool
+    {
+        return Session::getInstance()->has(self::getKey());
+    }
 }

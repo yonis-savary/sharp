@@ -17,39 +17,39 @@ to read, write and explore the directory content
 $storage = Storage::getInstance();
 
 // Storage creation, create the directory if inexistent
-$storage = new Storage("/home/foo/some-directory/");
+$storage = new Storage('/home/foo/some-directory/');
 
 // Return the Storage root directory (absolute path)
 $storage->getRoot();
 
 // Return an absolute path to the target
-$storage->path("MyDirectory");
+$storage->path('MyDirectory');
 ```
 
 ### File operations
 
 ```php
-$storage->read("MyDirectory/file.txt");
+$storage->read('MyDirectory/file.txt');
 
-$storage->write("MyDirectory/file.txt", "Hello");
+$storage->write('MyDirectory/file.txt', 'Hello');
 // file_put_contents() flags can be given
-$storage->write("MyDirectory/file.txt", "Hello", FILE_APPEND);
+$storage->write('MyDirectory/file.txt', 'Hello', FILE_APPEND);
 
-$storage->isDirectory("MyDirectory/SubDir");
-$storage->isFile("MyDirectory/file.txt");
+$storage->isDirectory('MyDirectory/SubDir');
+$storage->isFile('MyDirectory/file.txt');
 
 // Make a directory and its parent if inexistent
-$storage->makeDirectory("MyDirectory/SubDir");
-$storage->removeDirectory("MyDirectory/SubDir");
-$storage->unlink("MyDirectory/file.txt");
+$storage->makeDirectory('MyDirectory/SubDir');
+$storage->removeDirectory('MyDirectory/SubDir');
+$storage->unlink('MyDirectory/file.txt');
 
 // Get a resource/stream object
 
 // This stream will be closed automatically when the Storage is destructed
-$stream = $storage->getStream("MyDirectory/output.txt", "a");
+$stream = $storage->getStream('MyDirectory/output.txt', 'a');
 
 // This stream needs to be manually closed
-$input = $storage->getStream("MyDirectory/input.txt", "a", false);
+$input = $storage->getStream('MyDirectory/input.txt', 'a', false);
 fclose($input);
 ```
 
@@ -57,10 +57,10 @@ fclose($input);
 
 ```php
 # `exploreDirectory()` recursively explore a directory and return a list of absolute file/directory paths (depending the given filter)
-$storage->exploreDirectory("MyDirectory");
-$storage->exploreDirectory("MyDirectory", Storage::NO_FILTER);
-$storage->exploreDirectory("MyDirectory", Storage::ONLY_DIRS);
-$storage->exploreDirectory("MyDirectory", Storage::ONLY_FILES);
+$storage->exploreDirectory('MyDirectory');
+$storage->exploreDirectory('MyDirectory', Storage::NO_FILTER);
+$storage->exploreDirectory('MyDirectory', Storage::ONLY_DIRS);
+$storage->exploreDirectory('MyDirectory', Storage::ONLY_FILES);
 
 # Return a list of direct directories/files in the root directory (no subdirectory)
 $storage->listFiles();
@@ -76,7 +76,7 @@ $storage->listDirectories();
 $storage->assertIsWritable();
 
 # Get a new Storage object pointing to a sub-directory
-$storage->getSubStorage("MySubDir");
+$storage->getSubStorage('MySubDir');
 ```
 
 ## FTP Storage
@@ -87,8 +87,8 @@ class which is a basic wrapper for FTP functions
 They can be given to the `Storage` constructor
 
 ```php
-$connection = new FTPDriver("somewebsite.com", "username", "password");
-$storage = new Storage("/home/root/Documents/MyAppStorage", $connection);
+$connection = new FTPDriver('somewebsite.com', 'username', 'password');
+$storage = new Storage('/home/root/Documents/MyAppStorage', $connection);
 ```
 
 > [!IMPORTANT]

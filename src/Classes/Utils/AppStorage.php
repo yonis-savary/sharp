@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace YonisSavary\Sharp\Classes\Utils;
 
@@ -10,8 +10,8 @@ trait AppStorage
 
     public static function &get(): Storage
     {
-        self::$instance ??= 
-            Storage::getInstance()->getSubStorage("Sharp/AppStorages/".md5(get_called_class()));
+        self::$instance ??=
+            Storage::getInstance()->getSubStorage('Sharp/AppStorages/'.md5(get_called_class()));
         return self::$instance;
     }
 }

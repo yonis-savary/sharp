@@ -22,6 +22,6 @@ class TestComponent
 
     public static function getDefaultInstance(): static
     {
-        return new self("default");
+        return new self('default');
     }
 }

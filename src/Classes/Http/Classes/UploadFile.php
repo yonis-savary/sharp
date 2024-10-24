@@ -60,7 +60,7 @@ class UploadFile
      * @param array $data Data from PHP $_FILES
      * @param string $inputName Input name key from $_FILES
      */
-    public function __construct(array $data, string $inputName="uploads")
+    public function __construct(array $data, string $inputName='uploads')
     {
         // PHP's $_FILES data
         $this->name = $data['name'];
@@ -94,7 +94,7 @@ class UploadFile
      */
     protected function makeUniqueName(): string
     {
-        return uniqid("upload-".date("YmdHis")."-") .".".$this->extension ;
+        return uniqid('upload-'.date('YmdHis').'-') .'.'.$this->extension ;
     }
 
     protected function failWithReason(int $reason): bool

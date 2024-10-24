@@ -29,8 +29,8 @@ $db = Database::getInstance();
 
 # Used to build a query string
 $query = $db->build(
-    "INSERT INTO ship (name) VALUES ({})",
-    ["PHP Bounty"]
+    'INSERT INTO ship (name) VALUES ({})',
+    ['PHP Bounty']
 );
 
 # Used to directly fetch rows
@@ -44,15 +44,15 @@ $id = $db->lastInsertId();
 ```php
 // build() binding can take arrays of data
 $results = $db->query(
-    "SELECT id FROM ship WHERE name IN {}",
-    [["Above the code", "PHP Bounty"]]
+    'SELECT id FROM ship WHERE name IN {}',
+    [['Above the code', 'PHP Bounty']]
 );
 
 // Check if a table exists (return true/false)
-$db->hasTable("ship_order");
+$db->hasTable('ship_order');
 
 // Check if a field in a table exists (return true if both exists)
-$db->hasField("ship_order", "fk_ship");
+$db->hasField('ship_order', 'fk_ship');
 ```
 
 ### Working with SQLite

@@ -20,21 +20,21 @@ class CreateMiddleware extends AbstractCommand
     {
         $names = $args->values();
         if (!count($names))
-            $names = [readline("Middleware name (PascalCase) > ")];
+            $names = [readline('Middleware name (PascalCase) > ')];
 
         $application = Terminal::chooseApplication();
 
         foreach ($names as $name)
         {
             if (!preg_match("/^[A-Z][\d\w]*$/", $name))
-                return $this->log("Name be must a PascalCase string");
+                return $this->log('Name be must a PascalCase string');
 
-            $middlewarePath = Utils::joinPath($application, "Middlewares");
+            $middlewarePath = Utils::joinPath($application, 'Middlewares');
             $storage = new Storage($middlewarePath);
-            $filename = $name . ".php";
+            $filename = $name . '.php';
 
             if ($storage->isFile($name))
-                return $this->log($storage->path($filename) . " already exists !");
+                return $this->log($storage->path($filename) . ' already exists !');
 
             $storage->write($filename, Terminal::stringToFile(
             "<?php
@@ -54,12 +54,12 @@ class CreateMiddleware extends AbstractCommand
             }
             "));
 
-            $this->log("File written at ". $storage->path($filename));
+            $this->log('File written at '. $storage->path($filename));
         }
     }
 
     public function getHelp(): string
     {
-        return "Create middlewares(s) inside your application";
+        return 'Create middlewares(s) inside your application';
     }
 }

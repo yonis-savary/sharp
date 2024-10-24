@@ -17,29 +17,29 @@ class ObjectArrayTest extends TestCase
         $this->assertInstanceOf(ObjectArray::class, ObjectArray::fromArray([1,2,3]));
 
         $this->assertEquals([1,2,3], ObjectArray::fromArray([1,2,3])->collect());
-        $this->assertEquals(["A","B","C"], ObjectArray::fromArray(["A","B","C"])->collect());
+        $this->assertEquals(['A','B','C'], ObjectArray::fromArray(['A','B','C'])->collect());
     }
 
     public function test_fromExplode()
     {
-        $this->assertInstanceOf(ObjectArray::class, ObjectArray::fromExplode(",", "1,2,3"));
+        $this->assertInstanceOf(ObjectArray::class, ObjectArray::fromExplode(',', '1,2,3'));
 
-        $this->assertEquals(["1","2","3"], ObjectArray::fromExplode(",", "1,2,3")->collect());
+        $this->assertEquals(['1','2','3'], ObjectArray::fromExplode(',', '1,2,3')->collect());
     }
 
     public function test_fromFileLines()
     {
         $store = Storage::getInstance();
-        $store->write("ObjectArrayFile.txt", "a\nb\nc\n \n");
+        $store->write('ObjectArrayFile.txt', "a\nb\nc\n \n");
 
         $this->assertEquals(
-            ObjectArray::fromFileLines($store->path("ObjectArrayFile.txt"))
+            ObjectArray::fromFileLines($store->path('ObjectArrayFile.txt'))
             ->length(),
             3
         );
 
         $this->assertEquals(
-            ObjectArray::fromFileLines($store->path("ObjectArrayFile.txt"), false)
+            ObjectArray::fromFileLines($store->path('ObjectArrayFile.txt'), false)
             ->length(),
             5
         );
@@ -48,24 +48,24 @@ class ObjectArrayTest extends TestCase
     public function test_fromJSONFile()
     {
         $store = Storage::getInstance();
-        $store->write("ObjectArray.json", "[1,2,3]");
+        $store->write('ObjectArray.json', '[1,2,3]');
         $this->assertEquals(
-            ObjectArray::fromJSONFile($store->path("ObjectArray.json"))
+            ObjectArray::fromJSONFile($store->path('ObjectArray.json'))
             ->collect(),
             [1,2,3]
         );
 
-        $store->write("ObjectArrayInvalid.json", "{'Hello': [1,2,3]}");
-        $store->write("ObjectArrayInvalid2.json", "Hello");
+        $store->write('ObjectArrayInvalid.json', "{'Hello': [1,2,3]}");
+        $store->write('ObjectArrayInvalid2.json', 'Hello');
 
         $this->expectException(JsonException::class);
-        ObjectArray::fromJSONFile($store->path("ObjectArrayInvalid.json"));
+        ObjectArray::fromJSONFile($store->path('ObjectArrayInvalid.json'));
 
         $this->expectException(JsonException::class);
-        ObjectArray::fromJSONFile($store->path("ObjectArrayInvalid2.json"));
+        ObjectArray::fromJSONFile($store->path('ObjectArrayInvalid2.json'));
 
         $this->expectException(InvalidArgumentException::class);
-        ObjectArray::fromJSONFile($store->path("InexistantObjectArrayFile.json"));
+        ObjectArray::fromJSONFile($store->path('InexistantObjectArrayFile.json'));
     }
 
     public function test_writeJSONFile()
@@ -73,11 +73,11 @@ class ObjectArrayTest extends TestCase
         $store = Storage::getInstance();
 
         ObjectArray::fromArray([1,2,3])
-        ->writeJSONFile($store->path("ObjectArrayWrite.json"));
+        ->writeJSONFile($store->path('ObjectArrayWrite.json'));
 
         $this->assertEquals(
-            "[1,2,3]",
-            $store->read("ObjectArrayWrite.json")
+            '[1,2,3]',
+            $store->read('ObjectArrayWrite.json')
         );
     }
 
@@ -86,11 +86,11 @@ class ObjectArrayTest extends TestCase
         $store = Storage::getInstance();
 
         ObjectArray::fromArray([1,2,3])
-        ->writeTextFile($store->path("ObjectArrayWriteA.txt"), ",")
-        ->writeTextFile($store->path("ObjectArrayWriteB.txt"), "\n");
+        ->writeTextFile($store->path('ObjectArrayWriteA.txt'), ',')
+        ->writeTextFile($store->path('ObjectArrayWriteB.txt'), "\n");
 
-        $this->assertEquals("1,2,3"  , $store->read("ObjectArrayWriteA.txt"));
-        $this->assertEquals("1\n2\n3", $store->read("ObjectArrayWriteB.txt"));
+        $this->assertEquals('1,2,3'  , $store->read('ObjectArrayWriteA.txt'));
+        $this->assertEquals("1\n2\n3", $store->read('ObjectArrayWriteB.txt'));
     }
 
 
@@ -98,22 +98,22 @@ class ObjectArrayTest extends TestCase
     {
         $this->assertEquals(
             ['Alfred', 'Francis', 'Martin', 'Quentin', 'Steven'],
-            ObjectArray::fromQuery("SELECT name, birth_year FROM test_sample_data")->collect()
+            ObjectArray::fromQuery('SELECT name, birth_year FROM test_sample_data')->collect()
         );
 
         $this->assertEquals(
             [1899, 1939, 1942, 1963, 1946],
-            ObjectArray::fromQuery("SELECT birth_year, name FROM test_sample_data")->collect()
+            ObjectArray::fromQuery('SELECT birth_year, name FROM test_sample_data')->collect()
         );
     }
 
     public function test_push()
     {
         $arr = new ObjectArray();
-        $arr = $arr->push("A");
-        $arr = $arr->push("B", "C");
+        $arr = $arr->push('A');
+        $arr = $arr->push('B', 'C');
 
-        $this->assertEquals(["A", "B", "C"], $arr->collect());
+        $this->assertEquals(['A', 'B', 'C'], $arr->collect());
     }
 
     public function test_pop()
@@ -187,33 +187,33 @@ class ObjectArrayTest extends TestCase
         $this->assertEquals([0,1,2,3,4,5,6,7,8,9], $arr->collect());
         $this->assertEquals([0,2,4,6,8], $copy->collect());
 
-        $arr = new ObjectArray(["A", "", null, "B", 0, false, "C"]);
+        $arr = new ObjectArray(['A', '', null, 'B', 0, false, 'C']);
         $arr = $arr->filter();
-        $this->assertEquals(["A", "B", "C"], $arr->collect());
+        $this->assertEquals(['A', 'B', 'C'], $arr->collect());
     }
 
 
     public function test_sortByKey()
     {
         $names = ObjectArray::fromArray([
-            ["name" => "Malcolm", "age" => 18],
-            ["name" => "Melody", "age" => 40],
-            ["name" => "Holly", "age" => 35],
-            ["name" => "Sylvester", "age" => 80],
-            ["name" => "Clyde", "age" => 35],
-            ["name" => "Eliot", "age" => 36],
-            ["name" => "Peace", "age" => 19],
-            ["name" => "Mortimer", "age" => 50],
+            ['name' => 'Malcolm', 'age' => 18],
+            ['name' => 'Melody', 'age' => 40],
+            ['name' => 'Holly', 'age' => 35],
+            ['name' => 'Sylvester', 'age' => 80],
+            ['name' => 'Clyde', 'age' => 35],
+            ['name' => 'Eliot', 'age' => 36],
+            ['name' => 'Peace', 'age' => 19],
+            ['name' => 'Mortimer', 'age' => 50],
         ]);
 
-        $sorted = $names->sortByKey(fn($person) => $person["age"])->collect();
-        $reversed = $names->sortByKey(fn($person) => $person["age"], true)->collect();
+        $sorted = $names->sortByKey(fn($person) => $person['age'])->collect();
+        $reversed = $names->sortByKey(fn($person) => $person['age'], true)->collect();
 
-        $this->assertEquals("Sylvester", $sorted[7]["name"]);
-        $this->assertEquals("Malcolm", $sorted[0]["name"]);
+        $this->assertEquals('Sylvester', $sorted[7]['name']);
+        $this->assertEquals('Malcolm', $sorted[0]['name']);
 
-        $this->assertEquals("Sylvester", $reversed[0]["name"]);
-        $this->assertEquals("Malcolm", $reversed[7]["name"]);
+        $this->assertEquals('Sylvester', $reversed[0]['name']);
+        $this->assertEquals('Malcolm', $reversed[7]['name']);
     }
 
     public function test_unique()
@@ -227,11 +227,11 @@ class ObjectArrayTest extends TestCase
 
     public function test_diff()
     {
-        $arr = new ObjectArray(["red", "green", "blue"]);
-        $copy = $arr->diff(["red"]);
+        $arr = new ObjectArray(['red', 'green', 'blue']);
+        $copy = $arr->diff(['red']);
 
-        $this->assertEquals(["red", "green", "blue"], $arr->collect());
-        $this->assertEquals(["green", "blue"], $copy->collect());
+        $this->assertEquals(['red', 'green', 'blue'], $arr->collect());
+        $this->assertEquals(['green', 'blue'], $copy->collect());
     }
 
     public function test_slice()
@@ -252,7 +252,7 @@ class ObjectArrayTest extends TestCase
     public function test_join()
     {
         $arr = new ObjectArray([1,2,3]);
-        $this->assertEquals("1,2,3", $arr->join(","));
+        $this->assertEquals('1,2,3', $arr->join(','));
     }
 
     public function test_length()
@@ -265,23 +265,23 @@ class ObjectArrayTest extends TestCase
     public function test_find_and_findIndex()
     {
         $persons = [
-            ["name" => "Vincent", "age" => 18],
-            ["name" => "Damon",   "age" => 15],
-            ["name" => "Hollie",  "age" => 23],
-            ["name" => "Percy",   "age" => 14],
-            ["name" => "Yvonne",  "age" => 35],
-            ["name" => "Jack",    "age" => 56],
+            ['name' => 'Vincent', 'age' => 18],
+            ['name' => 'Damon',   'age' => 15],
+            ['name' => 'Hollie',  'age' => 23],
+            ['name' => 'Percy',   'age' => 14],
+            ['name' => 'Yvonne',  'age' => 35],
+            ['name' => 'Jack',    'age' => 56],
         ];
 
         $arr = new ObjectArray($persons);
 
-        $vincent = $arr->find(fn($x) => $x["age"] === 18);
+        $vincent = $arr->find(fn($x) => $x['age'] === 18);
         $this->assertEquals($persons[0], $vincent);
-        $this->assertNull($arr->find(fn($x) => $x["name"] === "Hugo"));
+        $this->assertNull($arr->find(fn($x) => $x['name'] === 'Hugo'));
 
-        $this->assertEquals(0,  $arr->findIndex(fn($x) => $x["name"] === "Vincent"));
-        $this->assertEquals(5,  $arr->findIndex(fn($x) => $x["age"] === 56));
-        $this->assertEquals(-1, $arr->findIndex(fn($x) => $x["name"] === "Bob"));
+        $this->assertEquals(0,  $arr->findIndex(fn($x) => $x['name'] === 'Vincent'));
+        $this->assertEquals(5,  $arr->findIndex(fn($x) => $x['age'] === 56));
+        $this->assertEquals(-1, $arr->findIndex(fn($x) => $x['name'] === 'Bob'));
     }
 
     public function test_getIndex()
@@ -298,16 +298,16 @@ class ObjectArrayTest extends TestCase
 
     public function test_toAssociative()
     {
-        $letters = ["A", "B", "C"];
+        $letters = ['A', 'B', 'C'];
 
         $arr = new ObjectArray($letters);
 
         $results = $arr->toAssociative(fn($value) => [$value, "$value-$value"]);
 
         $this->assertEquals([
-            "A" => "A-A",
-            "B" => "B-B",
-            "C" => "C-C"
+            'A' => 'A-A',
+            'B' => 'B-B',
+            'C' => 'C-C'
         ], $results);
     }
 
@@ -350,19 +350,19 @@ class ObjectArrayTest extends TestCase
 
     public function test_asIntegers()
     {
-        $this->assertEquals([1, 2, 3], ObjectArray::fromArray(["1", "2", "3", "abc"])->asIntegers()->collect());
-        $this->assertEquals([1, 2, 3, null], ObjectArray::fromArray(["1", "2", "3", "abc"])->asIntegers(false)->collect());
+        $this->assertEquals([1, 2, 3], ObjectArray::fromArray(['1', '2', '3', 'abc'])->asIntegers()->collect());
+        $this->assertEquals([1, 2, 3, null], ObjectArray::fromArray(['1', '2', '3', 'abc'])->asIntegers(false)->collect());
     }
 
     public function test_asFloats()
     {
-        $this->assertEquals([1.9, 2, 3.1416], ObjectArray::fromArray(["1.9", "2", "3.1416", "abc"])->asFloats()->collect());
-        $this->assertEquals([1.9, 2, 3.1416, null], ObjectArray::fromArray(["1.9", "2", "3.1416", "abc"])->asFloats(false)->collect());
+        $this->assertEquals([1.9, 2, 3.1416], ObjectArray::fromArray(['1.9', '2', '3.1416', 'abc'])->asFloats()->collect());
+        $this->assertEquals([1.9, 2, 3.1416, null], ObjectArray::fromArray(['1.9', '2', '3.1416', 'abc'])->asFloats(false)->collect());
     }
 
     public function test_asStrings()
     {
-        $this->assertEquals(["1.9", "2", "3.1416", "abc", ""], ObjectArray::fromArray([1.9, 2, 3.1416, "abc", null])->asStrings()->collect());
+        $this->assertEquals(['1.9', '2', '3.1416', 'abc', ''], ObjectArray::fromArray([1.9, 2, 3.1416, 'abc', null])->asStrings()->collect());
     }
 
     public function test_includes()
@@ -373,10 +373,10 @@ class ObjectArrayTest extends TestCase
         $this->assertTrue($oddsNumbers->includes(2));
 
         $this->assertFalse($oddsNumbers->includes(1));
-        $this->assertFalse($oddsNumbers->includes("2"));
+        $this->assertFalse($oddsNumbers->includes('2'));
 
-        $this->assertFalse($oddsNumbers->includes("1", false));
-        $this->assertTrue($oddsNumbers->includes("2", false));
+        $this->assertFalse($oddsNumbers->includes('1', false));
+        $this->assertTrue($oddsNumbers->includes('2', false));
 
     }
 }

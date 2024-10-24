@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace YonisSavary\Sharp\Classes\Utils;
 
@@ -17,7 +17,7 @@ final class AppMapInstance extends AbstractMap {
 
     public function __destruct()
     {
-        Storage::getInstance()->getSubStorage("Sharp/AppMaps")
+        Storage::getInstance()->getSubStorage('Sharp/AppMaps')
         ->write($this->hashName, serialize($this->storage));
     }
 }

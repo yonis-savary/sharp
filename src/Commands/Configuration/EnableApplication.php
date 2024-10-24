@@ -13,7 +13,7 @@ class EnableApplication extends AbstractCommand
 {
     public function getHelp(): string
     {
-        return "Enable applications by putting them in your configuration";
+        return 'Enable applications by putting them in your configuration';
     }
 
     public function __invoke(Args $args)
@@ -21,7 +21,7 @@ class EnableApplication extends AbstractCommand
         $values = $args->values();
 
         if (!count($values))
-            $values = [Terminal::prompt("App to enable (PascalCase): ")];
+            $values = [Terminal::prompt('App to enable (PascalCase): ')];
 
         $values = ObjectArray::fromArray($values);
         $values = $values->filter(function($app) {
@@ -32,11 +32,11 @@ class EnableApplication extends AbstractCommand
             return false;
         })->collect();
 
-        $this->log("Enabling new applications");
+        $this->log('Enabling new applications');
 
         $config = new Configuration(Configuration::DEFAULT_FILENAME);
 
-        $config->edit("applications", function($applications) use ($values) {
+        $config->edit('applications', function($applications) use ($values) {
             return ObjectArray::fromArray($applications)
             ->push(...$values)
             ->unique()

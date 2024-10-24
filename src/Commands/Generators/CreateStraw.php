@@ -13,10 +13,10 @@ class CreateStraw extends AbstractCommand
     protected function createStraw(string $name, string $app)
     {
         if (!preg_match("/^[A-Z][a-zA-Z0-9]*$/", $name))
-            return $this->log("Given straw name must be in PascalCase");
+            return $this->log('Given straw name must be in PascalCase');
 
-        $directory = Utils::joinPath($app, "Classes/Straws");
-        $file = Utils::joinPath($directory, $name. ".php");
+        $directory = Utils::joinPath($app, 'Classes/Straws');
+        $file = Utils::joinPath($directory, $name. '.php');
 
         $namespace = Utils::pathToNamespace($directory);
 
@@ -47,7 +47,7 @@ class CreateStraw extends AbstractCommand
         $values = $args->values();
 
         if (!count($values))
-            $values = [Terminal::prompt("Straw name (PascalCase): ")];
+            $values = [Terminal::prompt('Straw name (PascalCase): ')];
 
         $app = Terminal::chooseApplication();
 
@@ -57,6 +57,6 @@ class CreateStraw extends AbstractCommand
 
     public function getHelp(): string
     {
-        return "Create a SessionStraw class in your application";
+        return 'Create a SessionStraw class in your application';
     }
 }

@@ -11,12 +11,12 @@ class QueuesList extends AbstractCommand
 {
     public function getHelp(): string
     {
-        return "List items from your application queues, use --list to get a full list";
+        return 'List items from your application queues, use --list to get a full list';
     }
 
     public function __invoke(Args $args)
     {
-        $list = $args->isPresent("-l", "--list");
+        $list = $args->isPresent('-l', '--list');
 
         $this->log("Listing application queues\n");
 
@@ -25,7 +25,7 @@ class QueuesList extends AbstractCommand
         {
             $storage = $class::getQueueStorage();
             $files = $storage->listFiles();
-            $this->log(sprintf("%s (%s items)", $class, count($files)));
+            $this->log(sprintf('%s (%s items)', $class, count($files)));
 
             if (!$list)
                 continue;

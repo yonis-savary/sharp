@@ -13,12 +13,12 @@ class AppCacheTest extends TestCase
         $a = AppCacheA::get();
         $b = AppCacheB::get();
 
-        $a->set("key", "abc");
-        $b->set("key", "123");
+        $a->set('key', 'abc');
+        $b->set('key', '123');
 
 
-        $this->assertEquals("abc", $a->get("key"));
-        $this->assertEquals("123", $b->get("key"));
+        $this->assertEquals('abc', $a->get('key'));
+        $this->assertEquals('123', $b->get('key'));
     }
 
     public function test_reference()
@@ -27,8 +27,8 @@ class AppCacheTest extends TestCase
         $second = AppCacheA::get();
 
 
-        $first->set("refTest", "Hello!");
+        $first->set('refTest', 'Hello!');
 
-        $this->assertEquals("Hello!", $second->get("refTest"));
+        $this->assertEquals('Hello!', $second->get('refTest'));
     }
 }

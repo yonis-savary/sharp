@@ -7,11 +7,11 @@ Sharp got the [`EventListener`](../../src/Classes/Core/EventListener.php) class,
 ```php
 $events = EventListener::getInstance();
 
-$events->on("log-this", function(CustomEvent $event){
-    Logger::getInstance()->debug($event->extra["text"]);
+$events->on('log-this', function(CustomEvent $event){
+    Logger::getInstance()->debug($event->extra['text']);
 });
 
-$events->dispatch(new CustomEvent("log-this", ["text" => "Hello world"]));
+$events->dispatch(new CustomEvent('log-this', ['text' => 'Hello world']));
 ```
 
 ## Specific Event Classes
@@ -38,7 +38,7 @@ And listen for it with its classname
 
 ```php
 $eventListener->on(ShippedOrder::class, function(ShippedOrder $event){
-    debug("Sent order N°" . $event->order->id);
+    debug('Sent order N°' . $event->order->id);
 });
 ```
 

@@ -12,7 +12,7 @@ class CacheEnable extends AbstractCommand
 {
     public function getHelp(): string
     {
-        return "Enable every cache-able components !";
+        return 'Enable every cache-able components !';
     }
 
     public function __invoke(Args $args)
@@ -24,13 +24,13 @@ class CacheEnable extends AbstractCommand
             /** @var Configurable $configurable */
             $key = $configurable::getConfigurationKey();
 
-            if (!array_key_exists("cached", $configurable::getDefaultConfiguration()))
+            if (!array_key_exists('cached', $configurable::getDefaultConfiguration()))
                 continue;
 
             $this->log("Enabling [$key] cache");
 
             $config->edit($key, function($config){
-                $config["cached"] = true;
+                $config['cached'] = true;
                 return $config;
             });
         }

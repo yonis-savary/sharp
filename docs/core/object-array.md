@@ -61,14 +61,14 @@ Also, as `ObjectArray` return new instances of itself, this mean that you can ch
 ObjectArray::fromArray($myArray);
 
 # Alias to ObjectArray::fromArray(explode($separator, $string))
-ObjectArray::fromExplode(",", "A,B,C");
+ObjectArray::fromExplode(',', 'A,B,C');
 
 # Select the first-column values of a query
-ObjectArray::fromQuery("SELECT id FROM client LIMIT 500");
+ObjectArray::fromQuery('SELECT id FROM client LIMIT 500');
 
 $myArray = new ObjectArray([0,1,2,3,4,5]);
 
-$myArray->join(","); // "0,1,2,3,4,5"
+$myArray->join(','); // '0,1,2,3,4,5'
 $myArray->length(); // 6
 
 // Return the first element that respect a condition
@@ -92,9 +92,9 @@ $myArray->toAssociative(fn($value) => [$alphabet[$i], $i]);
 
 // Sort the array by a given key (given by a callback)
 // Sort from worst score to best
-$users->sortByKey(fn($user) => $user["score"]);
+$users->sortByKey(fn($user) => $user['score']);
 // Sort from best score to worst
-$users->sortByKey(fn($user) => $user["score"], true);
+$users->sortByKey(fn($user) => $user['score'], true);
 ```
 
 [< Back to Summary](../README.md)

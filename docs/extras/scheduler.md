@@ -13,10 +13,10 @@ Use `Scheduler::schedule` to add a task to the scheduler
 
 ```php
 # Add a simple task that says Hello !
-Scheduler::getInstance()->schedule("* * * * *", fn() => print("Hello!"));
+Scheduler::getInstance()->schedule('* * * * *', fn() => print('Hello!'));
 
-# Add a simple task that says Hello ! and name the task "helloPrinter"
-Scheduler::getInstance()->schedule("* * * * *", fn() => print("Hello!"), "helloPrinter");
+# Add a simple task that says Hello ! and name the task 'helloPrinter'
+Scheduler::getInstance()->schedule('* * * * *', fn() => print('Hello!'), 'helloPrinter');
 ```
 
 then, execute the `scheduler-launch` command to launch every task that respects the current time

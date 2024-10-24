@@ -1,6 +1,6 @@
 <?php
 
-namespace YonisSavary\Sharp\Classes\Extras;
+namespace YonisSavary\Sharp\Classes\Extras\Cron;
 
 use InvalidArgumentException;
 
@@ -16,18 +16,18 @@ enum CronTimeType
     {
         switch ($type)
         {
-            case self::MINUTE:  return "minute";
-            case self::HOUR:    return "hour";
-            case self::DAY:     return "day";
-            case self::MONTH:   return "month";
-            case self::WEEKDAY: return "weekday";
+            case self::MINUTE:  return 'minute';
+            case self::HOUR:    return 'hour';
+            case self::DAY:     return 'day';
+            case self::MONTH:   return 'month';
+            case self::WEEKDAY: return 'weekday';
         }
     }
 
     public static function getValueString(int $value, CronTimeType $type)
     {
-        $monthsLabels = [null, "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        $weekdayLabels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        $monthsLabels = [null, 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        $weekdayLabels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
         switch ($type)
         {
@@ -47,7 +47,7 @@ enum CronTimeType
 
         $throwIfOutOfRange = function($min, $max) use (&$value, &$type) {
             if (!($min <= $value && $value <= $max))
-                throw new InvalidArgumentException("Cron value of type " . self::toString($type). " must be between $min and $max");
+                throw new InvalidArgumentException('Cron value of type ' . self::toString($type). " must be between $min and $max");
         };
 
         switch ($type)

@@ -57,15 +57,15 @@ To address this, the [`helper-web.php`](../../src/Helpers/helpers-web.php) got t
 
 ```php
 <!-- Put the script and stylesheet with it URL -->
-<?= script("shipping.js") ?>
-<?= style("shipping.css") ?>
+<?= script('shipping.js') ?>
+<?= style('shipping.css') ?>
 
 <!-- Inject it directly by reading the file ! -->
-<?= script("shipping.js", true) ?>
-<?= style("shipping.css", true) ?>
+<?= script('shipping.js', true) ?>
+<?= style('shipping.css', true) ?>
 
 <!-- The asset() function can be used to get an URL -->
-<link rel="stylesheet" href="<?= asset("myStyle.css") ?>">
+<link rel='stylesheet' href="<?= asset('myStyle.css') ?>">
 
 ```
 
@@ -84,7 +84,7 @@ is the one we are looking for
 To address this, your can be more precise when giving an asset name
 
 ```php
-script("contact/creation.js")
+script('contact/creation.js')
 ```
 
 [< Back to summary](../README.md)

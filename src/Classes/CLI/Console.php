@@ -21,26 +21,23 @@ class Console extends CLIUtils
     {
         return ObjectArray::fromArray(Autoloader::classesThatExtends(AbstractCommand::class))
         ->map(fn($x) => new $x())
-        ->filter(fn(AbstractCommand $x) => $x->getOrigin() != "tests")
+        ->filter(fn(AbstractCommand $x) => $x->getOrigin() != 'tests')
         ->collect();
     }
 
     /**
      * @return array<AbstractCommand>
      */
-    public function findCommands(string $identifier): array
+    public function findCommands(string $subject): array
     {
         return ObjectArray::fromArray(self::listCommands())
-        ->filter(fn (AbstractCommand $command) => in_array($identifier, [$command->getName(), $command->getIdentifier()]))
+        ->filter(fn (AbstractCommand $command) => in_array($subject, [$command->getName(), $command->getIdentifier()]))
         ->collect();
     }
 
     public function printCommandList(): void
     {
-        $help = new Help();
-        $nullArgs = new Args();
-
-        $help($nullArgs);
+        Help::execute('');
     }
 
     /**
@@ -54,7 +51,7 @@ class Console extends CLIUtils
 
         if (!count($argv))
         {
-            $this->log("A command name is needed !");
+            $this->log('A command name is needed !');
             $this->printCommandList();
             return;
         }
@@ -73,14 +70,14 @@ class Console extends CLIUtils
         {
             $this->log("Multiple commands for identifier [$commandName] found !");
             foreach ($commands as $command)
-                $this->log(" - " . $command->getIdentifier());
+                $this->log(' - ' . $command->getIdentifier());
             return;
         }
 
         $command = $commands[0];
 
         $this->log(
-            sprintf("%s[ %s ]%s\n", str_repeat("-", 5), $command->getIdentifier() , str_repeat("-", 25))
+            sprintf("%s[ %s ]%s\n", str_repeat('-', 5), $command->getIdentifier() , str_repeat('-', 25))
         );
         $return = $command(Args::fromArray($argv));
 

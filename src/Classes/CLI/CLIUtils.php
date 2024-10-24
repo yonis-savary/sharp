@@ -11,8 +11,8 @@ class CLIUtils
      */
     final public function log(string ...$mixed)
     {
-        if (php_sapi_name() === "cli")
-            return print(join("", array_map(fn($x) => $x . "\n", $mixed)));
+        if (php_sapi_name() === 'cli')
+            return print(join('', array_map(fn($x) => $x . "\n", $mixed)));
 
         foreach ($mixed as $element)
             Logger::getInstance()->info($element);
@@ -62,9 +62,9 @@ class CLIUtils
      * @param string $filledChar Char to use for the 'done' part of the progress bar
      * @param string $emptyChar to use for the 'remaining' part of the progress bar
      */
-    protected function progressBar(array $array, callable $callback, int $progressBarSize=40, string $filledChar="█", string $emptyChar="░")
+    protected function progressBar(array $array, callable $callback, int $progressBarSize=40, string $filledChar='█', string $emptyChar='░')
     {
-        $log = str_contains(php_sapi_name(), "cli") ?
+        $log = str_contains(php_sapi_name(), 'cli') ?
             fn($text) => $this->log($text):
             fn($_) => null
         ;
@@ -79,7 +79,7 @@ class CLIUtils
             $remain = $progressBarSize - $progress;
 
             $log("\e8");
-            $log("[". str_repeat($filledChar, $progress) . str_repeat($emptyChar, $remain) ."] $iteration/$arraySize");
+            $log('['. str_repeat($filledChar, $progress) . str_repeat($emptyChar, $remain) ."] $iteration/$arraySize");
 
             ob_start();
             $callback($array[$i], $i, $array);
@@ -99,7 +99,7 @@ class CLIUtils
 
     private function withColor(string $string, int $colorCode, bool $bold=false)
     {
-        $boldStr = $bold ? ";1": "";
+        $boldStr = $bold ? ';1': '';
         return "\e[{$colorCode}{$boldStr}m" . $string . "\e[0m";
     }
 

@@ -19,7 +19,7 @@ abstract class GeneratorDriver
      */
     protected function sqlToPHPName(string $name): string
     {
-        return ObjectArray::fromExplode("_", $name)
+        return ObjectArray::fromExplode('_', $name)
         ->filter()
         ->map(ucfirst(...))
         ->join();

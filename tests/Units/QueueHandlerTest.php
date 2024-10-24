@@ -17,12 +17,12 @@ class QueueHandlerTest extends TestCase
 
             public static function addNumber(int $number)
             {
-                self::pushQueueItem(["number" => $number]);
+                self::pushQueueItem(['number' => $number]);
             }
 
             protected static function processQueueItem(array $data): bool
             {
-                $n = $data["number"];
+                $n = $data['number'];
                 self::$lastProcessed = $n;
                 self::$acc += $n;
                 return true;

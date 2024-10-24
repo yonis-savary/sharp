@@ -57,7 +57,7 @@ class CsrfMiddleware implements MiddlewareInterface
         if (Csrf::getInstance()->checkRequest($request))
             return $request;
 
-        return Response::json("Invalid CSRF token !");
+        return Response::json('Invalid CSRF token !');
     }
 }
 

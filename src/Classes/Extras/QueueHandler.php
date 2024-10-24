@@ -19,10 +19,10 @@ trait QueueHandler
         }
         catch (Throwable)
         {
-            throw new InvalidArgumentException("Given data is not serializable !");
+            throw new InvalidArgumentException('Given data is not serializable !');
         }
 
-        $filename = uniqid(time() . "-");
+        $filename = uniqid(time() . '-');
 
         $storage = self::getQueueStorage();
         $storage->write($filename, $serializedData);
@@ -45,10 +45,10 @@ trait QueueHandler
         $logger = self::getQueueProcessingLogger();
         $capacity = self::getQueueProcessCapacity();
 
-        $logger->info("Processing [{class}] queue items", ["class" => basename(self::class)]);
+        $logger->info('Processing [{class}] queue items', ['class' => basename(self::class)]);
 
-        # "Reserved" item are renamed, "#~" is put before their original name
-        # A filename begining with "#~" must be ignored as it can be processed in another process
+        # 'Reserved' item are renamed, '#~' is put before their original name
+        # A filename begining with '#~' must be ignored as it can be processed in another process
         # We can almost be sure that we are avoiding renaming collision by waiting a random period
         usleep(random_int(0, 1000));
 
@@ -57,13 +57,13 @@ trait QueueHandler
         {
 
             $files = ObjectArray::fromArray($storage->listFiles())
-            ->filter(fn($file) => !str_starts_with(basename($file), "#~"))
+            ->filter(fn($file) => !str_starts_with(basename($file), '#~'))
             ->collect();
 
             if (!($file = $files[0] ?? false))
                 break;
 
-            $newFileName = Utils::joinPath(dirname($file), "#~" . basename($file));
+            $newFileName = Utils::joinPath(dirname($file), '#~' . basename($file));
             rename($file, $newFileName);
 
             $data = unserialize(file_get_contents($newFileName));
@@ -74,7 +74,7 @@ trait QueueHandler
             }
             catch (Throwable $err)
             {
-                $logger->error("Could not process queue item !", $data, $err);
+                $logger->error('Could not process queue item !', $data, $err);
                 $logger->error($data);
                 $logger->error($err);
             }

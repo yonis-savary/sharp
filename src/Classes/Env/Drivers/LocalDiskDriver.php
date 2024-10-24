@@ -49,7 +49,7 @@ class LocalDiskDriver implements FileDriverInterface
 
     public function scanDirectory(string $path): array
     {
-        return ObjectArray::fromArray(array_diff(scandir($path), [".", ".."]))
+        return ObjectArray::fromArray(array_diff(scandir($path), ['.', '..']))
         ->map(fn($x) => Utils::joinPath($path, $x))
         ->collect();
     }

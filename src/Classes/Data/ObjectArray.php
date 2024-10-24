@@ -43,7 +43,7 @@ class ObjectArray
         $object = new self($lines);
 
         if ($filterEmptyLines)
-            return $object->filter(fn($line) => trim($line) != "");
+            return $object->filter(fn($line) => trim($line) != '');
 
         return $object;
     }
@@ -80,7 +80,7 @@ class ObjectArray
      * Create an array of values from a SQL query
      * The values will be reduced to the first selected column
      *
-     * @example base `fromQuery("SELECT first_name FROM user LIMIT 10") => array of 10 first_name values`
+     * @example base `fromQuery('SELECT first_name FROM user LIMIT 10') => array of 10 first_name values`
      */
     public static function fromQuery(string $query, array $context=[]): self
     {
@@ -200,12 +200,12 @@ class ObjectArray
     }
 
     /**
-     * `array_map(intval(...))` equivalent for ObjectArray instance
+     * `array_map((int)(...))` equivalent for ObjectArray instance
      * Map every values to integers
      */
     public function asIntegers(bool $filterNullValues=true): self
     {
-        $newObject = $this->map(fn($x) => is_numeric($x) ? intval($x) : null);
+        $newObject = $this->map(fn($x) => is_numeric($x) ? (int)($x) : null);
         if ($filterNullValues)
             return $newObject->filter(fn($x) => $x !== null);
 
@@ -213,12 +213,12 @@ class ObjectArray
     }
 
     /**
-     * `array_map(floatval(...))` equivalent for ObjectArray instance
+     * `array_map((float)(...))` equivalent for ObjectArray instance
      * Map every values to integers
      */
     public function asFloats(bool $filterNullValues=true): self
     {
-        $newObject = $this->map(fn($x) => is_numeric($x) ? floatval($x) : null);
+        $newObject = $this->map(fn($x) => is_numeric($x) ? (float)($x) : null);
         if ($filterNullValues)
             return $newObject->filter(fn($x) => $x !== null);
 
@@ -286,7 +286,7 @@ class ObjectArray
      * Sort elements by a given key itself given by a callback
      *
      * ```php
-     * $accounts = $accounts->sortByKey(fn($account) => $account["balance"])
+     * $accounts = $accounts->sortByKey(fn($account) => $account['balance'])
      * ```
      *
      * @note Return a NEW ObjectArray object with edited data
@@ -329,7 +329,7 @@ class ObjectArray
     /**
      * @return string Imploded values
      */
-    public function join(string $glue=""): string
+    public function join(string $glue=''): string
     {
         return join($glue, $this->collect());
     }

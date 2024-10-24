@@ -15,16 +15,16 @@ class CreateMap extends AbstractCommand
     {
         $application = Terminal::chooseApplication();
 
-        $name = $args->values()[0] ?? readline("Map Name ?");
+        $name = $args->values()[0] ?? readline('Map Name ?');
         if (!preg_match("/^([A-Z][a-zA-Z0-9]*)+$/", $name))
-            return $this->log("Given name must be made of PascalName words");
-        $filename = $name . ".php";
+            return $this->log('Given name must be made of PascalName words');
+        $filename = $name . '.php';
 
-        $mapsStorage = new Storage(Utils::joinPath($application, "Classes/App/Maps"));
+        $mapsStorage = new Storage(Utils::joinPath($application, 'Classes/App/Maps'));
         if ($mapsStorage->isFile($filename))
             return $this->log("$filename already exists !");
 
-        $applicationNamespace = str_replace("/", "\\", $application);
+        $applicationNamespace = str_replace('/', "\\", $application);
 
         $mapsStorage->write($filename, Terminal::stringToFile(
             "<?php
@@ -39,11 +39,11 @@ class CreateMap extends AbstractCommand
             }
         "));
 
-        $this->log("File written at : " . $mapsStorage->path($filename));
+        $this->log('File written at : ' . $mapsStorage->path($filename));
     }
 
     public function getHelp(): string
     {
-        return "Create a AppMap utility class in your application";
+        return 'Create a AppMap utility class in your application';
     }
 }

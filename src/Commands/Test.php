@@ -11,7 +11,7 @@ class Test extends AbstractCommand
 {
     public function getHelp(): string
     {
-        return "Execute every PHPUnit installation/test suites";
+        return 'Execute every PHPUnit installation/test suites';
     }
 
     protected function executeInDir(callable $callback, string $directory)
@@ -24,13 +24,13 @@ class Test extends AbstractCommand
 
     public function __invoke(Args $args)
     {
-        $toTest = Configuration::getInstance()->toArray("applications");
+        $toTest = Configuration::getInstance()->toArray('applications');
 
-        array_unshift($toTest, ".");
+        array_unshift($toTest, '.');
 
         foreach ($toTest as $application)
         {
-            $phpunit = Utils::joinPath($application, "vendor/bin/phpunit");
+            $phpunit = Utils::joinPath($application, 'vendor/bin/phpunit');
             if (!is_file($phpunit))
                 continue;
 
@@ -38,11 +38,11 @@ class Test extends AbstractCommand
 
                 $start = hrtime(true);
 
-                $command = "./vendor/bin/phpunit";
-                if (str_starts_with(PHP_OS, "WIN"))
+                $command = './vendor/bin/phpunit';
+                if (str_starts_with(PHP_OS, 'WIN'))
                     $command = ".\\vendor\\bin\\phpunit";
 
-                $output = shell_exec("$command --colors=never --display-warnings") ?? "";
+                $output = shell_exec("$command --colors=never --display-warnings") ?? '';
                 $duration = hrtime(true) - $start;
 
                 $durationMilliseconds = $duration/1_000_000;
@@ -51,7 +51,7 @@ class Test extends AbstractCommand
 
                 $lastLine = end($lines);
 
-                if (str_starts_with($lastLine, "OK"))
+                if (str_starts_with($lastLine, 'OK'))
                     $this->log(" - OK ($application, " . substr($lastLine, 4) ." in $durationMilliseconds ms");
                 else
                     $this->log("Errors/Warnings while testing [$application] :", $output);

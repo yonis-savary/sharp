@@ -75,11 +75,11 @@ Let's create our first route in `MyFirstApp/anyName.php`
 // $router = Router::getInstance();
 
 $router->addRoutes(
-    Route::get("/hello", function(){
-        return "Hello !";
+    Route::get('/hello', function(){
+        return 'Hello !';
     }),
 
-    Route::get("/goodbye", fn() => "Goodbye !")
+    Route::get('/goodbye', fn() => 'Goodbye !')
 );
 ```
 
@@ -107,19 +107,19 @@ class HelloController
     public static function declareRoutes(Router $router)
     {
         $router->addRoutes(
-            Route::get("/hello", [self::class, "sayHello"]),
-            Route::get("/goodbye", [self::class, "sayHello"])
+            Route::get('/hello', [self::class, 'sayHello']),
+            Route::get('/goodbye', [self::class, 'sayHello'])
         );
     }
 
     public static function sayHello()
     {
-        return "Hello !";
+        return 'Hello !';
     }
 
     public static function sayGoodbye()
     {
-        return "Goodbye !";
+        return 'Goodbye !';
     }
 }
 ```

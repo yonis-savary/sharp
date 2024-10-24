@@ -6,70 +6,70 @@ use YonisSavary\Sharp\Classes\Core\Logger;
  * Shortcut to `Logger::getInstance()->debug()`
  * @param mixed ...$messages Informations/Data to log
  */
-function debug(mixed ...$messages)
+function debug(mixed $message, array $context=[])
 {
-    Logger::getInstance()->debug(...$messages);
+    Logger::getInstance()->debug($message, $context);
 }
 
 /**
  * Shortcut to `Logger::getInstance()->info()`
  * @param mixed ...$messages Informations/Data to log
  */
-function info(mixed ...$messages)
+function info(mixed $message, array $context=[])
 {
-    Logger::getInstance()->info(...$messages);
+    Logger::getInstance()->info($message, $context);
 }
 
 /**
  * Shortcut to `Logger::getInstance()->notice()`
  * @param mixed ...$messages Informations/Data to log
  */
-function notice(mixed ...$messages)
+function notice(mixed $message, array $context=[])
 {
-    Logger::getInstance()->notice(...$messages);
+    Logger::getInstance()->notice($message, $context);
 }
 
 /**
  * Shortcut to `Logger::getInstance()->warning()`
  * @param mixed ...$messages Informations/Data to log
  */
-function warning(mixed ...$messages)
+function warning(mixed $message, array $context=[])
 {
-    Logger::getInstance()->warning(...$messages);
+    Logger::getInstance()->warning($message, $context);
 }
 
 /**
  * Shortcut to `Logger::getInstance()->error()`
  * @param mixed ...$messages Informations/Data to log
  */
-function error(mixed ...$messages)
+function error(mixed $message, array $context=[])
 {
-    Logger::getInstance()->error(...$messages);
+    Logger::getInstance()->error($message, $context);
 }
 
 /**
  * Shortcut to `Logger::getInstance()->critical()`
  * @param mixed ...$messages Informations/Data to log
  */
-function critical(mixed ...$messages)
+function critical(mixed $message, array $context=[])
 {
-    Logger::getInstance()->critical(...$messages);
+    Logger::getInstance()->critical($message, $context);
 }
 
 /**
  * Shortcut to `Logger::getInstance()->alert()`
  * @param mixed ...$messages Informations/Data to log
  */
-function alert(mixed ...$messages)
+function alert(mixed $message, array $context=[])
 {
-    Logger::getInstance()->alert(...$messages);
+    Logger::getInstance()->alert($message, $context);
 }
 
 /**
  * Shortcut to `Logger::getInstance()->emergency()`
  * @param mixed ...$messages Informations/Data to log
  */
-function emergency(mixed ...$messages)
+function emergency(mixed $message, array $context=[])
 {
-    Logger::getInstance()->emergency(...$messages);
+    Logger::getInstance()->emergency($message, $context);
 }

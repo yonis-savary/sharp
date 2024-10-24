@@ -17,8 +17,8 @@ class CacheAutoload extends AbstractCommand
     {
         Autoloader::writeAutoloadCache();
         $this->log(
-            "File written : " . Autoloader::CACHE_FILE,
-            "Delete it to switch to classic autoload",
+            'File written : ' . Autoloader::CACHE_FILE,
+            'Delete it to switch to classic autoload',
         );
     }
 }

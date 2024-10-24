@@ -6,7 +6,7 @@ class QueryOrder
 {
     public function __construct(
         public QueryField $field,
-        public string $sortMode="ASC"
+        public string $sortMode='ASC'
     ) {}
 
     public function __toString()

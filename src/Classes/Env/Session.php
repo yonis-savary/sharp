@@ -15,11 +15,12 @@ class Session extends AbstractMap
     public function __construct(string $sessionName=null)
     {
         $sessionName ??= md5(Autoloader::projectRoot());
+        $status = session_status();
 
-        if (session_status() === PHP_SESSION_DISABLED)
-            throw new Exception("Cannot use Session when sessions are disabled !");
+        if ($status === PHP_SESSION_DISABLED)
+            throw new Exception('Cannot use Session when sessions are disabled !');
 
-        if (session_status() === PHP_SESSION_NONE)
+        if ($status === PHP_SESSION_NONE)
         {
             // Setting the session_name has two big advantages to it !
             // - Avoid sessions collision between two apps that are on different ports of the same host
@@ -28,7 +29,7 @@ class Session extends AbstractMap
             session_name($sessionName);
 
             if (!session_start())
-                throw new RuntimeException("Cannot start session !");
+                throw new RuntimeException('Cannot start session !');
         }
 
         $this->storage = &$_SESSION;

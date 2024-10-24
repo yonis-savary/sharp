@@ -36,10 +36,10 @@ class BaseDriver implements DriverInterface
     {
         $extras = $request->getRoute()->getExtras();
 
-        $model = $extras["autobahn-model"] ?? null;
+        $model = $extras['autobahn-model'] ?? null;
         $model = Autobahn::getInstance()->throwOnInvalidModel($model);
 
-        $middlewares = $extras["autobahn-middlewares"] ?? [];
+        $middlewares = $extras['autobahn-middlewares'] ?? [];
 
         return [$model, $middlewares];
     }
@@ -77,7 +77,7 @@ class BaseDriver implements DriverInterface
             $events->dispatch(new AutobahnCreateAfter($model, $fields, $values, $inserted));
         }
 
-        return Response::json(["insertedId"=>$insertedIds], ResponseCodes::CREATED);
+        return Response::json(['insertedId'=>$insertedIds], ResponseCodes::CREATED);
     }
 
 
@@ -130,10 +130,10 @@ class BaseDriver implements DriverInterface
         /** @var AbstractModel $model */
         list($model, $middlewares) = self::extractRouteData($request);
 
-        $doJoin = ($request->params("_join") ?? true) == true;
+        $doJoin = ($request->params('_join') ?? true) == true;
 
 
-        if ($ignoresRaw = $request->params("_ignores"))
+        if ($ignoresRaw = $request->params('_ignores'))
         {
             try
             {
@@ -148,8 +148,8 @@ class BaseDriver implements DriverInterface
             $ignores = [];
         }
 
-        list($limit, $offset) = $request->list("_limit", "_offset");
-        $request->unset(["_ignores", "_join", "_limit", "_offset"]);
+        list($limit, $offset) = $request->list('_limit', '_offset');
+        $request->unset(['_ignores', '_join', '_limit', '_offset']);
 
         $query = new ModelQuery($model, ModelQuery::SELECT);
         $query->exploreModel($model, $doJoin, $ignores);
@@ -190,7 +190,7 @@ class BaseDriver implements DriverInterface
         list($model, $middlewares) = self::extractRouteData($request);
 
         if (!($primaryKey = $model::getPrimaryKey()))
-            throw new Exception("Cannot update a model without a primary key");
+            throw new Exception('Cannot update a model without a primary key');
 
         if (!($primaryKeyValue = $request->params($primaryKey)))
             return Response::json("A primary key [$primaryKey] is needed to update !", 401);
@@ -215,7 +215,7 @@ class BaseDriver implements DriverInterface
 
         $events->dispatch(new AutobahnUpdateAfter($model, $primaryKeyValue, $query));
 
-        return Response::json("DONE", ResponseCodes::CREATED);
+        return Response::json('DONE', ResponseCodes::CREATED);
     }
 
 
@@ -229,7 +229,7 @@ class BaseDriver implements DriverInterface
         $query = new ModelQuery($model, ModelQuery::DELETE);
 
         if (!count($request->all()))
-            return Response::json("At least one filter must be given", ResponseCodes::CONFLICT);
+            return Response::json('At least one filter must be given', ResponseCodes::CONFLICT);
 
         foreach ($request->all() as $key => $value)
             $query->where($key, $value);
@@ -244,6 +244,6 @@ class BaseDriver implements DriverInterface
 
         $events->dispatch(new AutobahnDeleteAfter($model, $query));
 
-        return Response::json("DONE");
+        return Response::json('DONE');
     }
 }

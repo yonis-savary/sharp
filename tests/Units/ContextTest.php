@@ -39,6 +39,6 @@ class ContextTest extends TestCase
 
         /** @var TestComponent */
         $component = Context::get(TestComponent::class);
-        $this->assertEquals("default", $component->getName());
+        $this->assertEquals('default', $component->getName());
     }
 }

@@ -22,7 +22,7 @@ class Autobahn
 
     public static function getDefaultConfiguration(): array
     {
-        return ["driver" => BaseDriver::class];
+        return ['driver' => BaseDriver::class];
     }
 
     public function __construct(Router $router=null)
@@ -30,16 +30,13 @@ class Autobahn
         $this->loadConfiguration();
         $this->router = $router ?? Router::getInstance();
 
-        $driver = $this->configuration["driver"];
+        $driver = $this->configuration['driver'];
 
         if (!Utils::implements($driver, DriverInterface::class))
-            throw new Exception("Autobahn driver must implements ". DriverInterface::class);
+            throw new Exception('Autobahn driver must implements '. DriverInterface::class);
     }
 
-    /**
-     * @return \Sharp\Classes\Data\Model
-     */
-    public function throwOnInvalidModel(string $model)
+    public function throwOnInvalidModel(string $model): AbstractModel|string
     {
         if (!Utils::extends($model, AbstractModel::class))
             throw new InvalidArgumentException("[$model] does not use the ". AbstractModel::class ." class !");
@@ -68,7 +65,7 @@ class Autobahn
      */
     protected function getNewRouteExtras(string $model, callable ...$middlewares): array
     {
-        return ["autobahn-model" => $model, "autobahn-middlewares" => $middlewares];
+        return ['autobahn-model' => $model, 'autobahn-middlewares' => $middlewares];
     }
 
     protected function addRoute(
@@ -76,13 +73,13 @@ class Autobahn
         array $middlewares,
         string $callback,
         array $methods,
-        string $suffix=""
+        string $suffix=''
     ): void
     {
         $routeExtras = $this->getNewRouteExtras($model, ...$middlewares);
         $model = $this->throwOnInvalidModel($model);
 
-        $driver = $this->configuration["driver"];
+        $driver = $this->configuration['driver'];
 
         $this->router->addRoutes(
             new Route(
@@ -97,26 +94,26 @@ class Autobahn
 
     public function create(string $model, callable ...$middlewares): void
     {
-        $this->addRoute($model, $middlewares, "createCallback", ["POST"]);
+        $this->addRoute($model, $middlewares, 'createCallback', ['POST']);
     }
 
     public function createMultiples(string $model, callable ...$middlewares): void
     {
-        $this->addRoute($model, $middlewares, "multipleCreateCallback", ["POST"], "/create-multiples");
+        $this->addRoute($model, $middlewares, 'multipleCreateCallback', ['POST'], '/create-multiples');
     }
 
     public function read(string $model, callable ...$middlewares): void
     {
-        $this->addRoute($model, $middlewares, "readCallback", ["GET"]);
+        $this->addRoute($model, $middlewares, 'readCallback', ['GET']);
     }
 
     public function update(string $model, callable ...$middlewares): void
     {
-        $this->addRoute($model, $middlewares, "updateCallback", ["PUT", "PATCH"]);
+        $this->addRoute($model, $middlewares, 'updateCallback', ['PUT', 'PATCH']);
     }
 
     public function delete(string $model, callable ...$middlewares): void
     {
-        $this->addRoute($model, $middlewares, "deleteCallback", ["DELETE"]);
+        $this->addRoute($model, $middlewares, 'deleteCallback', ['DELETE']);
     }
 }

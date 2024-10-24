@@ -48,7 +48,7 @@ class FTPDriver implements FileDriverInterface
 
     public function isWritable(string $path): bool
     {
-        $tmpFile = Utils::joinPath($path, uniqid("ftp-is-writable-"));
+        $tmpFile = Utils::joinPath($path, uniqid('ftp-is-writable-'));
 
         $this->filePutContents($tmpFile, 0);
         if ($writable = $this->isFile($tmpFile))
@@ -82,12 +82,15 @@ class FTPDriver implements FileDriverInterface
 
     public function filePutContents(string $path, mixed $content, int $flags=0)
     {
+        $logger = Logger::getInstance();
+        $storage = Storage::getInstance();
+
         if ($flags)
-            Logger::getInstance()->warning("FTP filePutContents does not support flags (got $flags)");
+            $logger->warning("FTP filePutContents does not support flags (got $flags)");
 
-        Storage::getInstance()->makeDirectory("tmp");
+        $storage->makeDirectory('tmp');
 
-        $tmpFile = Storage::getInstance()->path("tmp/".uniqid("ftp-"));
+        $tmpFile = $storage->path('tmp/'.uniqid('ftp-'));
         file_put_contents($tmpFile, $content);
 
         if (!ftp_alloc($this->handler, filesize($tmpFile), $result))
@@ -100,7 +103,7 @@ class FTPDriver implements FileDriverInterface
     public function fileGetContents(string $path): string
     {
         ob_start();
-        ftp_get($this->handler, "php://output", $path);
+        ftp_get($this->handler, 'php://output', $path);
         return ob_get_clean();
     }
 

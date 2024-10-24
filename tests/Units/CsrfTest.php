@@ -63,13 +63,13 @@ class CsrfTest extends TestCase
     {
         $csrf = $this->getDummyCsrf();
 
-        $inputName = $csrf->getConfiguration()["html-input-name"];
+        $inputName = $csrf->getConfiguration()['html-input-name'];
 
         $validToken = $csrf->getToken();
-        $invalidToken = "nothing!";
+        $invalidToken = 'nothing!';
 
-        $this->assertTrue ($csrf->checkRequest(new Request("GET", "/", [$inputName => $validToken])));
-        $this->assertFalse($csrf->checkRequest(new Request("GET", "/", [$inputName => $invalidToken])));
-        $this->assertFalse($csrf->checkRequest(new Request("GET", "/")));
+        $this->assertTrue ($csrf->checkRequest(new Request('GET', '/', [$inputName => $validToken])));
+        $this->assertFalse($csrf->checkRequest(new Request('GET', '/', [$inputName => $invalidToken])));
+        $this->assertFalse($csrf->checkRequest(new Request('GET', '/')));
     }
 }

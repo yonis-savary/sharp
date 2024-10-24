@@ -19,10 +19,10 @@ To render it, we simply use the `Renderer` component
 
 ```php
 // Get the content as a string
-$content = Renderer::getInstance()->render("display-number", ["number" => 28064212]);
+$content = Renderer::getInstance()->render('display-number', ['number' => 28064212]);
 
 // Get a `Response` object
-$response = Response::render("display-number", ["number" => 28064212]);
+$response = Response::render('display-number', ['number' => 28064212]);
 ```
 
 ## Using Renderer helpers
@@ -36,7 +36,7 @@ You can render a template inside another one with the `render()` function
 
 ```php
 Articles
-<?= render("article-list") ?>
+<?= render('article-list') ?>
 ```
 
 ### Using a Template as a Base
@@ -51,12 +51,12 @@ First, we make our parent view, which can use variables and `section()` helper
 <html>
     <head>
         <title>
-            <?php $title ?? "MyApp" ?>
+            <?php $title ?? 'MyApp' ?>
         </title>
     </head>
     <body>
         <!-- Yield content from child view -->
-        <?= section("content") ?>
+        <?= section('content') ?>
     </body>
 </html>
 ```
@@ -66,11 +66,11 @@ Then we can use it by using `template()` and `start()/stop()` :
 - `start($sectionName)/stop()` tells `Renderer` that we are filling a section content that can be retrieved with `section()`
 
 ```php
-<?= template("common", ["title" => "Article list"]) ?>
+<?= template('common', ['title' => 'Article list']) ?>
 
-<?= start("content") ?>
+<?= start('content') ?>
     Articles
-    <?= render("articles/list") ?>
+    <?= render('articles/list') ?>
 ```
 
 ## Rendering inside your application
@@ -80,11 +80,11 @@ With Sharp, they are two ways of rendering inside your application
 ```php
 # First method, with any Renderer object
 $renderer = new Renderer;
-$html = $renderer->render("myView");
-$html = $renderer->render("myView", ["title" => "Hello!"]);
+$html = $renderer->render('myView');
+$html = $renderer->render('myView', ['title' => 'Hello!']);
 
 # Second method, directly through Response class to generate a response
-$response = Response::view("myView", ["title" => "Hello!"]);
+$response = Response::view('myView', ['title' => 'Hello!']);
 ```
 
 [< Back to Summary](../README.md)

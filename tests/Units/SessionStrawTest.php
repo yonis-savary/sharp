@@ -29,4 +29,13 @@ class SessionStrawTest extends TestCase
         TestUserId::unset();
         $this->assertFalse(TestUserId::get());
     }
+
+    public function test_isset()
+    {
+        TestUserId::unset();
+        $this->assertFalse(TestUserId::isset());
+
+        TestUserId::set("someValue");
+        $this->assertTrue(TestUserId::isset());
+    }
 }

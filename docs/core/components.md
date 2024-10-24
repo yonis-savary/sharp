@@ -55,7 +55,7 @@ class MagicOrderPrinter
 
     public function printOrder(int $orderId)
     {
-        $this->logger->info("Printing order {id}", ["id" => $orderId]);
+        $this->logger->info('Printing order {id}', ['id' => $orderId]);
         //...
     }
 }
@@ -72,7 +72,7 @@ class MagicOrderPrinter
 
     public static function getDefaultInstance()
     {
-        return new self(new Logger("magic-printer.csv"));
+        return new self(new Logger('magic-printer.csv'));
     }
 
     /* ... */
@@ -88,7 +88,7 @@ MagicOrderPrinter::getInstance()->printOrder(204987);
 
 # Create another instance for specific situations
 $debugPrinter = new MagicOrderPrinter(
-    new Logger("magic-printer-debug.csv")
+    new Logger('magic-printer-debug.csv')
 );
 $debugPrinter->printOrder(209409);
 ```

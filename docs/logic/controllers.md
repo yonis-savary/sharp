@@ -14,7 +14,7 @@ class MyController
 {
     public static function greets()
     {
-        return Response::json("Hello!");
+        return Response::json('Hello!');
     }
 }
 ```
@@ -22,7 +22,7 @@ class MyController
 `YourApp/Routes/web.php` :
 ```php
 Router::getInstance()->addRoutes(
-    Route::get("/", [MyControllers::class, "greets"])
+    Route::get('/', [MyControllers::class, 'greets'])
 );
 ```
 
@@ -42,14 +42,14 @@ class MyController
     public static function declareRoutes(Router $router)
     {
         $router->addRoutes(
-            Route::get("/", [self::class, "greets"])
-            Route::view("/about", self::relativePath("about.php"))
+            Route::get('/', [self::class, 'greets'])
+            Route::view('/about', self::relativePath('about.php'))
         );
     }
 
     public static function greets()
     {
-        return Response::json("Hello!");
+        return Response::json('Hello!');
     }
 }
 ```

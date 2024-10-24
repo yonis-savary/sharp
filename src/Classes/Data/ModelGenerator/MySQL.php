@@ -13,7 +13,7 @@ class MySQL extends GeneratorDriver
     public function listTables(): array
     {
         $db = $this->connection;
-        $res = $db->query("SHOW TABLES");
+        $res = $db->query('SHOW TABLES');
 
         foreach ($res as &$arr)
             $arr = array_values($arr)[0];
@@ -27,28 +27,28 @@ class MySQL extends GeneratorDriver
         $string = "'$field' => (new DatabaseField('$field'))";
 
 
-        $classType = "STRING";
-        if (preg_match("/int\(/", $type))           $classType = "INTEGER";
-        if (preg_match("/float\(/", $type))         $classType = "FLOAT";
-        if (preg_match("/smallint\(1\)/", $type))   $classType = "BOOLEAN";
-        if (preg_match("/decimal/", $type))         $classType = "DECIMAL";
+        $classType = 'STRING';
+        if (preg_match("/int\(/", $type))           $classType = 'INTEGER';
+        if (preg_match("/float\(/", $type))         $classType = 'FLOAT';
+        if (preg_match("/smallint\(1\)/", $type))   $classType = 'BOOLEAN';
+        if (preg_match('/decimal/', $type))         $classType = 'DECIMAL';
         $string .= "->setType(DatabaseField::$classType)";
 
-        $string .= "->setNullable(". ($null=="YES" ? "true": "false") .")";
+        $string .= '->setNullable('. ($null=='YES' ? 'true': 'false') .')';
 
         $lowerExtras = strtolower($extras);
-        $isGenerated = str_contains($lowerExtras, 'auto_increment') || str_contains($lowerExtras, "generated");
+        $isGenerated = str_contains($lowerExtras, 'auto_increment') || str_contains($lowerExtras, 'generated');
 
         if ($isGenerated)
-            $string .= "->isGenerated()";
+            $string .= '->isGenerated()';
 
         $hasDefault = $null || $default || $isGenerated;
-        $string .= "->hasDefault(". ($hasDefault ? "true": "false") .")";
+        $string .= '->hasDefault('. ($hasDefault ? 'true': 'false') .')';
 
         if ($ref = $foreignKey[$field] ?? false)
-            $string .= "->references(".$this->sqlToPHPName($ref[0])."::class, '$ref[1]')";
+            $string .= '->references('.$this->sqlToPHPName($ref[0])."::class, '$ref[1]')";
 
-        if ($key === "PRI")
+        if ($key === 'PRI')
             $primaryKey ??= $field;
 
         return $string;
@@ -59,15 +59,15 @@ class MySQL extends GeneratorDriver
     {
         list($field, $type, $null, $key, $default, $extras) = array_values($fieldDescription);
 
-        $type = "string";
-        if (preg_match("/int\(/", $type))           $type = "int";
-        if (preg_match("/float\(/", $type))         $type = "float";
-        if (preg_match("/smallint\(1\)/", $type))   $type = "float";
+        $type = 'string';
+        if (preg_match("/int\(/", $type))           $type = 'int';
+        if (preg_match("/float\(/", $type))         $type = 'float';
+        if (preg_match("/smallint\(1\)/", $type))   $type = 'float';
 
         if ($ref = $foreignKey[$field] ?? false)
             $type =  "\\" . $namespace . "\\" .  $this->sqlToPHPName($ref[0]);
 
-        return " * @property $type \$$field DEFINED BY `".join(", ", array_values($fieldDescription))."`";
+        return " * @property $type \$$field DEFINED BY `".join(', ', array_values($fieldDescription)).'`';
     }
 
     public function generate(string $table, string $targetApplication, string $modelNamespace=null): void
@@ -78,14 +78,14 @@ class MySQL extends GeneratorDriver
         $classBasename = $this->sqlToPHPName($table);
 
         $fileName = "$classBasename.php";
-        $fileDir = Utils::joinPath($targetApplication, "Models");
+        $fileDir  = Utils::joinPath($targetApplication, 'Models');
         $filePath = Utils::joinPath($fileDir, $fileName);
 
         if (!is_dir($fileDir)) mkdir($fileDir);
         $namespace = $modelNamespace ?? Utils::pathToNamespace($fileDir);
 
         $foreignKeysRaw = $db->query(
-            "SELECT
+            'SELECT
                 COLUMN_NAME as source_field,
                 REFERENCED_TABLE_NAME as target_table,
                 REFERENCED_COLUMN_NAME as target_field
@@ -93,14 +93,14 @@ class MySQL extends GeneratorDriver
             WHERE TABLE_SCHEMA = {}
             AND TABLE_NAME = {}
             AND REFERENCED_COLUMN_NAME IS NOT NULL;
-        ", [$databaseName, $table]);
+        ', [$databaseName, $table]);
 
         $foreignKeys = [];
         $usedModels = [];
         foreach ($foreignKeysRaw as $row)
         {
-            $foreignKeys[$row["source_field"]] = [$row["target_table"], $row["target_field"]];
-            $usedModels[] = $row["target_table"];
+            $foreignKeys[$row['source_field']] = [$row['target_table'], $row['target_field']];
+            $usedModels[] = $row['target_table'];
         }
 
         $usedModels = ObjectArray::fromArray($usedModels)

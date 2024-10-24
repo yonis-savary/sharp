@@ -10,38 +10,49 @@ use YonisSavary\Sharp\Classes\Test\SharpServer;
 use YonisSavary\Sharp\Core\Autoloader;
 use YonisSavary\Sharp\Core\Utils;
 
-$GLOBALS["sharp-root"] = realpath(__DIR__);
-$GLOBALS["sharp-src"] = realpath(__DIR__ . "/../src");
+$GLOBALS['sharp-root'] = realpath(__DIR__);
+$GLOBALS['sharp-src'] = realpath(__DIR__ . '/../src');
 
-require_once __DIR__ . "/../vendor/autoload.php";
+require_once __DIR__ . '/../vendor/autoload.php';
 
 /*
 
 This script purpose is to be an alternative to /Sharp/bootstrap.php
 
-The goal is to make a good envrionment to Test (with Database, Configuration...etc)
+The goal is to make a good envrionment to test with (with Database, Configuration...etc)
 ------------------------------------------------
 
 */
 
 EventListener::removeInstance();
 
-$testLogger = new Logger("test-suite.csv", new Storage(__DIR__));
+$testLogger = new Logger('test-suite.csv', new Storage(__DIR__));
 Logger::setInstance($testLogger);
 
-$testLogger->info("Starting test suite");
-$testLogger->info("Sharp root directory : {dir}", ["dir" => $GLOBALS["sharp-root"]]);
-$testLogger->info("Sharp src directory : {dir}", ["dir" => $GLOBALS["sharp-src"]]);
+$testLogger->info('Starting test suite');
+$testLogger->info('Sharp root directory : {dir}', ['dir' => $GLOBALS['sharp-root']]);
+$testLogger->info('Sharp src directory : {dir}', ['dir' => $GLOBALS['sharp-src']]);
 
-$testStoragePath = __DIR__ . "/TestApp" ;
+$testStoragePath = __DIR__ . '/TestApp' ;
 Autoloader::loadApplication($testStoragePath);
 
-$testStorage = new Storage(Utils::relativePath( __DIR__ ."/Storage"));
+
+
+$testStorage = new Storage(Utils::relativePath( __DIR__ .'/Storage'));
 Storage::setInstance($testStorage);
 
-$testConfig = new Configuration(Utils::relativePath(__DIR__ . "/sharp.json"));
+foreach (array_reverse(Utils::exploreDirectory($testStorage->getRoot(), Utils::ONLY_FILES)) as $file)
+    unlink($file);
+
+foreach (array_reverse(Utils::exploreDirectory($testStorage->getRoot(), Utils::ONLY_DIRS)) as $file)
+    rmdir($file);
+
+
+
+
+$testConfig = new Configuration(Utils::relativePath(__DIR__ . '/sharp.json'));
 Configuration::getInstance()->merge($testConfig->dump());
-Cache::setInstance(new Cache($testStorage, "Cache"));
+Cache::setInstance(new Cache($testStorage, 'Cache'));
 
 resetTestDatabase();
 

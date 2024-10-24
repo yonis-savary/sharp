@@ -11,25 +11,25 @@ class ConfigurableTest extends TestCase
     public function test_getDefaultConfiguration()
     {
         $this->assertEquals([
-            "enabled" => true,
-            "cached" => false
+            'enabled' => true,
+            'cached' => false
         ], DummyConfigurable::getDefaultConfiguration());
     }
 
     public function test_getConfigurationKey()
     {
         $this->assertEquals(
-            "dummy-configurable",
+            'dummy-configurable',
             DummyConfigurable::getConfigurationKey()
         );
     }
 
     public function test_readConfiguration()
     {
-        $configData = ["enabled" => false, "cached" => false];
+        $configData = ['enabled' => false, 'cached' => false];
 
         $config = new Configuration();
-        $config->set("dummy-configurable", $configData);
+        $config->set('dummy-configurable', $configData);
 
         $this->assertEquals(
             $configData,
@@ -51,10 +51,10 @@ class ConfigurableTest extends TestCase
     {
         $instance = new DummyConfigurable();
 
-        $instance->setConfiguration(["enabled" => false]);
+        $instance->setConfiguration(['enabled' => false]);
         $this->assertFalse($instance->isEnabled());
 
-        $instance->setConfiguration(["enabled" => true]);
+        $instance->setConfiguration(['enabled' => true]);
         $this->assertTrue($instance->isEnabled());
     }
 
@@ -62,19 +62,19 @@ class ConfigurableTest extends TestCase
     {
         $instance = new DummyConfigurable();
 
-        $instance->setConfiguration(["cached" => false]);
+        $instance->setConfiguration(['cached' => false]);
         $this->assertFalse($instance->isCached());
 
-        $instance->setConfiguration(["cached" => true]);
+        $instance->setConfiguration(['cached' => true]);
         $this->assertTrue($instance->isCached());
     }
 
     public function test_getConfiguration()
     {
-        $configData = ["enabled" => false, "cached" => false];
+        $configData = ['enabled' => false, 'cached' => false];
 
         $config = new Configuration();
-        $config->set("dummy-configurable", $configData);
+        $config->set('dummy-configurable', $configData);
 
         $instance = new DummyConfigurable();
         $instance->loadConfiguration($config);
@@ -90,12 +90,12 @@ class ConfigurableTest extends TestCase
         $instance = new DummyConfigurable();
         $instance->setConfiguration([]);
 
-        $this->assertEquals(["enabled" => true, "cached" => false], $instance->getConfiguration());
+        $this->assertEquals(['enabled' => true, 'cached' => false], $instance->getConfiguration());
 
-        $instance->setConfiguration(["enabled" => false]);
-        $this->assertEquals(["enabled" => false, "cached" => false], $instance->getConfiguration());
+        $instance->setConfiguration(['enabled' => false]);
+        $this->assertEquals(['enabled' => false, 'cached' => false], $instance->getConfiguration());
 
-        $instance->setConfiguration(["cached" => true]);
-        $this->assertEquals(["enabled" => false, "cached" => true], $instance->getConfiguration());
+        $instance->setConfiguration(['cached' => true]);
+        $this->assertEquals(['enabled' => false, 'cached' => true], $instance->getConfiguration());
     }
 }

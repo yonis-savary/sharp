@@ -1,3 +1,3 @@
 PARENT
-<?= section("body") ?>
-<?= render("sharp-tests-component") ?>
+<?= section('body') ?>
+<?= render('sharp-tests-component') ?>

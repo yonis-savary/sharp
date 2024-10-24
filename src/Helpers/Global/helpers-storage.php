@@ -51,7 +51,7 @@ function storeMakeDirectory(string $path): void
  * @return resource Opened resource
  * @link https://www.php.net/manual/en/function.fopen.php
  */
-function storeGetStream(string $path, string $mode="r", bool $autoclose=true): mixed
+function storeGetStream(string $path, string $mode='r', bool $autoclose=true): mixed
 {
     return Storage::getInstance()->getStream($path, $mode, $autoclose);
 }
@@ -147,7 +147,7 @@ function storeExploreDirectory(string $path, int $mode=Storage::NO_FILTER): arra
  * @param string $path Path to list (relative to your main Storage directory)
  * @return array List of direct files in given directory
  */
-function storeListFiles(string $path="/"): array
+function storeListFiles(string $path='/'): array
 {
     return Storage::getInstance()->listFiles($path);
 }
@@ -160,7 +160,7 @@ function storeListFiles(string $path="/"): array
  * @param string $path Path to list (relative to your main Storage directory)
  * @return array List of direct directories in given directory
  */
-function storeListDirectories(string $path="/"): array
+function storeListDirectories(string $path='/'): array
 {
     return Storage::getInstance()->listDirectories($path);
 }

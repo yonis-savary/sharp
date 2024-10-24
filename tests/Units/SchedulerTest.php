@@ -4,8 +4,7 @@ namespace YonisSavary\Sharp\Tests\Units;
 
 use DateTime;
 use PHPUnit\Framework\TestCase;
-use YonisSavary\Sharp\Classes\Core\SchedulerDateValidator;
-use YonisSavary\Sharp\Classes\Extras\CronExpression;
+use YonisSavary\Sharp\Classes\Extras\Cron\CronExpression;
 use YonisSavary\Sharp\Classes\Extras\Scheduler;
 
 class SchedulerTest extends TestCase

@@ -1,6 +1,6 @@
 <?php
 
-namespace YonisSavary\Sharp\Classes\Extras;
+namespace YonisSavary\Sharp\Classes\Extras\Cron;
 
 class CronRangeValue extends AbstractCronExpressionPart
 {
@@ -11,10 +11,10 @@ class CronRangeValue extends AbstractCronExpressionPart
     {
         $this->type = $type;
 
-        list($min, $max) = explode("-", $cronExpression);
+        list($min, $max) = explode('-', $cronExpression);
 
-        $this->min = intval($min);
-        $this->max = intval($max);
+        $this->min = (int) $min;
+        $this->max = (int) $max;
 
         CronTimeType::assertValueIsInRange($this->min, $type);
         CronTimeType::assertValueIsInRange($this->max, $type);
@@ -29,9 +29,9 @@ class CronRangeValue extends AbstractCronExpressionPart
     {
         $type = $this->type;
         return
-            "every " . CronTimeType::toString($this->type) .
-            " from " . CronTimeType::getValueString($this->min, $type) .
-            " to " . CronTimeType::getValueString($this->max, $type)
+            'every ' . CronTimeType::toString($this->type) .
+            ' from ' . CronTimeType::getValueString($this->min, $type) .
+            ' to ' . CronTimeType::getValueString($this->max, $type)
             ;
     }
 }

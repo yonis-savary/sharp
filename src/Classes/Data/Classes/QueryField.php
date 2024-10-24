@@ -16,7 +16,7 @@ class QueryField
 
     public function __toString()
     {
-        return "`$this->table`.$this->field".( $this->alias ? " as `$this->alias`": "");
+        return "`$this->table`.$this->field".( $this->alias ? " as `$this->alias`": '');
     }
 
     public function fromString(mixed $value)
@@ -27,9 +27,9 @@ class QueryField
         switch ($this->type)
         {
             case DatabaseField::STRING:  return $value;
-            case DatabaseField::INTEGER: return intval($value);
-            case DatabaseField::FLOAT:   return floatval($value);
-            case DatabaseField::BOOLEAN: return in_array(strtolower("$value"), ["1", "true"]);
+            case DatabaseField::INTEGER: return (int) ($value);
+            case DatabaseField::FLOAT:   return (float) ($value);
+            case DatabaseField::BOOLEAN: return in_array(strtolower("$value"), ['1', 'true']);
             case DatabaseField::DECIMAL: return $value;
             default : throw new Exception("Unknown field type [$this->type]");
         }

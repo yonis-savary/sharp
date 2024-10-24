@@ -23,14 +23,14 @@ Utils::extends($objectOrClass, $parent); # false / true
 # Normalize a path to
 # - only use slashes (anti-slashes are replaced)
 # - prevent "empty slashes"
-Utils::normalizePath("path\\that/is//made\\of\\anything");
-# returns "path/that/is/made/of/anything"
+Utils::normalizePath('path\\that/is//made\\of\\anything');
+# returns 'path/that/is/made/of/anything'
 
 # Join two parts of a path (result is normalized)
 # no need to check if parts begin/ends with a slash or not
 # (result is normalized with normalizePath)
-Utils::joinPath("path/", "/that\\is", "//made/of/", "anything");
-# returns "path/that/is/made/of/anything"
+Utils::joinPath('path/', '/that\\is', '//made/of/', 'anything');
+# returns 'path/that/is/made/of/anything'
 
 # Returns a absolute path from a relative path (relative to the second argument, if not given, relative to the project root)
 # (result is normalized)

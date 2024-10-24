@@ -10,7 +10,8 @@ class RequestHasGetData implements MiddlewareInterface
 {
     public static function handle(Request $request): Request|Response
     {
-        $get = $request->get();
-        return count($get) ? $request: Response::json("Response must have GET data");
+        return count($request->get()) ?
+            $request:
+            Response::json('Response must have GET data');
     }
 }

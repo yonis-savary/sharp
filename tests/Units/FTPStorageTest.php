@@ -21,23 +21,23 @@ class FTPStorageTest extends TestCase
 
     protected function createFTPStorage()
     {
-        $ftpDir = uniqid("ftp-test-");
+        $ftpDir = uniqid('ftp-test-');
 
         $ftpDirPath = Storage::getInstance()->path($ftpDir);
         mkdir($ftpDirPath, 777);
 
         $this->storage = $storage = Storage::getInstance()->getSubStorage($ftpDir);
 
-        $storage->makeDirectory("SOME-DIR");
-        $storage->write("SOME-FILE", "test");
+        $storage->makeDirectory('SOME-DIR');
+        $storage->write('SOME-FILE', 'test');
 
         $this->ftp = new Storage(
             $this->storage->getRoot(),
             new FTPDriver(
-                "localhost",
-                $this->config["username"],
-                $this->config["password"],
-                $this->config["port"] ?? 21,
+                'localhost',
+                $this->config['username'],
+                $this->config['password'],
+                $this->config['port'] ?? 21,
             )
         );
     }
@@ -51,7 +51,7 @@ class FTPStorageTest extends TestCase
             return true;
 
         $this->enabled = false;
-        if ($this->config = Configuration::getInstance()->try("ftp-test"))
+        if ($this->config = Configuration::getInstance()->try('ftp-test'))
         {
             $this->enabled = true;
 
@@ -74,9 +74,9 @@ class FTPStorageTest extends TestCase
         if (!$this->isTestSuiteEnabled())
             return $this->assertTrue(true);
 
-        $this->assertFalse($this->ftp->isFile("INEXISTENT"));
-        $this->assertFalse($this->ftp->isFile("SOME-DIR"));
-        $this->assertTrue($this->ftp->isFile("SOME-FILE"));
+        $this->assertFalse($this->ftp->isFile('INEXISTENT'));
+        $this->assertFalse($this->ftp->isFile('SOME-DIR'));
+        $this->assertTrue($this->ftp->isFile('SOME-FILE'));
     }
 
     public function test_isDirectory()
@@ -84,9 +84,9 @@ class FTPStorageTest extends TestCase
         if (!$this->isTestSuiteEnabled())
             return $this->assertTrue(true);
 
-        $this->assertFalse($this->ftp->isFile("INEXISTENT"));
-        $this->assertTrue($this->ftp->isFile("SOME-DIR"));
-        $this->assertFalse($this->ftp->isFile("SOME-FILE"));
+        $this->assertFalse($this->ftp->isFile('INEXISTENT'));
+        $this->assertTrue($this->ftp->isFile('SOME-DIR'));
+        $this->assertFalse($this->ftp->isFile('SOME-FILE'));
     }
 
 
@@ -97,11 +97,11 @@ class FTPStorageTest extends TestCase
             return $this->assertTrue(true);
 
 
-        $this->ftp->makeDirectory("DIR");
-        $this->ftp->makeDirectory("DIR/SUBDIR");
+        $this->ftp->makeDirectory('DIR');
+        $this->ftp->makeDirectory('DIR/SUBDIR');
 
-        $this->assertTrue($this->storage->isDirectory("DIR"));
-        $this->assertTrue($this->storage->isDirectory("DIR/SUBDIR"));
+        $this->assertTrue($this->storage->isDirectory('DIR'));
+        $this->assertTrue($this->storage->isDirectory('DIR/SUBDIR'));
     }
 
 
@@ -111,11 +111,11 @@ class FTPStorageTest extends TestCase
         if (!$this->isTestSuiteEnabled())
             return $this->assertTrue(true);
 
-        $this->ftp->write("put-content.txt", "Hello!");
+        $this->ftp->write('put-content.txt', 'Hello!');
 
         $this->assertEquals(
-            "Hello!",
-            $this->storage->read("put-content.txt")
+            'Hello!',
+            $this->storage->read('put-content.txt')
         );
     }
 
@@ -127,11 +127,11 @@ class FTPStorageTest extends TestCase
         if (!$this->isTestSuiteEnabled())
             return $this->assertTrue(true);
 
-        $this->storage->write("Hello.txt", "Goodbye");
+        $this->storage->write('Hello.txt', 'Goodbye');
 
         $this->assertEquals(
-            "Goodbye",
-            $this->ftp->read("Hello.txt")
+            'Goodbye',
+            $this->ftp->read('Hello.txt')
         );
     }
 
@@ -140,9 +140,9 @@ class FTPStorageTest extends TestCase
         if (!$this->isTestSuiteEnabled())
             return $this->assertTrue(true);
 
-        $this->storage->write("TO-DELETE", 0);
-        $this->ftp->unlink("TO-DELETE");
-        $this->assertFalse($this->storage->isFile("TO-DELETE"));
+        $this->storage->write('TO-DELETE', 0);
+        $this->ftp->unlink('TO-DELETE');
+        $this->assertFalse($this->storage->isFile('TO-DELETE'));
     }
 
     public function test_removeDirectory()
@@ -150,10 +150,10 @@ class FTPStorageTest extends TestCase
         if (!$this->isTestSuiteEnabled())
             return $this->assertTrue(true);
 
-        $this->storage->makeDirectory("DIR-TO-DELETE");
-        $this->ftp->removeDirectory("DIR-TO-DELETE");
+        $this->storage->makeDirectory('DIR-TO-DELETE');
+        $this->ftp->removeDirectory('DIR-TO-DELETE');
 
-        $this->assertFalse($this->storage->isDirectory("DIR-TO-DELETE"));
+        $this->assertFalse($this->storage->isDirectory('DIR-TO-DELETE'));
     }
 
 
@@ -163,13 +163,13 @@ class FTPStorageTest extends TestCase
             return $this->assertTrue(true);
 
         $files = [
-            "EXPLORE/A.txt",
-            "EXPLORE/B.txt"
+            'EXPLORE/A.txt',
+            'EXPLORE/B.txt'
         ];
 
         $dirs = [
-            "EXPLORE",
-            "EXPLORE/SUBSCAN"
+            'EXPLORE',
+            'EXPLORE/SUBSCAN'
         ];
 
         $makeFullPath = fn($file) => Utils::joinPath($this->storage->getRoot(), $file);
@@ -177,13 +177,13 @@ class FTPStorageTest extends TestCase
         $files = ObjectArray::fromArray($files)->map($makeFullPath)->collect();
         $dirs  = ObjectArray::fromArray($dirs)->map($makeFullPath)->collect();
 
-        $this->storage->makeDirectory("EXPLORE");
-        $this->storage->makeDirectory("EXPLORE/SUBSCAN");
-        $this->storage->write("EXPLORE/A.txt", 0);
-        $this->storage->write("EXPLORE/B.txt", 0);
+        $this->storage->makeDirectory('EXPLORE');
+        $this->storage->makeDirectory('EXPLORE/SUBSCAN');
+        $this->storage->write('EXPLORE/A.txt', 0);
+        $this->storage->write('EXPLORE/B.txt', 0);
 
-        $this->assertEquals($files, $this->ftp->exploreDirectory("/", Utils::ONLY_FILES));
-        $this->assertEquals($dirs, $this->ftp->exploreDirectory("/", Utils::ONLY_DIRS));
+        $this->assertEquals($files, $this->ftp->exploreDirectory('/', Utils::ONLY_FILES));
+        $this->assertEquals($dirs, $this->ftp->exploreDirectory('/', Utils::ONLY_DIRS));
         $this->assertEquals(array_merge($dirs, $files), $this->ftp->exploreDirectory());
     }
 
@@ -192,15 +192,15 @@ class FTPStorageTest extends TestCase
         if (!$this->isTestSuiteEnabled())
             return $this->assertTrue(true);
 
-        $this->storage->makeDirectory("LIST-FILES");
-        $this->storage->makeDirectory("LIST-FILES/SUBSCAN");
-        $this->storage->write("LIST-FILES/A.txt", 0);
-        $this->storage->write("LIST-FILES/B.txt", 0);
-        $this->storage->write("LIST-FILES/SUBDIR/C.txt", 0);
+        $this->storage->makeDirectory('LIST-FILES');
+        $this->storage->makeDirectory('LIST-FILES/SUBSCAN');
+        $this->storage->write('LIST-FILES/A.txt', 0);
+        $this->storage->write('LIST-FILES/B.txt', 0);
+        $this->storage->write('LIST-FILES/SUBDIR/C.txt', 0);
 
         $files = ObjectArray::fromArray([
-            "LIST-FILES/A.txt",
-            "LIST-FILES/B.txt",
+            'LIST-FILES/A.txt',
+            'LIST-FILES/B.txt',
         ])
         ->map(fn($file) => Utils::joinPath($this->storage->getRoot(), $file))
         ->collect();
@@ -213,15 +213,15 @@ class FTPStorageTest extends TestCase
         if (!$this->isTestSuiteEnabled())
             return $this->assertTrue(true);
 
-        $this->storage->makeDirectory("LIST-FILES");
-        $this->storage->makeDirectory("LIST-FILES/SUBSCAN");
-        $this->storage->write("LIST-FILES/A.txt", 0);
-        $this->storage->write("LIST-FILES/B.txt", 0);
-        $this->storage->write("LIST-FILES/SUBDIR/C.txt", 0);
+        $this->storage->makeDirectory('LIST-FILES');
+        $this->storage->makeDirectory('LIST-FILES/SUBSCAN');
+        $this->storage->write('LIST-FILES/A.txt', 0);
+        $this->storage->write('LIST-FILES/B.txt', 0);
+        $this->storage->write('LIST-FILES/SUBDIR/C.txt', 0);
 
         $files = ObjectArray::fromArray([
-            "LIST-FILES/SUBSCAN",
-            "LIST-FILES/SUBDIR",
+            'LIST-FILES/SUBSCAN',
+            'LIST-FILES/SUBDIR',
         ])
         ->map(fn($file) => Utils::joinPath($this->storage->getRoot(), $file))
         ->collect();

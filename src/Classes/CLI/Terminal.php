@@ -16,10 +16,10 @@ class Terminal
 
     public static function confirm(string $question): bool
     {
-        $str = readline($question . " (y/n) : ");
-        $str = strtoupper($str);
+        $str = readline($question . ' (y/n) : ');
+        $str = strtolower($str);
 
-        return $str === "Y";
+        return $str === 'y' || $str === 'yes';
     }
 
     /**
@@ -34,7 +34,7 @@ class Terminal
         for ($i=0; $i<count($choices); $i++)
             printf(" %s - %s\n", $i+1, $choices[$i]);
 
-        $index = intval(self::prompt("\n> "));
+        $index = (int) (self::prompt("\n> "));
 
         if ($returnIndex)
             return $index;
@@ -49,14 +49,14 @@ class Terminal
      */
     public static function chooseApplication(): string
     {
-        $applications = Configuration::getInstance()->toArray("applications");
+        $applications = Configuration::getInstance()->toArray('applications');
 
         if (count($applications) === 1)
             return $applications[0];
 
         return self::promptList(
             $applications,
-            "This command needs you to select an application"
+            'This command needs you to select an application'
         );
     }
 

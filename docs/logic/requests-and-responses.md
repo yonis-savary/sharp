@@ -40,18 +40,18 @@ $body = $request->body(); // Get JSON Body
 
 // Params read parameters from both POST and GET sources
 // Get a value or null if inexistent
-$password = $request->params("password");
+$password = $request->params('password');
 // Get an associative array
-$creds = $request->params(["username", "password"]);
+$creds = $request->params(['username', 'password']);
 
 // $request->paramsFromGet(); Same as params but only takes values from GET
 // $request->paramsFromPost(); Same as params but only takes values from POST
 
-// Alternative to list($username, $password) = array_values($request->params(["username", "password"]))
-list($username, $password) = $request->list("username", "password");
+// Alternative to list($username, $password) = array_values($request->params(['username', 'password']))
+list($username, $password) = $request->list('username', 'password');
 
 // Delete parameters from both POST and GET data
-$request->unset(["username", "password"]);
+$request->unset(['username', 'password']);
 
 
 // Requests got a validate() method to retrieve parameters and check them at the same time
@@ -59,8 +59,8 @@ list(
     $id,
     $newName
 ) = $request->validate([
-    "id" => Request::INT | Request::NOT_NULL,
-    "newName" => Request::IS_STRING | Request::NOT_NULL
+    'id' => Request::INT | Request::NOT_NULL,
+    'newName' => Request::IS_STRING | Request::NOT_NULL
 ]);
 
 list(
@@ -68,8 +68,8 @@ list(
     $values,
     $errors
 ) = $request->validate([
-    "id" => Request::INT | Request::NOT_NULL,
-    "newName" => Request::IS_STRING | Request::NOT_NULL
+    'id' => Request::INT | Request::NOT_NULL,
+    'newName' => Request::IS_STRING | Request::NOT_NULL
 ], false);
 ```
 
@@ -115,22 +115,22 @@ $request->getUploads(); // Get an array of UploadFile
 
 ```php
 // Generate an HTML response
-$response = Response::html("<html>...");
+$response = Response::html('<html>...');
 
 // Generate a JSON response
 $response = Response::json($myObject);
 
 // Generate a Response that transfer a file to the client
-$response = Response::file("/path/to/my/file.txt");
+$response = Response::file('/path/to/my/file.txt');
 
 // Generate a Response that redirect the Client
-$response = Response::redirect("/another/url");
+$response = Response::redirect('/another/url');
 
 // Try to make a JSON Response of whatever is given to it
 $response = Response::adapt($anyObject);
 
 // Render a view (with optionnal context) and return a HTML Response
-$response = Response::view("myView", $contextData);
+$response = Response::view('myView', $contextData);
 
 // Manually create a Response
 new Response(
@@ -156,7 +156,7 @@ $content = $response->getContent();
 $response->logSelf($logger);
 
 # Add/Overwrite headers into the Response
-$response->withHeaders(["Content-Type" => "text/html"]);
+$response->withHeaders(['Content-Type' => 'text/html']);
 # Get an associative headers array
 $response->getHeaders();
 # Header value or null
@@ -184,9 +184,9 @@ When this parameter is enabled `Request` tried to interpret Boolean & Null value
 
 | Origin                               | Transformed       |
 |--------------------------------------|-------------------|
-| `"true"`, `"TRUE"`, `"True"`, ...    | `true` (boolean)  |
-| `"false"`, `"FALSE"`, `"False"`, ... | `false` (boolean) |
-| `"null"`, `"NULL"`, `"Null"`, ...    | `null`            |
+| `'true'`, `'TRUE'`, `'True'`, ...    | `true` (boolean)  |
+| `'false'`, `'FALSE'`, `'False'`, ... | `false` (boolean) |
+| `'null'`, `'NULL'`, `'Null'`, ...    | `null`            |
 
 
 ## Advanced Request Usage (cURL !)
@@ -195,7 +195,7 @@ The request class got the `fetch` method, which can be
 used to fetch content with the `curl` extension !
 
 ```php
-$request = new Request("GET", "https://google.com");
+$request = new Request('GET', 'https://google.com');
 
 $response = $request->fetch(); // fetch() return a Response object
 

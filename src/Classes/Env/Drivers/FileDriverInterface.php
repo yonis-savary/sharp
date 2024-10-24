@@ -4,12 +4,6 @@ namespace YonisSavary\Sharp\Classes\Env\Drivers;
 
 interface FileDriverInterface
 {
-    /*
-        -----------------------------
-        Directory/File Utils function
-        -----------------------------
-    */
-
     const NO_FILTER = 0;
     const ONLY_DIRS = 1;
     const ONLY_FILES = 2;

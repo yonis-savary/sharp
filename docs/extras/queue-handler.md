@@ -25,17 +25,17 @@ class MailController
     public static function sendNotification(Request $request)
     {
         self::pushQueueItem($request->params([
-            "email",
-            "subject",
-            "body"
+            'email',
+            'subject',
+            'body'
         ]));
     }
 
     protected static function processQueueItem(array $data): bool
     {
-        $email = $data["email"];
-        $subject = $data["subject"];
-        $body = $data["body"];
+        $email = $data['email'];
+        $subject = $data['subject'];
+        $body = $data['body'];
 
         /* Send mail */
         return true;
@@ -91,7 +91,7 @@ By default, `QueueHandler` classes logs information in the default `Logger` inst
 ```php
 protected static function getQueueProcessingLogger(): Logger
 {
-    return new Logger("mail.csv");
+    return new Logger('mail.csv');
 }
 ```
 

@@ -25,7 +25,7 @@ class Args implements \Countable
         foreach ($matches as &$x)
         {
             foreach ($x as &$y)
-                $y = $y == "" ? null: $y;
+                $y = $y == '' ? null: $y;
         }
 
         for ($i=0; $i<count($matches[0]); $i++)
@@ -36,12 +36,12 @@ class Args implements \Countable
             if (preg_match("/^\-[^\-]+$/", $name))
                 array_push($this->shortOptions, ...str_split(substr($name, 1)));
 
-            if (str_starts_with($name, "-"))
-                $value = trim($matches[4][$i] ?? $matches[3][$i] ?? "");
+            if (str_starts_with($name, '-'))
+                $value = trim($matches[4][$i] ?? $matches[3][$i] ?? '');
             else
                 $value = $name;
 
-            $value = preg_replace('/^=?("|\')?|("|\')?$/', "", $value ?? "");
+            $value = preg_replace('/^=?("|\')?|("|\')?$/', '', $value ?? '');
             if (!$value)
                 $value = null;
 
@@ -51,7 +51,7 @@ class Args implements \Countable
 
     public static function fromArray($argv): self
     {
-        return new self(join(" ", $argv));
+        return new self(join(' ', $argv));
     }
 
     public function __debugInfo()
@@ -69,7 +69,7 @@ class Args implements \Countable
         $params = $this->arguments;
         foreach ($params as $key => &$value)
         {
-            if (!str_starts_with($key, "-"))
+            if (!str_starts_with($key, '-'))
                 $value = $value;
             else if ($value)
                 $value = $key.'="'.str_replace('"', '\\"', $value).'"';
@@ -77,7 +77,7 @@ class Args implements \Countable
                 $value = $key;
         }
 
-        return join(" ", $params);
+        return join(' ', $params);
     }
 
     public function __toString()
@@ -115,9 +115,9 @@ class Args implements \Countable
     {
         $arguments = &$this->arguments;
 
-        if (!str_starts_with($short, "-"))
+        if (!str_starts_with($short, '-'))
             $short = "-$short";
-        if (!str_starts_with($long, "--"))
+        if (!str_starts_with($long, '--'))
             $long = "--$long";
 
         if (array_key_exists($long, $arguments))

@@ -17,25 +17,25 @@ class CommandTest extends TestCase
     public function test_getOrigin()
     {
         $command = $this->getDummyCommand();
-        $this->assertEquals("test-app", $command->getOrigin());
+        $this->assertEquals('test-app', $command->getOrigin());
     }
 
     public function test_getIdentifier()
     {
         $command = $this->getDummyCommand();
-        $this->assertEquals("test-app@dummy-command", $command->getIdentifier());
+        $this->assertEquals('test-app@dummy-command', $command->getIdentifier());
     }
 
     public function test_getName()
     {
         $command = $this->getDummyCommand();
-        $this->assertEquals("dummy-command", $command->getName());
+        $this->assertEquals('dummy-command', $command->getName());
     }
 
     public function test_getHelp()
     {
         $command = $this->getDummyCommand();
-        $this->assertEquals("Help", $command->getHelp());
+        $this->assertEquals('Help', $command->getHelp());
     }
 
     public function test___invoke()

@@ -11,17 +11,17 @@ class BackupConfig extends AbstractCommand
 {
     public function __invoke(Args $args)
     {
-        $currentConfig = Utils::relativePath("sharp.json");
+        $currentConfig = Utils::relativePath('sharp.json');
 
         if (!is_file($currentConfig))
-            return $this->log("No configuration to backup");
+            return $this->log('No configuration to backup');
 
         $copyBasename =
-            "sharp-json-".
+            'sharp-json-'.
             substr(md5_file($currentConfig), 0, 4).
-            "-".
+            '-'.
             time().
-            ".json";
+            '.json';
 
         $copyPath = Storage::getInstance()->path($copyBasename);
 
@@ -31,6 +31,6 @@ class BackupConfig extends AbstractCommand
 
     public function getHelp(): string
     {
-        return "Create a backup file of your configuration";
+        return 'Create a backup file of your configuration';
     }
 }

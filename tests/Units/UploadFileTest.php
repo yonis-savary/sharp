@@ -10,7 +10,7 @@ class UploadFileTest extends TestCase
 {
     public static function getDummyPHPUpload(int $withError=null): array
     {
-        $randomName = bin2hex(random_bytes(32)).".json";
+        $randomName = bin2hex(random_bytes(32)).'.json';
 
         $jsonData = [];
         for ($i=0; $i<10; $i++)
@@ -20,11 +20,11 @@ class UploadFileTest extends TestCase
         file_put_contents($tmpName, $jsonData);
 
         $data = [
-            "name" => $randomName,
-            "type" => "application/json",
-            "tmp_name" => $tmpName,
-            "error" => $withError ?? UPLOAD_ERR_OK,
-            "size" => filesize($tmpName),
+            'name' => $randomName,
+            'type' => 'application/json',
+            'tmp_name' => $tmpName,
+            'error' => $withError ?? UPLOAD_ERR_OK,
+            'size' => filesize($tmpName),
         ];
 
         return $data;
@@ -34,7 +34,7 @@ class UploadFileTest extends TestCase
     {
         $upload = new UploadFile($this->getDummyPHPUpload());
         $this->assertTrue($upload->movable());
-        $upload->move(Storage::getInstance()->path("uploads"));
+        $upload->move(Storage::getInstance()->path('uploads'));
         $this->assertFalse($upload->movable());
 
         $upload = new UploadFile($this->getDummyPHPUpload(UPLOAD_ERR_NO_FILE));
@@ -45,12 +45,12 @@ class UploadFileTest extends TestCase
     {
         $upload = new UploadFile($this->getDummyPHPUpload());
         $this->assertIsString(
-            $upload->move(Storage::getInstance()->path("uploads"))
+            $upload->move(Storage::getInstance()->path('uploads'))
         );
 
         $upload = new UploadFile($this->getDummyPHPUpload(UPLOAD_ERR_NO_FILE));
         $this->assertFalse(
-            $upload->move(Storage::getInstance()->path("uploads"))
+            $upload->move(Storage::getInstance()->path('uploads'))
         );
     }
 
@@ -58,7 +58,7 @@ class UploadFileTest extends TestCase
     {
         $upload = new UploadFile($this->getDummyPHPUpload());
         $this->assertFalse($upload->isMoved());
-        $upload->move(Storage::getInstance()->path("uploads"));
+        $upload->move(Storage::getInstance()->path('uploads'));
         $this->assertTrue($upload->isMoved());
     }
 
@@ -77,7 +77,7 @@ class UploadFileTest extends TestCase
     public function test_getType()
     {
         $upload = new UploadFile($this->getDummyPHPUpload());
-        $this->assertEquals("application/json", $upload->getType());
+        $this->assertEquals('application/json', $upload->getType());
     }
 
     public function test_getError()
@@ -97,38 +97,38 @@ class UploadFileTest extends TestCase
 
     public function test_getInputName()
     {
-        $upload = new UploadFile($this->getDummyPHPUpload(), "someUpload");
-        $this->assertEquals("someUpload", $upload->getInputName());
+        $upload = new UploadFile($this->getDummyPHPUpload(), 'someUpload');
+        $this->assertEquals('someUpload', $upload->getInputName());
     }
 
     public function test_getExtension()
     {
         $upload = new UploadFile($this->getDummyPHPUpload());
-        $this->assertEquals("json", $upload->getExtension());
+        $this->assertEquals('json', $upload->getExtension());
     }
 
     public function test_getNewName()
     {
         $upload = new UploadFile($this->getDummyPHPUpload());
-        $upload->move(Storage::getInstance()->path("uploads"));
+        $upload->move(Storage::getInstance()->path('uploads'));
         $this->assertIsString($upload->getNewName());
     }
 
     public function test_getNewPath()
     {
         $upload = new UploadFile($this->getDummyPHPUpload());
-        $upload->move(Storage::getInstance()->path("uploads"));
+        $upload->move(Storage::getInstance()->path('uploads'));
         $this->assertFileExists($upload->getNewPath());
     }
 
     public function test_getFailReason()
     {
         $upload = new UploadFile($this->getDummyPHPUpload(UPLOAD_ERR_NO_FILE));
-        $upload->move(Storage::getInstance()->path("uploads"));
+        $upload->move(Storage::getInstance()->path('uploads'));
         $this->assertEquals(UploadFile::REASON_PHP_UPLOAD_ERROR, $upload->getFailReason());
 
         $upload = new UploadFile($this->getDummyPHPUpload());
-        $upload->move(Storage::getInstance()->path("uploads"));
+        $upload->move(Storage::getInstance()->path('uploads'));
         $this->assertEquals(UploadFile::REASON_OK, $upload->getFailReason());
     }
 }

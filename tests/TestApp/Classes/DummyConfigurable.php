@@ -16,8 +16,8 @@ class DummyConfigurable
     public static function getDefaultConfiguration()
     {
         return [
-            "enabled" => true,
-            "cached" => false
+            'enabled' => true,
+            'cached' => false
         ];
     }
 }

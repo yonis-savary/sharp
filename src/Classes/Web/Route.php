@@ -11,14 +11,14 @@ use YonisSavary\Sharp\Core\Utils;
 class Route
 {
     const SLUG_FORMATS = [
-        "int"      => "\d+",
-        "float"    => "\d+(?:\.\d+)?",
-        "any"      => ".+",
-        "date"     => "\d{4}\-\d{2}\-\d{2}",
-        "time"     => "\d{2}\:\d{2}\:\d{2}",
-        "datetime" => "\d{4}\-\d{2}\-\d{2} \d{2}\:\d{2}\:\d{2}",
-        "hex"      => "[0-9a-fA-F]+",
-        "uuid"     => "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+        'int'      => "\d+",
+        'float'    => "\d+(?:\.\d+)?",
+        'any'      => '.+',
+        'date'     => "\d{4}\-\d{2}\-\d{2}",
+        'time'     => "\d{2}\:\d{2}\:\d{2}",
+        'datetime' => "\d{4}\-\d{2}\-\d{2} \d{2}\:\d{2}\:\d{2}",
+        'hex'      => '[0-9a-fA-F]+',
+        'uuid'     => '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}'
     ];
 
     protected $callback;
@@ -37,42 +37,42 @@ class Route
 
     public static function get(string $path, callable $callback, array $middlewares=[], ?array $extras=[]): self
     {
-        return new self($path, $callback, ["GET"], $middlewares, $extras);
+        return new self($path, $callback, ['GET'], $middlewares, $extras);
     }
 
     public static function post(string $path, callable $callback, array $middlewares=[], ?array $extras=[]): self
     {
-        return new self($path, $callback, ["POST"], $middlewares, $extras);
+        return new self($path, $callback, ['POST'], $middlewares, $extras);
     }
 
     public static function patch(string $path, callable $callback, array $middlewares=[], ?array $extras=[]): self
     {
-        return new self($path, $callback, ["PATCH"], $middlewares, $extras);
+        return new self($path, $callback, ['PATCH'], $middlewares, $extras);
     }
 
     public static function put(string $path, callable $callback, array $middlewares=[], ?array $extras=[]): self
     {
-        return new self($path, $callback, ["PUT"], $middlewares, $extras);
+        return new self($path, $callback, ['PUT'], $middlewares, $extras);
     }
 
     public static function delete(string $path, callable $callback, array $middlewares=[], ?array $extras=[]): self
     {
-        return new self($path, $callback, ["DELETE"], $middlewares, $extras);
+        return new self($path, $callback, ['DELETE'], $middlewares, $extras);
     }
 
     public static function view(string $path, string $template, array $middlewares=[], array $context=[], array $extras=[]): self
     {
-        return new self($path, [self::class, "renderViewCallback"], ["GET"], $middlewares, array_merge($extras, ["template" => $template, "context" => $context]));
+        return new self($path, [self::class, 'renderViewCallback'], ['GET'], $middlewares, array_merge($extras, ['template' => $template, 'context' => $context]));
     }
 
     public static function redirect(string $path, string $target, array $middlewares=[], array $extras=[]): self
     {
-        return new self($path, [self::class, "redirectRequestToTarget"], [], $middlewares, array_merge($extras, ["redirection-target" => $target]));
+        return new self($path, [self::class, 'redirectRequestToTarget'], [], $middlewares, array_merge($extras, ['redirection-target' => $target]));
     }
 
     public static function file(string $path, string $target, array $middlewares=[], array $extras=[]): self
     {
-        return new self($path, [self::class, "serveFile"], [], $middlewares, array_merge($extras, ["file" => $target]));
+        return new self($path, [self::class, 'serveFile'], [], $middlewares, array_merge($extras, ['file' => $target]));
     }
 
     public static function renderViewCallback(Request $request): Response
@@ -81,12 +81,12 @@ class Route
         $slugs = $request->getSlugs();
 
         return Response::view(
-            $extras["template"],
+            $extras['template'],
             [
-                ...($extras["context"] ?? []),
+                ...($extras['context'] ?? []),
                 ...$slugs,
-                "request" => $request,
-                "slugs" => $slugs
+                'request' => $request,
+                'slugs' => $slugs
             ]
         );
     }
@@ -94,13 +94,13 @@ class Route
     public static function redirectRequestToTarget(Request $request): Response
     {
         $extras = $request->getRoute()->getExtras();
-        return Response::redirect($extras["redirection-target"]);
+        return Response::redirect($extras['redirection-target']);
     }
 
     public static function serveFile(Request $request): Response
     {
         $extras = $request->getRoute()->getExtras();
-        $target = Utils::relativePath($extras["file"]);
+        $target = Utils::relativePath($extras['file']);
 
         if (!is_file($target))
             throw new RuntimeException("[$target] File does not exists !");
@@ -129,8 +129,8 @@ class Route
 
     public function setPath(string $path): void
     {
-        if (!str_starts_with($path, "/"))
-            $path = "/" . $path;
+        if (!str_starts_with($path, '/'))
+            $path = '/' . $path;
 
         $this->path = $path;
     }
@@ -189,7 +189,7 @@ class Route
     protected function matchPathRegex(Request $request): string
     {
         $regexMap = [];
-        $parts = explode("/", $this->getPath());
+        $parts = explode('/', $this->getPath());
 
         foreach ($parts as &$part)
         {
@@ -201,9 +201,9 @@ class Route
             $name = $part;
             $expression = "[^\\/]+";
 
-            if (str_contains($part, ":"))
+            if (str_contains($part, ':'))
             {
-                list($type, $name) = explode(":", $part, 2);
+                list($type, $name) = explode(':', $part, 2);
                 $expression = self::SLUG_FORMATS[$type] ?? $type;
             }
 
@@ -211,7 +211,7 @@ class Route
             $part = "($expression)";
         }
 
-        $regex = "/^". join("\\/", $parts) ."$/";
+        $regex = '/^'. join("\\/", $parts) ."$/";
 
         if (!preg_match($regex, $request->getPath(), $slugs))
             return false;
@@ -238,7 +238,7 @@ class Route
 
         // Little optimization: if the route has no slug
         // we can just compare strings, no need to process anything
-        if (!str_contains($routePath, "{"))
+        if (!str_contains($routePath, '{'))
             return $routePath === $requestPath;
 
         return $this->matchPathRegex($request);

@@ -27,28 +27,28 @@ class SharpServer
      * @param int $safeDelay Delay to wait after launching the server as PHP may take a little time initializing it
      * @param string $publicDirectory Directory which contains `index.php`, if none is provided, a default one is chosen
      */
-    public function __construct(int $port=null, string $hostname="localhost", int $safeDelay=200000, string $publicDirectory=null)
+    public function __construct(int $port=null, string $hostname='localhost', int $safeDelay=200000, string $publicDirectory=null)
     {
         $logger = Logger::getInstance();
 
         $this->hostname = $hostname;
         $this->port = $port ?? random_int(8000, 65534);
 
-        $publicDirectory ??= Utils::relativePath("Public");
+        $publicDirectory ??= Utils::relativePath('Public');
         if (!is_dir($publicDirectory))
         {
-            $logger->warning("{directory} does not exists", ["directory" => $publicDirectory]);
+            $logger->warning('{directory} does not exists', ['directory' => $publicDirectory]);
             return;
         }
 
-        $url = $this->getURL(protocol:"");
+        $url = $this->getURL(protocol:'');
 
         $logger->info(
-            "Starting self-server on port {port} in directory {directory}",
-            ["port" => $this->port, "directory" => $publicDirectory]
+            'Starting self-server on port {port} in directory {directory}',
+            ['port' => $this->port, 'directory' => $publicDirectory]
         );
 
-        $this->process = new Process(["php","-S",$url], $publicDirectory);
+        $this->process = new Process(['php','-S',$url], $publicDirectory);
         $this->process->start();
 
         if ($safeDelay)
@@ -68,7 +68,7 @@ class SharpServer
         if ($this->process && (!$this->process->isRunning()))
             return;
 
-        Logger::getInstance()->info("Stopping self-server on port {port}", ["port" => $this->port]);
+        Logger::getInstance()->info('Stopping self-server on port {port}', ['port' => $this->port]);
         $this->process->stop();
     }
 
@@ -91,13 +91,13 @@ class SharpServer
     /**
      * Get an URL to connect to the self-server
      */
-    public function getURL(string $path=null, string $protocol="http://"): string
+    public function getURL(string $path=null, string $protocol='http://'): string
     {
-        $origin = $protocol . $this->hostname . ":" . $this->getPort();
+        $origin = $protocol . $this->hostname . ':' . $this->getPort();
 
         $url = $origin;
 
-        if ($path && (!str_starts_with($path, "/")))
+        if ($path && (!str_starts_with($path, '/')))
             $path = "/$path";
 
         if ($path)
@@ -119,6 +119,20 @@ class SharpServer
     {
         return $this->process ?
             $this->process->getErrorOutput():
+            null;
+    }
+
+    public function getIncrementalOutput(): ?string
+    {
+        return $this->process ?
+            $this->process->getIncrementalOutput():
+            null;
+    }
+
+    public function getIncrementalErrorOutput(): ?string
+    {
+        return $this->process ?
+            $this->process->getIncrementalErrorOutput():
             null;
     }
 }

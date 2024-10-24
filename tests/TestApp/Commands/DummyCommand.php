@@ -9,11 +9,11 @@ class DummyCommand extends AbstractCommand
 {
     public function __invoke(Args $args)
     {
-        $this->log("Hello");
+        $this->log('Hello');
     }
 
     public function getHelp(): string
     {
-        return "Help";
+        return 'Help';
     }
 }

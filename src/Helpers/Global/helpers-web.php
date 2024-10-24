@@ -7,8 +7,8 @@ use YonisSavary\Sharp\Classes\Web\Renderer;
  * Get a route path to the wanted asset (Automassets Component)
  * @param string $target End of the target file's path
  * @return string Fixed request path returned by Automassets
- * @example CSS `asset("/css/app.css")`
- * @example JS `asset("/lib/dist/chart.js")`
+ * @example CSS `asset('/css/app.css')`
+ * @example JS `asset('/lib/dist/chart.js')`
  */
 function asset(string $target) : string
 {
@@ -32,7 +32,7 @@ function script(string $target, bool $inject=false): string
     if (!($path = AssetServer::getInstance()->findAsset($target)))
         throw new Exception("Script not found [$target]");
 
-    return "<script>".file_get_contents($path)."</script>";
+    return '<script>'.file_get_contents($path).'</script>';
 }
 
 /**
@@ -53,14 +53,14 @@ function style(string $target, bool $inject=false): string
     if (!($path = AssetServer::getInstance()->findAsset($target)))
         throw new Exception("Stylesheet not found [$target]");
 
-    return "<style>".file_get_contents($path)."</style>";
+    return '<style>'.file_get_contents($path).'</style>';
 }
 
 /**
  * Render another template and return its content
  * @param string $templateName End of the template's path
  * @param array $vars Context for the template
- * @example base `render("contact/creation", ["title"=>"New Contact"])`
+ * @example base `render('contact/creation', ['title'=>'New Contact'])`
  *          renders `.../contact/creation.php` and make `$title` available in your view
  * @return string Rendered view as string
  */
@@ -73,7 +73,7 @@ function render(string $templateName, array $vars=[]) : string
  * Tell the renderer that we want to put current content into a greater template
  * @param string $templateName End of the template's path
  * @param array $vars Context for the template
- * @example base `template("commons/base", ["title"=>"New Contact"])`
+ * @example base `template('commons/base', ['title'=>'New Contact'])`
  *          renders `.../commons/base.php` with current template sections and make `$title` available in it
  */
 function template(string $templateName, array $context=[])
@@ -86,12 +86,12 @@ function template(string $templateName, array $context=[])
  * @param string $sectionName Name of the section used in your template
  * @example base ```php
  *      <!-- common/base.php ... -->
- *      <?= section("title") ?>
+ *      <?= section('title') ?>
  * ```
  * ```php
  *      <!-- another/template  -->
- *      <?= template("base") ?>
- *      <?= start("title") ?>
+ *      <?= template('base') ?>
+ *      <?= start('title') ?>
  *      My Title !
  * ```
  */
@@ -105,15 +105,15 @@ function section(string $sectionName): ?string
  * @param string $sectionName Name of the section used in your template
  * @example base ```php
  *      <!-- common/base.php ... -->
- *      <?= section("title") ?>
- *      <?= section("body") ?>
+ *      <?= section('title') ?>
+ *      <?= section('body') ?>
  * ```
  * ```php
  *      <!-- another/template  -->
- *      <?= template("base") ?>
- *      <?= start("title") ?>
+ *      <?= template('base') ?>
+ *      <?= start('title') ?>
  *      My Title !
- *      <?= start("body") ?>
+ *      <?= start('body') ?>
  *      My Body !
  * ```
  */
@@ -127,16 +127,16 @@ function start(string $sectionName): void
  * @param string $sectionName Name of the section used in your template
  * @example base ```php
  *      <!-- common/base.php ... -->
- *      <?= section("title") ?>
- *      <?= section("body") ?>
+ *      <?= section('title') ?>
+ *      <?= section('body') ?>
  * ```
  * ```php
  * <!-- another/template  -->
- * <?= template("base") ?>
- *      <?= start("title") ?>
+ * <?= template('base') ?>
+ *      <?= start('title') ?>
  *      My Title !
- *      <?= stop("title") ?>
- *      <?= start("body") ?>
+ *      <?= stop('title') ?>
+ *      <?= start('body') ?>
  *      My Body !
  * ```
  */

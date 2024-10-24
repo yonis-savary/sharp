@@ -43,21 +43,36 @@ class Request
 
     const NOT_NULL   = 1 << 13;
 
+    /** Debug the CURL Request build process */
     const DEBUG_REQUEST_CURL     = 0b0000_0001;
+
+    /** Debug the sent headers */
     const DEBUG_REQUEST_HEADERS  = 0b0000_0010;
+
+    /** Debug the sent body */
     const DEBUG_REQUEST_BODY     = 0b0000_0100;
+
+    /** Debug the sent response data */
     const DEBUG_REQUEST          = 0b0000_1111;
 
+    /** Debug the returned headers */
     const DEBUG_RESPONSE_HEADERS = 0b0001_0000;
+
+    /** Debug the returned body */
     const DEBUG_RESPONSE_BODY    = 0b0010_0000;
+
+    /** Debug the returned response data */
     const DEBUG_RESPONSE         = 0b1111_0000;
 
+    /** Debug both sent & received headers */
     const DEBUG_ESSENTIALS       = self::DEBUG_REQUEST_HEADERS | self::DEBUG_RESPONSE_HEADERS;
+
+    /** Debug every sent/received informations */
     const DEBUG_ALL              = 0b1111_1111;
 
     public static function getDefaultConfiguration(): array
     {
-        return ["typed-parameters" => true];
+        return ['typed-parameters' => true];
     }
 
     /**
@@ -79,23 +94,23 @@ class Request
         protected ?string $ip=null
     )
     {
-        $this->path = preg_replace("/\?.*/", "", $this->path);
+        $this->path = preg_replace("/\?.*/", '', $this->path);
         $this->uploads = $this->getCleanUploadData($uploads);
         $this->body = $body;
 
         $this->headers = array_change_key_case($this->headers, CASE_LOWER);
 
         if ($this->isJSON())
-            $this->body = json_decode($this->body ?? "null", true, JSON_THROW_ON_ERROR);
+            $this->body = json_decode($this->body ?? 'null', true, JSON_THROW_ON_ERROR);
 
-        if ($this->body === "")
+        if ($this->body === '')
             $this->body = null;
     }
 
     /**
      * This function's purpose is to fix types of GET and POST parameters
-     * when getting a `"null"`, value, we can assume it is a `null` in reality
-     * (Same for `"true"`, `"on"`, `"false"` and `"off"`)
+     * when getting a `'null'`, value, we can assume it is a `null` in reality
+     * (Same for `'true'`, `'on'`, `'false'` and `'off'`)
      */
     protected static function parseDictionaryValueTypes(array $dict)
     {
@@ -106,11 +121,11 @@ class Request
 
             $lower = strtolower("$value");
 
-            if ($lower === "null")
+            if ($lower === 'null')
                 $value = null ;
-            else if ($lower === "false" || $lower === "off")
+            else if ($lower === 'false' || $lower === 'off')
                 $value = false;
-            else if ($lower === "true" || $lower === "on")
+            else if ($lower === 'true' || $lower === 'on')
                 $value = true;
         }
         return $dict;
@@ -121,7 +136,7 @@ class Request
      */
     public static function fromGlobals(bool $fixParametersTypes=true): Request
     {
-        $headers = function_exists("getallheaders") ?
+        $headers = function_exists('getallheaders') ?
             getallheaders() :
             [];
 
@@ -134,7 +149,7 @@ class Request
             $post = self::parseDictionaryValueTypes($post);
         }
 
-        $path = $_SERVER['REQUEST_URI'] ?? "";
+        $path = $_SERVER['REQUEST_URI'] ?? '';
 
         $request = new self (
             $_SERVER['REQUEST_METHOD'] ?? php_sapi_name(),
@@ -144,7 +159,7 @@ class Request
             $_FILES,
             $headers,
             file_get_contents('php://input'),
-            $_SERVER["REMOTE_ADDR"] ?? null
+            $_SERVER['REMOTE_ADDR'] ?? null
         );
 
         return $request;
@@ -158,7 +173,7 @@ class Request
     public function logSelf(Logger $logger=null): void
     {
         $logger ??= Logger::getInstance();
-        $logger->info("Request: {method} {path}", ["method" => $this->getMethod(), "path" => $this->getPath()]);
+        $logger->info('Request: {method} {path}', ['method' => $this->getMethod(), 'path' => $this->getPath()]);
     }
 
     protected function getCleanUploadData(array $data): array
@@ -168,7 +183,7 @@ class Request
         foreach($data as $inputName => $fileData)
         {
             $toAdd = [];
-            if (!is_array($fileData["name"]))
+            if (!is_array($fileData['name']))
             {
                 $toAdd[] = $fileData;
             }
@@ -227,7 +242,7 @@ class Request
      * This function can be used with PHP's list function
      *
      * ```php
-     * list($login, $password) = $request->list("login", "password");
+     * list($login, $password) = $request->list('login', 'password');
      * ```
      *
      * @return array Requested parameters in an array
@@ -377,7 +392,7 @@ class Request
     protected function parseHeaders(string $headers): array
     {
         return ObjectArray::fromExplode("\n", $headers)
-        ->filter(fn($line) => str_contains($line, ":"))
+        ->filter(fn($line) => str_contains($line, ':'))
         ->toAssociative(function($line){
             $line = preg_replace("/\r$/", '', $line);
             list($headerName, $headerValue) = explode(':', $line, 2);
@@ -387,7 +402,7 @@ class Request
 
     public function isJSON(): bool
     {
-        return str_starts_with($this->headers["content-type"] ?? "", "application/json");
+        return str_starts_with($this->headers['content-type'] ?? '', 'application/json');
     }
 
     /**
@@ -408,7 +423,7 @@ class Request
         if (!Utils::valueHasFlag($logFlags, self::DEBUG_REQUEST_CURL))
             $logger = new Logger(); // replace potential logger with null logger
 
-        $logger->info("Building CURL handle");
+        $logger->info('Building CURL handle');
 
         $thisGET = $this->get() ?? [];
         $thisPOST = $this->post() ?? [];
@@ -416,32 +431,32 @@ class Request
         $headers = $this->getHeaders();
         $isJSONRequest = $this->isJSON();
 
-        $getParams = count($thisGET) ? "?" . http_build_query($this->get(), "", "&") : "";
+        $getParams = count($thisGET) ? '?' . http_build_query($this->get(), '', '&') : '';
         $url = trim($this->getPath() . $getParams);
 
         $handle = curl_init($url);
 
         switch (strtoupper($thisMethod))
         {
-            case "GET":
+            case 'GET':
                 /* GET by default*/ ;
-                $logger->info("GET Params string = {params}", ["params" => $getParams]);
+                $logger->info('GET Params string = {params}', ['params' => $getParams]);
                 break;
-            case "POST":
-                $logger->info("Using CURLOPT_POST");
+            case 'POST':
+                $logger->info('Using CURLOPT_POST');
                 curl_setopt($handle, CURLOPT_POST, true);
                 break;
-            case "HEAD":
-                $logger->info("Using CURLOPT_NOBODY");
+            case 'HEAD':
+                $logger->info('Using CURLOPT_NOBODY');
                 curl_setopt($handle, CURLOPT_NOBODY, true);
                 break;
-            case "PUT":
-            case "PATCH":
-                $logger->info("Using CURLOPT_PUT");
+            case 'PUT':
+            case 'PATCH':
+                $logger->info('Using CURLOPT_PUT');
                 curl_setopt($handle, CURLOPT_PUT, true);
                 break;
             default:
-                $logger->info("Setting CURLOPT_CUSTOMREQUEST to {method}", ["method" => $thisMethod]);
+                $logger->info('Setting CURLOPT_CUSTOMREQUEST to {method}', ['method' => $thisMethod]);
                 curl_setopt($handle, CURLOPT_CUSTOMREQUEST, $thisMethod);
                 break;
         }
@@ -456,21 +471,21 @@ class Request
                 json_encode($thisPOST, JSON_THROW_ON_ERROR):
                 $thisPOST;
 
-            $logger->info("Setting CURLOPT_POSTFIELDS to");
+            $logger->info('Setting CURLOPT_POSTFIELDS to');
             $logger->info($postFields);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $postFields);
         }
 
         if ($timeout)
         {
-            $logger->info("Setting CURLOPT_CONNECTTIMEOUT, CURLOPT_TIMEOUT to {timeout}", ["timeout" => $timeout]);
+            $logger->info('Setting CURLOPT_CONNECTTIMEOUT, CURLOPT_TIMEOUT to {timeout}', ['timeout' => $timeout]);
             curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, $timeout);
             curl_setopt($handle, CURLOPT_TIMEOUT, $timeout);
         }
 
         if ($userAgent)
         {
-            $logger->info("Using 'user-agent' : {useragent}", ["useragent" => $userAgent]);
+            $logger->info("Using 'user-agent' : {useragent}", ['useragent' => $userAgent]);
             $headers['user-agent'] = $userAgent;
         }
 
@@ -478,7 +493,7 @@ class Request
         foreach ($headers as $key => &$value)
             $headersStrings[] = "$key: $value";
 
-        $logger->info("Setting CURLOPT_HTTPHEADER to");
+        $logger->info('Setting CURLOPT_HTTPHEADER to');
         $logger->info($headersStrings);
         curl_setopt($handle, CURLOPT_HTTPHEADER, $headersStrings);
 
@@ -513,14 +528,14 @@ class Request
 
         if (Utils::valueHasFlag($logFlags, self::DEBUG_REQUEST_BODY))
         {
-            $logger->info("GET\n{get}",["get" => $this->get()]);
-            $logger->info("POST\n{post}",["post" => $this->post()]);
-            $logger->info("BODY\n{body}",["body" => $this->body()]);
+            $logger->info("GET\n{get}",['get' => $this->get()]);
+            $logger->info("POST\n{post}",['post' => $this->post()]);
+            $logger->info("BODY\n{body}",['body' => $this->body()]);
         }
 
         $startTime = hrtime(true);
         if (!($result = curl_exec($handle)))
-            throw new RuntimeException(sprintf("Curl error %s: %s", curl_errno($handle), curl_error($handle)));
+            throw new RuntimeException(sprintf('Curl error %s: %s', curl_errno($handle), curl_error($handle)));
 
         $this->lastFetchDurationMicro = (hrtime(true) - $startTime) / 1000;
 
@@ -529,7 +544,7 @@ class Request
         curl_close($handle);
 
         if (Utils::valueHasFlag($logFlags, self::DEBUG_RESPONSE_HEADERS))
-            $logger->info("Got [{status}] with [{size}] bytes of data", ["status" => $resStatus, "size" => strlen($result)]);
+            $logger->info('Got [{status}] with [{size}] bytes of data', ['status' => $resStatus, 'size' => strlen($result)]);
 
         $resHeaders = substr($result, 0, $headerSize);
         $resHeaders = $this->parseHeaders($resHeaders);
@@ -537,14 +552,14 @@ class Request
 
         if (Utils::valueHasFlag($logFlags, self::DEBUG_RESPONSE_HEADERS))
         {
-            $logger->info("Got Headers");
+            $logger->info('Got Headers');
             $logger->info($resHeaders);
         }
 
         if ($supportRedirection && $nextURL = ($resHeaders['location'] ?? null))
         {
-            $logger->info("Got redirected to [{url}]", ["url" => $nextURL]);
-            $request = new self("GET", $nextURL);
+            $logger->info('Got redirected to [{url}]', ['url' => $nextURL]);
+            $request = new self('GET', $nextURL);
             return $request->fetch(
                 $logger,
                 $timeout,
@@ -557,14 +572,14 @@ class Request
 
         if (Utils::valueHasFlag($logFlags, self::DEBUG_RESPONSE_BODY))
         {
-            $logger->info("Got Body");
+            $logger->info('Got Body');
             $logger->info($resBody);
         }
 
-        if (str_starts_with($resHeaders['content-type'] ?? "", 'application/json') && $resBody)
+        if (str_starts_with($resHeaders['content-type'] ?? '', 'application/json') && $resBody)
         {
             if (Utils::valueHasFlag($logFlags, self::DEBUG_RESPONSE_BODY))
-                $logger->info("Decoding JSON body");
+                $logger->info('Decoding JSON body');
 
             $resBody = json_decode($resBody, true, flags: JSON_THROW_ON_ERROR);
         }
@@ -591,7 +606,7 @@ class Request
     public function validate(array $requirements, bool $errorMode=true): array
     {
         if (!Utils::isAssoc($requirements))
-            throw new InvalidArgumentException("requirements must be an associative array");
+            throw new InvalidArgumentException('requirements must be an associative array');
 
         $paramsToGet = array_keys($requirements);
         $requirements = array_values($requirements);
@@ -627,13 +642,13 @@ class Request
             if (($requirement & self::IS_MAC) && (!filter_var($value,  FILTER_VALIDATE_MAC)))
                 $errors[] = "[$name] must be a mac";
 
-            if (($requirement & self::IS_DATE) && (!preg_match("/^\d{4}-\d{2}-\d{2}$/", $value ?? "")))
+            if (($requirement & self::IS_DATE) && (!preg_match("/^\d{4}-\d{2}-\d{2}$/", $value ?? '')))
                 $errors[] = "[$name] must be a date (yyyy-mm-dd)";
 
-            if (($requirement & self::IS_DATETIME) && (!preg_match("/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/", $value ?? "")))
+            if (($requirement & self::IS_DATETIME) && (!preg_match("/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/", $value ?? '')))
                 $errors[] = "[$name] must be a datetime value (yyyy-mm-dd HH:MM:SS)";
 
-            if (($requirement & self::IS_UUID) && (!preg_match("/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/", $value ?? "")))
+            if (($requirement & self::IS_UUID) && (!preg_match("/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/", $value ?? '')))
                 $errors[] = "[$name] must be a UUID";
 
             //if (($requirement & self::IS_DOMAIN) && (!filter_var($value,  FILTER_VALIDATE_DOMAIN)))

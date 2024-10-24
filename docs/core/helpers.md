@@ -20,7 +20,7 @@ function cache            (string $key, mixed $default=false): mixed;
 function cacheSet         (string $key, mixed $value, int $timeToLive=3600*24): void;
 
 # Debug helpers
-function sharpDebugMeasure(callable $callback, string $label="Measurement"): void;
+function sharpDebugMeasure(callable $callback, string $label='Measurement'): void;
 
 # Database helpers
 function buildQuery       (string $query, array $context=[]): string;
@@ -47,7 +47,7 @@ function emergency(mixed ...$messages): void;
 function storePath            (string $path): string;
 
 function storeGetSubStorage   (string $path): Storage;
-function storeGetStream       (string $path, string $mode="r", bool $autoclose=true): mixed;
+function storeGetStream       (string $path, string $mode='r', bool $autoclose=true): mixed;
 
 function storeWrite           (string $path, string $content, int $flags=0): void;
 function storeRead            (string $path): string;
@@ -60,8 +60,8 @@ function storeRemoveDirectory (string $path): bool;
 function storeUnlink          (string $path): bool;
 
 function storeExploreDirectory(string $path, int $mode=Storage::NO_FILTER): array;
-function storeListFiles       (string $path="/"): array;
-function storeListDirectories (string $path="/"): array;
+function storeListFiles       (string $path='/'): array;
+function storeListDirectories (string $path='/'): array;
 
 
 

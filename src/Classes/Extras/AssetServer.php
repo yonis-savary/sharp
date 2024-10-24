@@ -16,8 +16,8 @@ class AssetServer
     use Component, Configurable;
 
     const EXTENSIONS_MIMES = [
-        "js" => "application/javascript",
-        "css" => "text/css"
+        'js'  => 'application/javascript',
+        'css' => 'text/css'
     ];
 
     protected $cacheIndex = [];
@@ -25,11 +25,11 @@ class AssetServer
     public static function getDefaultConfiguration(): array
     {
         return [
-            "enabled"     => true,
-            "cached"      => true,
-            "url"         => "/assets",
-            "middlewares" => [],
-            "max-age"     => false
+            'enabled'     => true,
+            'cached'      => true,
+            'url'         => '/assets',
+            'middlewares' => [],
+            'max-age'     => false
         ];
     }
 
@@ -41,7 +41,7 @@ class AssetServer
             return;
 
         if ($this->isCached())
-            $this->cacheIndex = &Cache::getInstance()->getReference("sharp.asset-server");
+            $this->cacheIndex = &Cache::getInstance()->getReference('sharp.asset-server');
 
         $req = Request::fromGlobals();
         $this->handleRequest($req);
@@ -58,7 +58,7 @@ class AssetServer
         if ($path = $this->cacheIndex[$assetName] ?? false)
             return $path;
 
-        foreach (Autoloader::getListFiles(Autoloader::ASSETS) as $file)
+        foreach (Autoloader::getList(Autoloader::ASSETS) as $file)
         {
             if (!str_ends_with($file, $assetName))
                 continue;
@@ -75,45 +75,47 @@ class AssetServer
     public function getURL(string $assetName): string
     {
         $encodedAssetName = urlencode($assetName);
-        $routePath = $this->configuration["url"];
+        $routePath = $this->configuration['url'];
+
         return "$routePath?file=$encodedAssetName";
     }
 
-    public function handleRequest(Request $req, bool $returnResponse=false): Response|false
+    public function handleRequest(Request $request, bool $returnResponse=false): Response|false
     {
-        $routePath = $this->configuration["url"];
-        $middlewares = $this->configuration["middlewares"];
-        $selfRoute = Route::get($routePath, fn($req) => $this->serve($req), $middlewares);
+        $routePath = $this->configuration['url'];
+        $middlewares = $this->configuration['middlewares'];
 
-        if (!$selfRoute->match($req))
+        $selfRoute = Route::get($routePath, fn($_) => null, $middlewares);
+        if (!$selfRoute->match($request))
             return false;
 
-        $response = $selfRoute($req);
+        $response = $this->serve($request);
 
         if ($returnResponse)
             return $response;
 
+        $response->logSelf();
         $response->display();
         die;
     }
 
     protected function serve(Request $req): Response
     {
-        if (!$searchedFile = ($req->params("file") ?? false))
+        if (!$searchedFile = ($req->params('file') ?? false))
             return Response::json("A 'file' parameter is needed", 401);
 
         if (!$path = $this->findAsset($searchedFile))
             return Response::json("Asset [$searchedFile] not found", 404);
 
-        $res = Response::file($path);
+        $response = Response::file($path);
+
+        if ($cacheTime = $this->configuration['max-age'])
+        $response->withHeaders(['Cache-Control' => "max-age=$cacheTime"]);
+
         $extension = pathinfo($path, PATHINFO_EXTENSION);
-
-        if ($cacheTime = $this->configuration["max-age"])
-            $res->withHeaders(["Cache-Control" => "max-age=$cacheTime"]);
-
         if ($mime = self::EXTENSIONS_MIMES[$extension] ?? false)
-            $res->withHeaders(["Content-Type" => $mime]);
+            $response->withHeaders(['Content-Type' => $mime]);
 
-        return $res;
+        return $response;
     }
 }

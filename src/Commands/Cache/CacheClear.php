@@ -13,7 +13,7 @@ class CacheClear extends AbstractCommand
 {
     public function getHelp(): string
     {
-        return "Delete files in Storage/Cache, use --all to delete permanent items";
+        return 'Delete files in Storage/Cache, use --all to delete permanent items';
     }
 
     protected function processFile(string $file, bool $deletePermanent)
@@ -36,10 +36,10 @@ class CacheClear extends AbstractCommand
 
     public function __invoke(Args $args)
     {
-        $cache = Storage::getInstance()->getSubStorage("Cache");
-        $deletePermanent = $args->isPresent("a", "all");
+        $cache = Storage::getInstance()->getSubStorage('Cache');
+        $deletePermanent = $args->isPresent('a', 'all');
 
-        foreach ($cache->exploreDirectory("/", Utils::ONLY_FILES) as $file)
+        foreach ($cache->exploreDirectory('/', Utils::ONLY_FILES) as $file)
             $this->processFile($file, $deletePermanent);
     }
 }

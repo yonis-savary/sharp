@@ -18,8 +18,8 @@ When creating a route, use the `middlewares` parameter to set which middlewares 
 
 ```php
 Route::get(
-    "/my-admin-page",
-    [AdminController:class, "dashboard"],
+    '/my-admin-page',
+    [AdminController:class, 'dashboard'],
     middlewares: [AuthMiddleware::class, AdminMiddleware::class]
 );
 ```
@@ -28,7 +28,7 @@ You can also use them in route grouping
 
 ```php
 $router->addGroup(
-    ["middlewares" => [AuthMiddleware::class, AdminMiddleware::class]],
+    ['middlewares' => [AuthMiddleware::class, AdminMiddleware::class]],
     /* Every routes here got these two middlewares */
 );
 ```
@@ -42,7 +42,7 @@ Let's imagine that you are building an application, which got an authentication 
 You may want to check if your user is logged in your controller callback:
 ```php
 if (!userIsLogged())
-    return Response::redirect("/login");
+    return Response::redirect('/login');
 ```
 
 It takes 2 lines of code to redirect any user that is not logged, so far so good

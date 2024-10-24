@@ -145,11 +145,11 @@ $autobahn->all(User::class);
 // Routes are "/user"
 
 Router::getInstance()->groupCallback(
-    ["path" => "api"],
+    ['path' => 'api'],
     function($router){
         $autobahn = Autobahn::getInstance();
         $autobahn->all(User::class);
-        // Routes are "/api/user"
+        // Routes are '/api/user'
     }
 );
 ```
@@ -162,7 +162,7 @@ For Read, Update and Delete callback, the `ModelQuery` that is about to be execu
 
 ```php
 $autobahn->read(User::class, function(ModelQuery &$query){
-    $query->where("fk_user", UserId::get());
+    $query->where('fk_user', UserId::get());
 });
 ```
 
@@ -172,7 +172,7 @@ For Insert callback, your middleware can take data that are about to be inserted
 
 ```php
 $autobahn->read(UserData::class, function(array &$data){
-    $data["fk_user"] = UserId::get();
+    $data['fk_user'] = UserId::get();
 });
 ```
 

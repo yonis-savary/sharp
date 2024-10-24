@@ -15,6 +15,6 @@ class SchedulerLaunch extends AbstractCommand
 
     public function getHelp(): string
     {
-        return "Launch the different tasks of the scheduler (put this in your cron)";
+        return 'Launch the different tasks of the scheduler (put this in your cron)';
     }
 }

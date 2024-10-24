@@ -11,29 +11,27 @@ class Csrf
 {
     use Component, Configurable;
 
-    const CACHE_KEY = "sharp.security.csrf.token";
+    const CACHE_KEY = 'sharp.security.csrf.token';
 
     protected Session $session;
 
     public static function getDefaultConfiguration(): array
     {
         return [
-            "html-input-name" => "csrf-token"
+            'html-input-name' => 'csrf-token'
         ];
     }
 
     public function __construct(Session $session)
     {
         $this->loadConfiguration();
-
-        $session ??= Session::getInstance();
-        $this->session = $session;
+        $this->session = $session ?? Session::getInstance();
     }
 
     public function getHTMLInput(): string
     {
         $token = $this->getToken();
-        $inputName = $this->configuration["html-input-name"];
+        $inputName = $this->configuration['html-input-name'];
 
         return "<input type='hidden' name='$inputName' value='$token'>";
     }
@@ -60,7 +58,7 @@ class Csrf
      */
     public function checkRequest(Request $request): bool
     {
-        $inputName = $this->configuration["html-input-name"];
+        $inputName = $this->configuration['html-input-name'];
         $requestToken = $request->params($inputName);
         $validToken = $this->getToken();
 
@@ -68,8 +66,8 @@ class Csrf
             return false;
 
         return hash_equals(
-            crypt($requestToken, "dummySalt"),
-            crypt($validToken, "dummySalt")
+            crypt($requestToken, 'dummySalt'),
+            crypt($validToken, 'dummySalt')
         );
     }
 }

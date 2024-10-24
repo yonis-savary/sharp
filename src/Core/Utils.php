@@ -16,7 +16,7 @@ class Utils
      * This function check if a class uses a specific trait
      *
      * @param mixed $class Class to check
-     * @param string $trait Trait's "classname"
+     * @param string $trait Trait's 'classname'
      * @return bool Do `$class` exists and uses `$trait` ?
      */
     public static function uses(mixed $objectOrClass, string $trait): bool
@@ -68,11 +68,11 @@ class Utils
 
     /**
      * Given a path, this function make sure the path is valid
-     * and use "/" as a directory separator
+     * and use '/' as a directory separator
      */
     public static function normalizePath(string $path): string
     {
-        return preg_replace("/\/{2,}/", "/", str_replace("\\", "/", $path));
+        return preg_replace("/\/{2,}/", '/', str_replace("\\", '/', $path));
     }
 
     /**
@@ -80,7 +80,7 @@ class Utils
      */
     public static function joinPath(...$parts): string
     {
-        return self::normalizePath(join("/", $parts));
+        return self::normalizePath(join('/', $parts));
     }
 
     /**
@@ -105,9 +105,9 @@ class Utils
      */
     public static function pathToNamespace(string $path): string
     {
-        $path = str_replace(Autoloader::projectRoot(), "", $path);
-        $namespace = str_replace("/", "\\", $path);
-        $namespace = preg_replace("/^\\\\|\..+$/", "", $namespace);
+        $path = str_replace(Autoloader::projectRoot(), '', $path);
+        $namespace = str_replace('/', "\\", $path);
+        $namespace = preg_replace("/^\\\\|\..+$/", '', $namespace);
 
         return $namespace;
     }
@@ -118,7 +118,7 @@ class Utils
      */
     public static function classnameToPath(string $classname): string
     {
-        return Utils::relativePath(str_replace("\\", "/", $classname).".php");
+        return Utils::relativePath(str_replace("\\", '/', $classname).'.php');
     }
 
     /*
@@ -211,25 +211,25 @@ class Utils
     }
 
     /**
-     * Useful to enable debug-only features
+     * Useful to enable dev-only features
      *
-     * @return `true` if "env" is set to "production" in your configuration
+     * @return `true` if 'env' is set to 'production' in your configuration
      */
     public static function isProduction(Configuration $configuration=null): bool
     {
         $configuration ??= Configuration::getInstance();
-        $env = $configuration->get("env", "debug");
+        $env = $configuration->get('env', 'dev');
 
-        return strtolower($env) === "production";
+        return strtolower($env) === 'production';
     }
 
     /**
-     * Check if an application is present in "application" in "sharp.json"
+     * Check if an application is present in 'application' in 'sharp.json'
      */
     public static function isApplicationEnabled(string $application, Configuration $configuration=null): bool
     {
         $configuration ??= Configuration::getInstance();
-        $enabled = $configuration->toArray("applications");
+        $enabled = $configuration->toArray('applications');
 
         return in_array($application, $enabled);
     }
