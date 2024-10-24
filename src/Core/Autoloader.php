@@ -258,7 +258,7 @@ class Autoloader
             return '['.join(',', array_values($var)).']';
         };
 
-        // Calling `getListFiles` to cache every possible results
+        // Calling `getList` to cache every possible results
         foreach (array_keys(self::$lists) as $key)
             self::getList($key);
 

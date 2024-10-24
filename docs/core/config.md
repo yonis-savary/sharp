@@ -91,30 +91,6 @@ php do enable-application ShippingApp/Modules/*
 > (Beware of dependencies !)
 
 
-
-## Namespaces
-
-With Sharp, every namespace is set by its relative path to the project root
-
-Example, for
-
-```php
-App/Controllers/Provider/Order.php
-```
-
-Its full namespace shall be
-
-```php
-# namespace
-App\Controllers\Provider
-# classname
-App\Controllers\Provider\Order
-```
-
-> [!IMPORTANT]
-> It is very important to respect this rule as the Autoloader cannot load a file with a bad formatted namespace
-
-
 ## Making custom script that uses Sharp
 
 If you want to use YonisSavary\Sharp in a PHP script, you only have to require `vendor/autoload.php`
@@ -123,20 +99,20 @@ Including this script will load the components without doing anything else
 
 ## Additional properties
 
-- `Autoloader::getListFiles(Autoloader::AUTOLOAD)` can retrieve files in
+- `Autoloader::getList(Autoloader::AUTOLOAD)` can retrieve files in
     - Commands
     - Controllers
     - Classes
     - Components
     - Features
     - Models
-- `Autoloader::getListFiles(Autoloader::ASSETS)` can retrieve files in
+- `Autoloader::getList(Autoloader::ASSETS)` can retrieve files in
     - Assets
-- `Autoloader::getListFiles(Autoloader::VIEWS)` can retrieve files in
+- `Autoloader::getList(Autoloader::VIEWS)` can retrieve files in
     - Views
-- `Autoloader::getListFiles(Autoloader::ROUTES)` can retrieve files in
+- `Autoloader::getList(Autoloader::ROUTES)` can retrieve files in
     - Routes
-- `Autoloader::getListFiles(Autoloader::REQUIRE)` can retrieve files in
+- `Autoloader::getList(Autoloader::REQUIRE)` can retrieve files in
     - Helpers
     - Others
 
