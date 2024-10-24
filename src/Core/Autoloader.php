@@ -15,38 +15,38 @@ use Throwable;
 class Autoloader
 {
     /** Files in this list are available to the autoloader but not directly required */
-    const AUTOLOAD = "autoload";
+    const AUTOLOAD = 'autoload';
 
     /** Files in this list are considered as Views/Templates */
-    const VIEWS = "views";
+    const VIEWS = 'views';
 
     /** Files in this list are not PHP file but resources like JS, CSS... */
-    const ASSETS = "assets";
+    const ASSETS = 'assets';
 
     /** Files in this list are directly required by the autoloader */
-    const REQUIRE = "require";
+    const REQUIRE = 'require';
 
     /** Files in this list are not directly required by the autoloader but can be by other classes (like `Router`) */
-    const ROUTES = "routes";
+    const ROUTES = 'routes';
 
     /**
      * This constant old the different purpose of
      * an application directory
      */
     const DIRECTORIES_PURPOSE = [
-        "Assets"      => self::ASSETS,
-        "Commands"    => self::AUTOLOAD,
-        "Controllers" => self::AUTOLOAD,
-        "Middlewares" => self::AUTOLOAD,
-        "Components"  => self::AUTOLOAD,
-        "Classes"     => self::AUTOLOAD,
-        "Models"      => self::AUTOLOAD,
-        "Routes"      => self::ROUTES,
-        "Views"       => self::VIEWS,
-        "Helpers"     => self::REQUIRE,
+        'Assets'      => self::ASSETS,
+        'Commands'    => self::AUTOLOAD,
+        'Controllers' => self::AUTOLOAD,
+        'Middlewares' => self::AUTOLOAD,
+        'Components'  => self::AUTOLOAD,
+        'Classes'     => self::AUTOLOAD,
+        'Models'      => self::AUTOLOAD,
+        'Routes'      => self::ROUTES,
+        'Views'       => self::VIEWS,
+        'Helpers'     => self::REQUIRE,
     ];
 
-    const CACHE_FILE = "autoload.php.cache";
+    const CACHE_FILE = 'autoload.php.cache';
 
     /**
      * Hold the absolute path to the project root
@@ -62,9 +62,6 @@ class Autoloader
 
     /** Used to cache the results of `getClassesList()` */
     protected static array $cachedClassList = [];
-
-    /** Used to cache the results of `getListFiles()` */
-    protected static array $listsCache = [];
 
     protected static array $loadedApplications = [];
 
@@ -82,21 +79,21 @@ class Autoloader
         if (self::$projectRoot)
             return self::$projectRoot;
 
-        if (isset($GLOBALS["sharp-root"]))
-            return self::$projectRoot = $GLOBALS["sharp-root"];
+        if (isset($GLOBALS['sharp-root']))
+            return self::$projectRoot = $GLOBALS['sharp-root'];
 
         $original =  getcwd();
 
         try
         {
-            while (!is_dir("vendor/yonis-savary/sharp"))
-                chdir("..");
+            while (!is_dir('vendor/yonis-savary/sharp'))
+                chdir('..');
 
             self::$projectRoot = Utils::normalizePath(getcwd());
         }
         catch (Throwable)
         {
-            throw new RuntimeException("Cannot find Sharp project root directory !");
+            throw new RuntimeException('Cannot find Sharp project root directory !');
         }
 
         chdir($original);
@@ -107,36 +104,24 @@ class Autoloader
         return self::$projectRoot;
     }
 
-    public static function registerAutoloadCallback()
-    {
-        spl_autoload_register(function($class){
-            $file = Utils::classnameToPath($class);
-
-            if (is_file($file))
-                require_once $file;
-            else
-                EventListener::getInstance()->dispatch(new FailedAutoload($class, $file));
-        });
-    }
-
     protected static function loadApplications()
     {
         if (!self::loadAutoloadCache())
         {
             $config = Configuration::getInstance();
-            $applications = $config->toArray("applications", []);
+            $applications = $config->toArray('applications', []);
 
             // The framework is loaded as an application
-            if ($customSrc = $GLOBALS["sharp-src"] ?? false)
+            if ($customSrc = $GLOBALS['sharp-src'] ?? false)
                 self::loadApplication($customSrc);
             else
-                array_unshift($applications, "vendor/yonis-savary/sharp/src");
+                array_unshift($applications, 'vendor/yonis-savary/sharp/src');
 
             foreach ($applications as $app)
                 self::loadApplication(Utils::relativePath($app), false);
         }
 
-        foreach (self::getListFiles(self::REQUIRE) as $file)
+        foreach (self::getList(self::REQUIRE) as $file)
             require_once $file;
     }
 
@@ -147,9 +132,9 @@ class Autoloader
 
         self::$loadedApplications[] = $path;
 
-        $vendorFile = Utils::joinPath($path, "vendor/autoload.php");
+        $vendorFile = Utils::joinPath($path, 'vendor/autoload.php');
         if (is_file($vendorFile))
-            require_once $vendorFile;
+            self::addToList(self::REQUIRE, $vendorFile);
 
         foreach (Utils::listDirectories($path) as $directory)
         {
@@ -157,12 +142,6 @@ class Autoloader
 
             if (!$purpose = self::DIRECTORIES_PURPOSE[$basename] ?? false)
                 continue;
-
-            if ($purpose === self::REQUIRE && $requireHelpers)
-            {
-                foreach (Utils::exploreDirectory($directory, Utils::ONLY_FILES) as $toRequire)
-                    require_once $toRequire;
-            }
 
             self::addToList($purpose, $directory);
         }
@@ -173,28 +152,23 @@ class Autoloader
         return self::$loadedApplications;
     }
 
-    public static function addToList(string $list, ...$elements): void
+    public static function addToList(string $purposeName, string ...$directoriesOrFiles): void
     {
-        self::$lists[$list] ??= [];
-        array_push(self::$lists[$list], ...$elements);
+        self::$lists[$purposeName] ??= [];
+        $list = &self::$lists[$purposeName];
+
+        foreach ($directoriesOrFiles as $directoryOrFile)
+        {
+            if (is_file($directoryOrFile))
+                $list[] = $directoryOrFile;
+            else
+                array_push($list, ...Utils::exploreDirectory($directoryOrFile, Utils::ONLY_FILES));
+        }
     }
 
     public static function getList(string $name): array
     {
         return self::$lists[$name] ?? [];
-    }
-
-    public static function getListFiles(string $name): array
-    {
-        if ($cachedResult = self::$listsCache[$name] ?? false)
-            return $cachedResult;
-
-        $results = [];
-
-        foreach (self::getList($name) as $directory)
-            array_push($results, ...Utils::exploreDirectory($directory, Utils::ONLY_FILES));
-
-        return $results;
     }
 
     /**
@@ -206,10 +180,13 @@ class Autoloader
         if (self::$cachedClassList && !$forceReload)
             return self::$cachedClassList;
 
-        ObjectArray::fromArray(self::getListFiles(self::AUTOLOAD))
+        $files = self::getList(self::AUTOLOAD);
+
+        ObjectArray::fromArray($files)
         ->forEach(fn($file) => require_once $file);
 
-        return self::$cachedClassList = get_declared_classes();
+        self::$cachedClassList = get_declared_classes();
+        return self::$cachedClassList;
     }
 
     /**
@@ -259,7 +236,6 @@ class Autoloader
 
         list(
             self::$lists,
-            self::$listsCache,
             self::$cachedClassList
         ) = include($cacheFile);
 
@@ -279,12 +255,12 @@ class Autoloader
                 $var = array_map(fn($e) => "'$e'", $var);
             }
 
-            return "[".join(",", array_values($var))."]";
+            return '['.join(',', array_values($var)).']';
         };
 
         // Calling `getListFiles` to cache every possible results
         foreach (array_keys(self::$lists) as $key)
-            self::getListFiles($key);
+            self::getList($key);
 
         $cacheFile = Cache::getInstance()->getStorage()->path(self::CACHE_FILE);
         file_put_contents($cacheFile, Terminal::stringToFile(
@@ -292,8 +268,7 @@ class Autoloader
 
         return [".join(",", [
             $toString(self::$lists),
-            $toString(self::$listsCache),
             $toString(self::$cachedClassList),
-        ])."];", 2));
+        ]).'];', 2));
     }
 }
