@@ -69,6 +69,7 @@ class CLIUtils
             fn($_) => null
         ;
 
+
         $log("\e7");
 
         $arraySize = count($array);
@@ -78,7 +79,7 @@ class CLIUtils
             $progress = round(($i*$progressBarSize)/$arraySize);
             $remain = $progressBarSize - $progress;
 
-            $log("\e8");
+            $log("\e8\e[0K");
             $log('['. str_repeat($filledChar, $progress) . str_repeat($emptyChar, $remain) ."] $iteration/$arraySize");
 
             ob_start();
