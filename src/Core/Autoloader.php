@@ -125,7 +125,7 @@ class Autoloader
             require_once $file;
     }
 
-    public static function loadApplication(string $path, bool $requireHelpers=true)
+    public static function loadApplication(string $path, bool $requireHelpers=false)
     {
         if (!is_dir($path))
             throw new InvalidArgumentException("[$path] is not a directory !");
@@ -144,6 +144,12 @@ class Autoloader
                 continue;
 
             self::addToList($purpose, $directory);
+        }
+
+        if ($requireHelpers)
+        {
+            foreach (self::getList(self::REQUIRE) as $file)
+                require_once $file;
         }
     }
 
