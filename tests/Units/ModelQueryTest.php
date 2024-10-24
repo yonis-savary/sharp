@@ -222,4 +222,23 @@ class ModelQueryTest extends TestCase
         // Set back the edited login
         TestUser::update()->set('login', 'admin')->fetch();
     }
+
+
+    public function test_customFields()
+    {
+        $query = TestUserData::select(false)
+            ->join("INNER", new QueryField("test_user_data", "fk_user"), "=", "test_user", "test_user_data&test_user", "id")
+            ->addField("test_user_data&test_user", "id")
+            ->addField("test_user_data&test_user", "login")
+            ->addField("test_user_data&test_user", "blocked")
+        ;
+
+        $results = $query->first();
+
+        $this->assertNotNull($results->test_user->data->id ?? null);
+        $this->assertNotNull($results->test_user->data->login ?? null);
+        $this->assertNotNull($results->test_user->data->blocked ?? null);
+
+        $this->assertNull($results->test_user->data->password ?? null);
+    }
 }

@@ -7,6 +7,7 @@ use InvalidArgumentException;
 use PDO;
 use YonisSavary\Sharp\Classes\Core\Configurable;
 use YonisSavary\Sharp\Classes\Core\Logger;
+use YonisSavary\Sharp\Classes\Data\Classes\DummyModel;
 use YonisSavary\Sharp\Classes\Data\Classes\QueryCondition;
 use YonisSavary\Sharp\Classes\Data\Classes\QueryField;
 use YonisSavary\Sharp\Classes\Data\Classes\QueryJoin;
@@ -422,7 +423,7 @@ class ModelQuery
         $class =
             array_key_exists($table, $this->tablesModels) ?
             $this->tablesModels[$table]:
-            new class extends AbstractModel {};
+            new DummyModel();
 
         return new $class();
     }
