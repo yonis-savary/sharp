@@ -7,6 +7,7 @@ use YonisSavary\Sharp\Classes\Core\Component;
 use YonisSavary\Sharp\Classes\Core\Configurable;
 use YonisSavary\Sharp\Classes\Core\EventListener;
 use YonisSavary\Sharp\Classes\Data\AbstractModel;
+use YonisSavary\Sharp\Classes\Data\Database;
 use YonisSavary\Sharp\Classes\Env\Configuration;
 use YonisSavary\Sharp\Classes\Env\Session;
 use YonisSavary\Sharp\Core\Utils;
@@ -29,6 +30,7 @@ class Authentication
     public readonly string $sessionNamespace;
 
     protected Session $session;
+    protected Database $database;
 
     public static function getDefaultConfiguration(): array
     {
@@ -56,9 +58,10 @@ class Authentication
         $this->session->set($this->sessionKey($key), $value);
     }
 
-    public function __construct(Session $session=null, Configuration|array $config=null)
+    public function __construct(Session $session=null, Configuration|array $config=null, Database $database=null)
     {
         $this->session = $session ?? Session::getInstance();
+        $this->database = $database ?? Database::getInstance();
 
         if (is_array($config))
             $config = Configuration::fromArray($config);
@@ -104,7 +107,7 @@ class Authentication
         /** @var AbstractModel */
         $model = $this->model;
 
-        if (!($user = $model::select()->where($this->loginField, $login)->first()))
+        if (!($user = $model::select()->where($this->loginField, $login)->first($this->database)))
             return $this->failAttempt();
 
         $passwordField = $this->passwordField;

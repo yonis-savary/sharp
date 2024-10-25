@@ -176,7 +176,7 @@ class Route
         $this->extras = $extras;
     }
 
-    public function addMiddlewares(string ...$middlewares)
+    public function addMiddlewares(string|MiddlewareInterface ...$middlewares)
     {
         foreach ($middlewares as $middleware)
         {

@@ -17,7 +17,8 @@ class SharpServer
     protected Process $process;
 
     protected string $hostname;
-    protected int $port;
+    protected string $protocol;
+    protected ?int $port;
 
     /**
      * Create a Sharp self-server and launch it
@@ -27,9 +28,18 @@ class SharpServer
      * @param int $safeDelay Delay to wait after launching the server as PHP may take a little time initializing it
      * @param string $publicDirectory Directory which contains `index.php`, if none is provided, a default one is chosen
      */
-    public function __construct(int $port=null, string $hostname='localhost', int $safeDelay=200000, string $publicDirectory=null)
+    public function __construct(
+        int $port=null,
+        string $publicDirectory=null,
+        string $hostname='localhost',
+        string $protocol="http://"
+    )
     {
         $logger = Logger::getInstance();
+
+        if (!str_ends_with($protocol, "://"))
+            $protocol = "$protocol://";
+        $this->protocol = $protocol;
 
         $this->hostname = $hostname;
         $this->port = $port ?? random_int(8000, 65534);
@@ -41,7 +51,7 @@ class SharpServer
             return;
         }
 
-        $url = $this->getURL(protocol:'');
+        $url = $this->hostname . ':' . $this->getPort();
 
         $logger->info(
             'Starting self-server on port {port} in directory {directory}',
@@ -51,8 +61,7 @@ class SharpServer
         $this->process = new Process(['php','-S',$url], $publicDirectory);
         $this->process->start();
 
-        if ($safeDelay)
-            usleep($safeDelay);
+        usleep(50*1000);
     }
 
     public function __destruct()
@@ -91,9 +100,9 @@ class SharpServer
     /**
      * Get an URL to connect to the self-server
      */
-    public function getURL(string $path=null, string $protocol='http://'): string
+    public function getURL(string $path=null): string
     {
-        $origin = $protocol . $this->hostname . ':' . $this->getPort();
+        $origin = $this->protocol . $this->hostname . ':' . $this->getPort();
 
         $url = $origin;
 

@@ -144,11 +144,12 @@ class Router
     /**
      * Create a Group route that your can re-use with `group()`
      */
-    public function createGroup(string|array $urlPrefix, string|array $middlewares): array
+    public function createGroup(string|array $urlPrefix, string|array $middlewares, array $extras=[]): array
     {
         return [
             'path' => Utils::toArray($urlPrefix),
             'middlewares' => Utils::toArray($middlewares),
+            'extras' => $extras
         ];
     }
 

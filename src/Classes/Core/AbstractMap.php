@@ -69,8 +69,11 @@ abstract class AbstractMap
      * Merge the current map with another one
      * Given data (over)write existing data
      */
-    final public function merge(array $array): void
+    final public function merge(array|AbstractMap $array): void
     {
+        if ($array instanceof AbstractMap)
+            $array = $array->dump();
+
         $this->storage = array_merge($this->storage, $array);
     }
 

@@ -405,12 +405,12 @@ class ModelQuery
         }
     }
 
-    public function first(): ?AbstractModel
+    public function first(Database $database=null): ?AbstractModel
     {
         $oldLimit = $this->limit;
         $oldOffset = $this->offset;
 
-        $res = $this->limit(1, 0)->fetch();
+        $res = $this->limit(1, 0)->fetch($database);
 
         $this->limit = $oldLimit;
         $this->offset = $oldOffset;
@@ -489,9 +489,9 @@ class ModelQuery
      * fetch data and put them in an ObjectArray object
      * @experimental
      */
-    public function toObjectArray(): ObjectArray
+    public function toObjectArray(Database $database=null): ObjectArray
     {
-        return ObjectArray::fromArray($this->fetch());
+        return ObjectArray::fromArray($this->fetch($database));
     }
 
     /**

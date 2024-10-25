@@ -16,24 +16,27 @@ class EventSource
     public static function getDefaultConfiguration(): array
     {
         return [
-            'use_default_event_name' => true,
-            'start_event' => 'event-source-start',
-            'end_event' => 'event-source-end',
-            'die_on_end' => true
+            'use-default-event-name' => true,
+            'start-event' => 'event-source-start',
+            'end-event' => 'event-source-end',
+            'die-on-end' => true
         ];
     }
 
-    public function start(string $startEvent=null)
+    public function start(string $startEvent=null, bool $sendHeaders=true)
     {
         if ($this->started)
             return;
         $this->started = true;
 
-        header('Cache-Control: no-store');
-        header('Content-Type: text/event-stream');
+        if ($sendHeaders)
+        {
+            header('Cache-Control: no-store');
+            header('Content-Type: text/event-stream');
+        }
 
-        if ($this->configuration['use_default_event_name'])
-            $startEvent ??= $this->configuration['start_event'];
+        if ($this->configuration['use-default-event-name'])
+            $startEvent ??= $this->configuration['start-event'];
 
         if ($startEvent)
             $this->send($startEvent);
@@ -53,15 +56,15 @@ class EventSource
 
     public function send(string $event, mixed $data=null, $id=null, int $retry=null)
     {
-        $id = $id ? "id: $id": '';
-        $retry = $retry ? "retry: $retry": '';
+        $id = $id ? "id: $id": null;
+        $retry = $retry ? "retry: $retry": null;
 
-        $message = join(self::LINE_END, [
+        $message = join(self::LINE_END, array_filter([
             "event: $event" ,
             'data: '. json_encode($data),
             $id,
             $retry,
-        ]);
+        ]));
 
         $this->sendMessage($message);
     }
@@ -73,15 +76,15 @@ class EventSource
 
     public function end(string $endEvent=null)
     {
-        if ($this->configuration['use_default_event_name'])
-            $endEvent ??= $this->configuration['end_event'];
+        if ($this->configuration['use-default-event-name'])
+            $endEvent ??= $this->configuration['end-event'];
 
         if ($endEvent)
             $this->send($endEvent);
 
         $this->started = false;
 
-        if ($this->configuration['die_on_end'])
+        if ($this->configuration['die-on-end'])
             die;
     }
 

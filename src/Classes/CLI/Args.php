@@ -98,22 +98,15 @@ class Args implements \Countable
         return array_values($this->arguments);
     }
 
-    public function getArguments(): array
-    {
-        return $this->arguments;
-    }
-
-    public function setArgv(mixed $value): void
-    {
-        $this->arguments = $value;
-    }
-
     /**
      * @return mixed The value of the parameter, `null` if the parameter is present but has no value, `false` is the parameter is not present
      */
-    public function getOption(string $short, string $long): mixed
+    public function getOption(string $short=null, string $long=null): mixed
     {
-        $arguments = &$this->arguments;
+        $short ??= "";
+        $long ??= "";
+
+        $arguments = $this->arguments;
 
         if (!str_starts_with($short, '-'))
             $short = "-$short";
@@ -131,7 +124,7 @@ class Args implements \Countable
         return false;
     }
 
-    public function isPresent(string $short, string $long): bool
+    public function isPresent(string $short=null, string $long=null): bool
     {
         return $this->getOption($short, $long) !== false;
     }
@@ -139,7 +132,7 @@ class Args implements \Countable
     /**
      * Try to retrieve the parameter value, return the value or null otherwise
      */
-    public function get(string $short, string $long): mixed
+    public function get(string $short=null, string $long=null): mixed
     {
         $value = $this->getOption($short, $long);
         return $value === false ? null: $value;

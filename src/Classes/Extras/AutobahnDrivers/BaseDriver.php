@@ -28,6 +28,13 @@ use YonisSavary\Sharp\Classes\Data\AbstractModel;
 
 class BaseDriver implements DriverInterface
 {
+    protected Database $database;
+
+    public function __construct(Database $database=null)
+    {
+        $this->database = $database ?? Database::getInstance();
+    }
+
     /**
      * Extract model name and middlewares from a route extras
      * @return array[AbstractModel,array]
@@ -44,7 +51,7 @@ class BaseDriver implements DriverInterface
         return [$model, $middlewares];
     }
 
-    public static function createCallback(Request $request): Response
+    public function createCallback(Request $request): Response
     {
         /** @var Model|string $model */
         list($model, $middlewares) = self::extractRouteData($request);
@@ -69,9 +76,9 @@ class BaseDriver implements DriverInterface
             $events = EventListener::getInstance();
             $events->dispatch(new AutobahnCreateBefore($model, $fields, $values));
 
-            $model::insertArray($row);
+            $model::insertArray($row, $this->database);
 
-            $inserted = Database::getInstance()->lastInsertId();
+            $inserted = $this->database->lastInsertId();
             $insertedIds[] = $inserted;
 
             $events->dispatch(new AutobahnCreateAfter($model, $fields, $values, $inserted));
@@ -83,7 +90,7 @@ class BaseDriver implements DriverInterface
 
 
 
-    public static function multipleCreateCallback(Request $request): Response
+    public function multipleCreateCallback(Request $request): Response
     {
         /** @var AbstractModel $model */
         list($model, $middlewares) = self::extractRouteData($request);
@@ -113,8 +120,8 @@ class BaseDriver implements DriverInterface
             $query->insertValues(array_values($element));
         });
 
-        $query->fetch();
-        $lastInsert = Database::getInstance()->lastInsertId();
+        $query->fetch($this->database);
+        $lastInsert = $this->database->lastInsertId();
         $insertedIdList = range($lastInsert-$data->length()+1, $lastInsert);
 
         $events->dispatch(new AutobahnMultipleCreateAfter((string) $model, $query, $insertedIdList));
@@ -125,7 +132,7 @@ class BaseDriver implements DriverInterface
 
 
 
-    public static function readCallback(Request $request): Response
+    public function readCallback(Request $request): Response
     {
         /** @var AbstractModel $model */
         list($model, $middlewares) = self::extractRouteData($request);
@@ -169,7 +176,7 @@ class BaseDriver implements DriverInterface
         $events = EventListener::getInstance();
         $events->dispatch(new AutobahnReadBefore((string) $model, $query));
 
-        $results = $query->toObjectArray();
+        $results = $query->toObjectArray($this->database);
 
         $events->dispatch(new AutobahnReadAfter((string) $model, $query, $results));
 
@@ -185,7 +192,7 @@ class BaseDriver implements DriverInterface
 
 
 
-    public static function updateCallback(Request $request): Response
+    public function updateCallback(Request $request): Response
     {
         list($model, $middlewares) = self::extractRouteData($request);
 
@@ -211,7 +218,7 @@ class BaseDriver implements DriverInterface
         $events = EventListener::getInstance();
         $events->dispatch(new AutobahnUpdateBefore($model, $primaryKeyValue, $query));
 
-        $query->fetch();
+        $query->fetch($this->database);
 
         $events->dispatch(new AutobahnUpdateAfter($model, $primaryKeyValue, $query));
 
@@ -222,7 +229,7 @@ class BaseDriver implements DriverInterface
 
 
 
-    public static function deleteCallback(Request $request): Response
+    public function deleteCallback(Request $request): Response
     {
         list($model, $middlewares) = self::extractRouteData($request);
 
@@ -240,7 +247,7 @@ class BaseDriver implements DriverInterface
         $events = EventListener::getInstance();
         $events->dispatch(new AutobahnDeleteBefore($model, $query));
 
-        $query->fetch();
+        $query->fetch($this->database);
 
         $events->dispatch(new AutobahnDeleteAfter($model, $query));
 

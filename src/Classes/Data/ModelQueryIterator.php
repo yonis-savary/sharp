@@ -38,15 +38,14 @@ class ModelQueryIterator
         return $this->count;
     }
 
-    public function next(): array|false
+    public function next(): AbstractModel|false
     {
         if ($this->index >= $this->count)
             return false;
 
         $array = $this->query
             ->limit(1, $this->index)
-            ->fetch()
-            [0]['data'] ?? false;
+            ->first() ?? false;
 
         $this->index++;
         return $array;

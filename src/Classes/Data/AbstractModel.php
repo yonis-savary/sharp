@@ -21,6 +21,7 @@ abstract class AbstractModel implements JsonSerializable
     protected stdClass $foreignObjects;
 
     protected bool $linkedToDB = false;
+    protected ?Database $linkedToDBInstance = null;
 
 
     public function __construct(array $data=[], bool $linkedToDB=false)
@@ -40,9 +41,10 @@ abstract class AbstractModel implements JsonSerializable
     }
 
 
-    public function setLinked(bool $linked=true)
+    public function setLinked(bool $linked=true, Database $database=null)
     {
         $this->linkedToDB = $linked;
+        $this->linkedToDBInstance = $database;
     }
 
 
@@ -96,8 +98,11 @@ abstract class AbstractModel implements JsonSerializable
     }
 
 
-    public function save()
+    public function save(Database $database=null)
     {
+        if ((!$database) && $this->linkedToDBInstance)
+            $database = $this->linkedToDBInstance;
+
         /** @var self */
         $self = get_called_class();
 
@@ -121,7 +126,7 @@ abstract class AbstractModel implements JsonSerializable
         }
 
         if (count($newData))
-            ($self)::updateRow($id, $newData);
+            ($self)::updateRow($id, $newData, $database);
 
     }
 
@@ -191,7 +196,7 @@ abstract class AbstractModel implements JsonSerializable
      * @return array<static> Array of result rows
      * @example base `Model::selectWhere(['id' => 309, 'user' => 585])`
      */
-    public static function selectWhere(array $conditions=[], bool $recursive=true, array $foreignKeyIgnores=[]): array
+    public static function selectWhere(array $conditions=[], bool $recursive=true, array $foreignKeyIgnores=[], Database $database=null): array
     {
         if (!Utils::isAssoc($conditions))
             throw new InvalidArgumentException('$conditions must be an associative array as <column> => <value>');
@@ -201,7 +206,7 @@ abstract class AbstractModel implements JsonSerializable
         foreach ($conditions as $column => $value)
             $query->where($column, $value);
 
-        return $query->fetch();
+        return $query->fetch($database);
     }
 
     /**
@@ -260,10 +265,10 @@ abstract class AbstractModel implements JsonSerializable
      * @param bool $explore Explore foreign keys to fetch references
      * @return ?static Matching row or `null`
      */
-    public static function findId(mixed $id, bool $explore=true): ?self
+    public static function findId(mixed $id, bool $explore=true, Database $database=null): ?self
     {
         $self = get_called_class();
-        return $self::findWhere([$self::getPrimaryKey() => $id], $explore);
+        return $self::findWhere([$self::getPrimaryKey() => $id], $explore, $database);
     }
 
     /**
@@ -274,10 +279,10 @@ abstract class AbstractModel implements JsonSerializable
      * @param bool $explore Explore foreign keys to fetch references
      * @return ?static Matching row or `null`
      */
-    public static function find(string $column, mixed $value, bool $explore=true): ?self
+    public static function find(string $column, mixed $value, bool $explore=true, Database $database=null): ?self
     {
         $self = get_called_class();
-        return $self::findWhere([$column => $value], $explore);
+        return $self::findWhere([$column => $value], $explore, $database);
     }
 
 
@@ -289,7 +294,7 @@ abstract class AbstractModel implements JsonSerializable
      * @return ?static Matching row or `null`
      * @example base `Model::findWhere(['id' => 309, 'user' => 585])`
      */
-    public static function findWhere(array $conditions, bool $explore=true): ?self
+    public static function findWhere(array $conditions, bool $explore=true, Database $database=null): ?self
     {
         if (!Utils::isAssoc($conditions))
             throw new InvalidArgumentException('$conditions must be an associative array as <column> => <value>');
@@ -299,7 +304,7 @@ abstract class AbstractModel implements JsonSerializable
         foreach ($conditions as $column => $value)
             $query->where($column, $value);
 
-        return $query->first();
+        return $query->first($database);
     }
 
 
@@ -308,10 +313,10 @@ abstract class AbstractModel implements JsonSerializable
      *
      * @param array $conditions Column conditions as <column> => <value>
      */
-    public static function existsWhere(array $condition, bool $explore=false): bool
+    public static function existsWhere(array $condition, bool $explore=false, Database $database=null): bool
     {
         $self = get_called_class();
-        return $self::findWhere($condition, $explore) !== null;
+        return $self::findWhere($condition, $explore, $database) !== null;
     }
 
     /**
@@ -319,10 +324,10 @@ abstract class AbstractModel implements JsonSerializable
      *
      * @param array $conditions Column conditions as <column> => <value>
      */
-    public static function idExists($idOrPrimaryKeyValue): bool
+    public static function idExists($idOrPrimaryKeyValue, Database $database=null): bool
     {
         $self = get_called_class();
-        return $self::existsWhere([$self::getPrimaryKey() => $idOrPrimaryKeyValue], false);
+        return $self::existsWhere([$self::getPrimaryKey() => $idOrPrimaryKeyValue], false, $database);
     }
 
     /**
@@ -343,14 +348,14 @@ abstract class AbstractModel implements JsonSerializable
      * @param mixed $id Unique value of the primary key field
      * @param array $columns Updated columns, associative array as `field => new value`
      */
-    public static function updateRow(mixed $id, array $columns): void
+    public static function updateRow(mixed $id, array $columns, Database $database=null): void
     {
         $query = (get_called_class())::updateId($id);
 
         foreach ($columns as $field => $value)
             $query->set($field, $value);
 
-        $query->fetch();
+        $query->fetch($database);
     }
 
     /**
@@ -358,13 +363,13 @@ abstract class AbstractModel implements JsonSerializable
      *
      * @param mixed $id Id/primary key to select
      */
-    public static function deleteId(mixed $id): void
+    public static function deleteId(mixed $id, Database $database=null): void
     {
         $self = get_called_class();
 
         $self::delete()
         ->where($self::getPrimaryKey(), $id)
-        ->fetch();
+        ->fetch($database);
     }
 
     /**
@@ -374,7 +379,7 @@ abstract class AbstractModel implements JsonSerializable
      * @param bool $explore Explore foreign keys to fetch references
      * @example base `Model::deleteWhere(['id' => 309, 'user' => 585])`
      */
-    public static function deleteWhere(array $conditions): void
+    public static function deleteWhere(array $conditions, Database $database=null): void
     {
         if (!Utils::isAssoc($conditions))
             throw new InvalidArgumentException('$conditions must be an associative array as <column> => <value>');
@@ -384,7 +389,7 @@ abstract class AbstractModel implements JsonSerializable
         foreach ($conditions as $column => $value)
             $query->where($column, $value);
 
-        $query->fetch();
+        $query->fetch($database);
     }
 
 

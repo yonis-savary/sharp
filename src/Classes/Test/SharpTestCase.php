@@ -57,6 +57,31 @@ abstract class SharpTestCase extends TestCase
         );
     }
 
+    public function assertResponseCode(
+        int $responseCode,
+        string $method,
+        string $url,
+        array $getParams=[],
+        array $postParams=[],
+        array $headers=[],
+        SharpServer $server=null
+    ){
+        $response = $this->fetch($method, $url, $getParams, $postParams, $headers, $server);
+        $this->assertEquals($responseCode, $response->getResponseCode());
+    }
+
+    public function assertNotFound(
+        string $method,
+        string $url,
+        array $getParams=[],
+        array $postParams=[],
+        array $headers=[],
+        SharpServer $server=null
+    ){
+        $this->assertResponseCode(404, $method, $url, $getParams, $postParams, $headers, $server);
+    }
+
+
     /**
      * Fetch content from your application,
      * assert the response is HTML and match the `$expected` content
