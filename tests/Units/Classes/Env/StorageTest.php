@@ -2,14 +2,8 @@
 
 namespace YonisSavary\Sharp\Tests\Units\Classes\Env;
 
-use Exception;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 use YonisSavary\Sharp\Classes\Env\Storage;
-use YonisSavary\Sharp\Tests\Classes\Core\Component;
-use YonisSavary\Sharp\Tests\Classes\Data\ObjectArray;
-use YonisSavary\Sharp\Tests\Classes\Env\Drivers\FileDriverInterface;
-use YonisSavary\Sharp\Tests\Classes\Env\Drivers\LocalDiskDriver;
 use YonisSavary\Sharp\Core\Utils;
 
 class StorageTest extends TestCase

@@ -1,6 +1,6 @@
 <?php
 
-namespace YonisSavary\Sharp\Tests\Classes\Core;
+namespace YonisSavary\Sharp\Tests\Units\Classes\Core;
 
 use PHPUnit\Framework\TestCase;
 use YonisSavary\Sharp\Classes\Core\Configurable;

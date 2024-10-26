@@ -2,7 +2,6 @@
 
 namespace YonisSavary\Sharp\Classes\Env;
 
-use RuntimeException;
 use YonisSavary\Sharp\Classes\Core\Component;
 use YonisSavary\Sharp\Classes\Core\Logger;
 use YonisSavary\Sharp\Classes\Env\Classes\CacheElement;

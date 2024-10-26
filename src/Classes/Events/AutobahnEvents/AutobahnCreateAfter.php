@@ -3,7 +3,6 @@
 namespace YonisSavary\Sharp\Classes\Events\AutobahnEvents;
 
 use YonisSavary\Sharp\Classes\Core\AbstractEvent;
-use YonisSavary\Sharp\Classes\Data\ModelQuery;
 
 /**
  * This event is triggered after creating a row with Autobahn

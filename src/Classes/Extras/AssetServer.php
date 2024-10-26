@@ -8,7 +8,6 @@ use YonisSavary\Sharp\Classes\Env\Cache;
 use YonisSavary\Sharp\Classes\Http\Request;
 use YonisSavary\Sharp\Classes\Http\Response;
 use YonisSavary\Sharp\Classes\Web\Route;
-use YonisSavary\Sharp\Classes\Web\Router;
 use YonisSavary\Sharp\Core\Autoloader;
 
 class AssetServer

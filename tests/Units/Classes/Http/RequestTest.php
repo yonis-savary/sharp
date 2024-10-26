@@ -4,12 +4,10 @@
 namespace YonisSavary\Sharp\Tests\Units\Classes\Http;
 
 use CurlHandle;
-use PHPUnit\Framework\TestCase;
 use YonisSavary\Sharp\Classes\Core\Logger;
 use YonisSavary\Sharp\Classes\Env\Storage;
 use YonisSavary\Sharp\Classes\Http\Classes\UploadFile;
 use YonisSavary\Sharp\Classes\Http\Request;
-use YonisSavary\Sharp\Classes\Http\Response;
 use YonisSavary\Sharp\Classes\Test\SharpServer;
 use YonisSavary\Sharp\Classes\Test\SharpTestCase;
 use YonisSavary\Sharp\Classes\Web\Route;

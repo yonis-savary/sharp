@@ -5,7 +5,6 @@ namespace YonisSavary\Sharp\Tests\Units\Classes\Core;
 use PHPUnit\Framework\TestCase;
 use YonisSavary\Sharp\Classes\Core\Context;
 use YonisSavary\Sharp\Classes\Data\ObjectArray;
-use YonisSavary\Sharp\Core\Utils;
 
 /**
  * Context is a static storage for every type of variable

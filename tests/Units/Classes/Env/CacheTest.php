@@ -4,10 +4,7 @@ namespace YonisSavary\Sharp\Tests\Units\Classes\Env;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 use YonisSavary\Sharp\Classes\Env\Cache;
-use YonisSavary\Sharp\Classes\Core\Component;
-use YonisSavary\Sharp\Classes\Core\Logger;
 use YonisSavary\Sharp\Classes\Env\Classes\CacheElement;
 use YonisSavary\Sharp\Classes\Env\Storage;
 use YonisSavary\Sharp\Core\Utils;

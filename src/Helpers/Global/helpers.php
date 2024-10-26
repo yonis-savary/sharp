@@ -1,7 +1,6 @@
 <?php
 
 use YonisSavary\Sharp\Classes\Core\Logger;
-use YonisSavary\Sharp\Classes\Env\Storage;
 
 /**
  * Debug function: used to measure an execution time

@@ -1,6 +1,6 @@
 <?php
 
-namespace YonisSavary\Sharp\Tests\Classes\Security;
+namespace YonisSavary\Sharp\Tests\Units\Classes\Security;
 
 use PHPUnit\Framework\TestCase;
 use YonisSavary\Sharp\Classes\Security\Csrf;

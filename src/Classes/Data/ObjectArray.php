@@ -5,7 +5,6 @@ namespace YonisSavary\Sharp\Classes\Data;
 use InvalidArgumentException;
 use OutOfRangeException;
 use YonisSavary\Sharp\Core\Utils;
-use Throwable;
 
 class ObjectArray
 {

@@ -2,7 +2,6 @@
 
 namespace YonisSavary\Sharp\Tests\Units\Classes\Test;
 
-use RuntimeException;
 use YonisSavary\Sharp\Classes\Test\SharpServer;
 use YonisSavary\Sharp\Classes\Test\SharpTestCase;
 

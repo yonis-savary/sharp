@@ -1,6 +1,6 @@
 <?php
 
-namespace YonisSavary\Sharp\Tests\Classes\Extras;
+namespace YonisSavary\Sharp\Tests\Units\Classes\Extras;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
@@ -18,11 +18,9 @@ use YonisSavary\Sharp\Classes\Events\AutobahnEvents\AutobahnUpdateAfter;
 use YonisSavary\Sharp\Classes\Events\AutobahnEvents\AutobahnUpdateBefore;
 use YonisSavary\Sharp\Classes\Extras\Autobahn;
 use YonisSavary\Sharp\Classes\Http\Request;
-use YonisSavary\Sharp\Classes\Web\Route;
 use YonisSavary\Sharp\Classes\Web\Router;
 use YonisSavary\Sharp\Tests\Root\TestApp\Models\TestTvShow;
 use YonisSavary\Sharp\Tests\Root\TestApp\Models\TestTvShowProducer;
-use YonisSavary\Sharp\Tests\Root\TestApp\Models\TestUserData;
 use YonisSavary\Sharp\Tests\Units\TestClassFactory;
 
 class AutobahnTest extends TestCase

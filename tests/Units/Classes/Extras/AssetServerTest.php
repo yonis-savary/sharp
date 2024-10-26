@@ -1,6 +1,6 @@
 <?php
 
-namespace YonisSavary\Sharp\Tests\Classes\Extras;
+namespace YonisSavary\Sharp\Tests\Units\Classes\Extras;
 
 use PHPUnit\Framework\TestCase;
 use YonisSavary\Sharp\Classes\Extras\AssetServer;

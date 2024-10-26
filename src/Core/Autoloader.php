@@ -5,11 +5,9 @@ namespace YonisSavary\Sharp\Core;
 use InvalidArgumentException;
 use RuntimeException;
 use YonisSavary\Sharp\Classes\CLI\Terminal;
-use YonisSavary\Sharp\Classes\Core\EventListener;
 use YonisSavary\Sharp\Classes\Data\ObjectArray;
 use YonisSavary\Sharp\Classes\Env\Cache;
 use YonisSavary\Sharp\Classes\Env\Configuration;
-use YonisSavary\Sharp\Classes\Events\FailedAutoload;
 use Throwable;
 
 class Autoloader

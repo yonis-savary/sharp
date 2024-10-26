@@ -5,9 +5,6 @@ namespace YonisSavary\Sharp\Tests\Units\Classes\Core;
 use PHPUnit\Framework\TestCase;
 use YonisSavary\Sharp\Classes\Core\EventListener;
 use YonisSavary\Sharp\Classes\Events\CustomEvent;
-use YonisSavary\Sharp\Tests\Classes\Core\Component;
-use YonisSavary\Sharp\Tests\Classes\Events\DispatchedEvent;
-use YonisSavary\Sharp\Tests\Classes\Data\ObjectArray;
 
 class EventListenerTest extends TestCase
 {

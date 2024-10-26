@@ -2,14 +2,10 @@
 
 namespace YonisSavary\Sharp\Tests\Units\Classes\Env;
 
-use Exception;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use YonisSavary\Sharp\Classes\Core\AbstractMap;
-use YonisSavary\Sharp\Classes\Core\Component;
 use YonisSavary\Sharp\Classes\Env\Configuration;
 use YonisSavary\Sharp\Classes\Env\Storage;
-use YonisSavary\Sharp\Core\Utils;
 
 class ConfigurationTest extends TestCase
 {

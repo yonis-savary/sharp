@@ -1,12 +1,10 @@
 <?php
 
-namespace YonisSavary\Sharp\Tests\Classes\Security;
+namespace YonisSavary\Sharp\Tests\Units\Classes\Security;
 
 use PHPUnit\Framework\TestCase;
 use YonisSavary\Sharp\Classes\Core\EventListener;
 use YonisSavary\Sharp\Classes\Events\AuthenticatedUser;
-use YonisSavary\Sharp\Classes\Security\Authentication;
-use YonisSavary\Sharp\Tests\Root\TestApp\Models\TestUser;
 use YonisSavary\Sharp\Tests\Units\TestClassFactory;
 
 class AuthenticationTest extends TestCase

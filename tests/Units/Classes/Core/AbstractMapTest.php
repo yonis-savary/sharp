@@ -5,7 +5,6 @@ namespace YonisSavary\Sharp\Tests\Units\Classes\Core;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use YonisSavary\Sharp\Classes\Core\AbstractMap;
-use YonisSavary\Sharp\Core\Utils;
 
 /**
  * `AbstractMap` is a way to store `key-values` data

@@ -1,6 +1,6 @@
 <?php
 
-namespace YonisSavary\Sharp\Tests\Units\Classes\Data;
+namespace YonisSavary\Sharp\Tests\Units\Classes\Env;
 
 use PHPUnit\Framework\TestCase;
 use YonisSavary\Sharp\Classes\Core\Logger;
