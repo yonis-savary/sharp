@@ -1,3 +1,5 @@
+[< Back to Sharp README](../README.md)
+
 # 📚 Sharp-PHP Documentation
 
 The goals behind Sharp are :
@@ -43,6 +45,7 @@ Routing & Logic
 
 Database
 - [📚 Database](./data/database.md)
+- [⏫ Migration](./data/migration.md)
 - [📖 Model & Queries](./data/model-query.md)
 
 Business Logic

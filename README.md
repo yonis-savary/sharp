@@ -66,6 +66,7 @@ Your directory will look like
 
 📁 Data
 - 🟢 Database (With SQLite support)
+- 🔵 Simple migration system
 - 🟢 Models
 - 🟢 FTP Directory
 - 🟢 Queues support
