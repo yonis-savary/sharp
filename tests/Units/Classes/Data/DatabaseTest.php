@@ -90,6 +90,21 @@ class DatabaseTest extends TestCase
             ]],
             $db->query('SELECT * FROM test_user')
         );
+
+        $db->query("CREATE TABLE test_one (id INT); CREATE TABLE test_two (id INT);");
+
+        $this->assertTrue($db->hasTable("test_one"));
+        $this->assertFalse($db->hasTable("test_two"));
+    }
+
+    public function test_exec()
+    {
+        $db = $this->database;
+
+        $db->exec("CREATE TABLE test_one (id INT); CREATE TABLE test_two (id INT);");
+
+        $this->assertTrue($db->hasTable("test_one"));
+        $this->assertTrue($db->hasTable("test_two"));
     }
 
     public function test_hasTable()

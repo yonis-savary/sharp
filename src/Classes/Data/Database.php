@@ -214,6 +214,20 @@ class Database
         return $results;
     }
 
+
+    /**
+     * Perform a query in the database and return the number of affected rows
+     * Cannot be used with queries that return a result like SELECT
+     * @param string $query SQL Query to execute
+     * @param array $context Data for the query (values replaces placeholders `{}`)
+     * @param int $fetchMode PDO Fetch mode constant
+     */
+    public function exec(string $query, array $context=[], int $fetchMode=PDO::FETCH_ASSOC): int
+    {
+        $queryWithContext = $this->build($query, $context);
+        return $this->connection->exec($queryWithContext);
+    }
+
     /**
      * @return `true` if the given table exists in the database, `false` otherwise
      */
