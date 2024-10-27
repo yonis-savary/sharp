@@ -82,5 +82,7 @@ class Console extends CLIUtils
         $return = $command(Args::fromArray($argv));
 
         EventListener::getInstance()->dispatch(new CalledCommand($command, $return));
+
+        $this->log("");
     }
 }
