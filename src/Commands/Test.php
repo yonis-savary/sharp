@@ -2,9 +2,11 @@
 
 namespace YonisSavary\Sharp\Commands;
 
+use Throwable;
 use YonisSavary\Sharp\Classes\CLI\Args;
 use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 use YonisSavary\Sharp\Classes\Env\Configuration;
+use YonisSavary\Sharp\Core\Autoloader;
 use YonisSavary\Sharp\Core\Utils;
 
 class Test extends AbstractCommand
@@ -26,21 +28,56 @@ class Test extends AbstractCommand
     {
         $toTest = Configuration::getInstance()->toArray('applications');
 
-        array_unshift($toTest, '.');
+        array_unshift($toTest, Autoloader::projectRoot());
+
+        if ($sharpSrc = $GLOBALS["sharp-src"] ?? false)
+            array_unshift($toTest, realpath("$sharpSrc/.."));
+        else
+            array_unshift($toTest, Utils::relativePath("vendor/yonis-savary/sharp/src"));
+
+
+        try
+        {
+            $output = shell_exec("phpunit --version");
+            $useBinaryDirectory = (!str_starts_with($output, "PHPUnit"));
+        }
+        catch (Throwable $_)
+        {
+            $useBinaryDirectory = true;
+        }
+
+        $this->log("Testing ".count($toTest)." directories " .
+            ($useBinaryDirectory ?
+                '(Using composer phpunit binary)':
+                '(Using "phpunit" path command)'
+            )
+        );
 
         foreach ($toTest as $application)
         {
             $phpunit = Utils::joinPath($application, 'vendor/bin/phpunit');
-            if (!is_file($phpunit))
-                continue;
 
-            $this->executeInDir(function() use ($application) {
+            $applicationRelativePath = str_replace(Autoloader::projectRoot(), "", $application);
+            if (!$applicationRelativePath) $applicationRelativePath = ".";
+
+            if (!is_file($phpunit))
+            {
+                $this->log($this->withYellowColor("•") . " No test found in [$applicationRelativePath]");
+                continue;
+            }
+
+            $this->executeInDir(function() use ($application, $applicationRelativePath, $useBinaryDirectory) {
 
                 $start = hrtime(true);
 
-                $command = './vendor/bin/phpunit';
-                if (str_starts_with(PHP_OS, 'WIN'))
-                    $command = ".\\vendor\\bin\\phpunit";
+                $command = "phpunit";
+                if ($useBinaryDirectory)
+                {
+                    $command = str_starts_with(PHP_OS, 'WIN') ?
+                        '.\\vendor\\bin\\phpunit':
+                        './vendor/bin/phpunit';
+                }
+
 
                 $output = shell_exec("$command --colors=never --display-warnings") ?? '';
                 $duration = hrtime(true) - $start;
@@ -52,9 +89,14 @@ class Test extends AbstractCommand
                 $lastLine = end($lines);
 
                 if (str_starts_with($lastLine, 'OK'))
-                    $this->log(" - OK ($application, " . substr($lastLine, 4) ." in $durationMilliseconds ms");
+                {
+                    $this->log($this->withGreenColor("✓") . " OK ($applicationRelativePath, " . substr($lastLine, 4) ." in $durationMilliseconds ms");
+                }
                 else
-                    $this->log("Errors/Warnings while testing [$application] :", $output);
+                {
+                    $this->log($this->withRedColor("✗") . "  Errors/Warnings while testing [$application]");
+                    $this->log($output);
+                }
 
             }, $application);
         }
