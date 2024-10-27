@@ -43,5 +43,7 @@ class Build extends AbstractCommand
             if (trim($output))
                 $logger->info($output);
         });
+
+        Test::execute();
     }
 }
