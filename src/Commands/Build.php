@@ -2,6 +2,7 @@
 
 namespace YonisSavary\Sharp\Commands;
 
+use Throwable;
 use YonisSavary\Sharp\Classes\CLI\AbstractBuildTask;
 use YonisSavary\Sharp\Classes\CLI\Args;
 use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
@@ -26,9 +27,23 @@ class Build extends AbstractCommand
             $logger->info("---[{class}]---", ["class" => $class]);
 
             ob_start();
-            $task = new $class();
-            $successful = $task->execute();
-            $output = ob_get_clean();
+
+            try
+            {
+                $task = new $class();
+                $successful = $task->execute();
+                $output = ob_get_clean();
+            }
+            catch (Throwable $thrown)
+            {
+                while (ob_get_level())
+                    ob_get_clean();
+
+                $successful = false;
+                $output = "Got an error while building !\n" . $thrown->getMessage();
+                $logger->warning("Caught an exception while launching $class");
+                $logger->warning($thrown);
+            }
 
             if ($successful)
             {
