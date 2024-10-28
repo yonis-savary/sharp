@@ -6,6 +6,7 @@ use RuntimeException;
 use Throwable;
 use YonisSavary\Sharp\Classes\Core\Component;
 use YonisSavary\Sharp\Classes\Core\Configurable;
+use YonisSavary\Sharp\Classes\Core\Logger;
 use YonisSavary\Sharp\Classes\Data\Database;
 use YonisSavary\Sharp\Classes\Data\MigrationManagerDrivers\MySqlDriver;
 use YonisSavary\Sharp\Classes\Data\MigrationManagerDrivers\SqliteDriver;
@@ -107,20 +108,25 @@ abstract class MigrationManager
 
     public function executeMigration(string $name): bool
     {
-        if ($this->migrationWasMade($name))
-            return true;
-
         if (!str_ends_with($name, ".sql"))
             $name = "$name.sql";
+
+        if ($this->migrationWasMade($name))
+            return true;
 
         try
         {
             $this->startTransaction();
 
-            if (!$this->storage->isFile($name))
+            if (! $target = $this->adaptName($name))
                 throw new RuntimeException("$name file does not exists in your migration directory");
 
-            $this->database->exec($this->storage->read($name));
+            $sqlContent = $this->storage->read($target);
+            if (!trim($sqlContent))
+                Logger::getInstance()->warning("Skipping empty migration $target");
+            else
+                $this->database->exec($sqlContent);
+
             $this->markMigrationAsDone($name);
             $this->commitTransaction();
             return true;
@@ -147,7 +153,12 @@ abstract class MigrationManager
                 if ($this->migrationWasMade($name))
                     continue;
 
-                $this->database->exec($this->storage->read($name));
+                $sqlContent = $this->storage->read($name);
+                if (!trim($sqlContent))
+                    Logger::getInstance()->warning("Skipping empty migration $file");
+                else
+                    $this->database->exec($sqlContent);
+
                 $this->markMigrationAsDone($name);
             }
             $this->commitTransaction();
@@ -165,10 +176,23 @@ abstract class MigrationManager
 
     public function createMigration(string $name): string
     {
-        $filename = time() . "-" . $name .".sql";
+        $filename = time() . "_" . $name .".sql";
         $path = $this->storage->path($filename);
         $this->storage->write($filename, "");
         return $path;
+    }
+
+    public function migrationExists(string $name): bool
+    {
+        try
+        {
+            $path = $this->adaptName($name);
+            return is_file($path);
+        }
+        catch (Throwable $e)
+        {
+            return false;
+        }
     }
 
 
@@ -187,5 +211,50 @@ abstract class MigrationManager
                 break;
         }
         throw new RuntimeException("No migration driver found for [$databaseDriver] database");
+    }
+
+    public function adaptName(string $name): string
+    {
+        if (!str_ends_with($name, ".sql"))
+            $name .= ".sql";
+
+        if (is_file($name))
+            return $name;
+
+        if ($this->storage->isFile($name))
+            return $this->storage->path($name);
+
+        foreach ($this->storage->listFiles() as $file)
+        {
+            $filename = basename($file);
+            if (!preg_match("/^\d+_.+$/", $filename))
+                continue;
+
+            list($timestamp, $currentName) = explode("_", $filename, 2);
+
+            if ($name === $currentName)
+                return $file;
+        }
+
+        throw new RuntimeException("Could not adapt [$name] into a migration_name");
+    }
+
+    public function catchUpTo(string $name): array
+    {
+        $target = $this->adaptName($name);
+        $doneMigrations = [];
+
+        foreach ($this->storage->listFiles() as $file)
+        {
+            $migName = $this->adaptName($file);
+            $doneMigrations[] = $file;
+
+            if (!$this->migrationWasMade($migName))
+                $this->markMigrationAsDone($migName);
+
+            if ($file === $target)
+                break;
+        }
+        return $doneMigrations;
     }
 }

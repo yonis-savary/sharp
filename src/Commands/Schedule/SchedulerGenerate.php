@@ -8,6 +8,11 @@ use YonisSavary\Sharp\Core\Autoloader;
 
 class SchedulerGenerate extends AbstractCommand
 {
+    public function getHelp(): string
+    {
+        return "Generate a CRON command to launch the scheduler";
+    }
+
     public function __invoke(Args $args)
     {
         $command = '* * * * * cd '.Autoloader::projectRoot() .' && php do scheduler-launch';

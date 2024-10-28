@@ -9,6 +9,11 @@ use YonisSavary\Sharp\Classes\Data\MigrationManager;
 
 class MigrationLaunch extends AbstractCommand
 {
+    public function getHelp(): string
+    {
+        return "Execute all missing migrations from your database";
+    }
+
     public function __invoke(Args $args)
     {
         $manager = MigrationManager::getInstance();

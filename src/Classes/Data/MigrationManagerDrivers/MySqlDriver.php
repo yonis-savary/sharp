@@ -10,9 +10,12 @@ class MySqlDriver extends MigrationManager
 
     public function migrationWasMade(string $name): bool
     {
+        $path = $this->adaptName($name);
+        $migName = basename($path);
+
         return count($this->database->query(
             "SELECT name FROM `{}` WHERE name = {}
-        ", [$this->getMigrationTableName(), $name])) != 0;
+        ", [$this->getMigrationTableName(), $migName])) != 0;
     }
 
     public function createMigrationTableIfInexistant()
@@ -28,7 +31,10 @@ class MySqlDriver extends MigrationManager
 
     public function markMigrationAsDone(string $name)
     {
-        $this->database->query("INSERT INTO `{}` (name) VALUES ({})", [$this->getMigrationTableName(), $name]);
+        $path = $this->adaptName($name);
+        $migName = basename($path);
+
+        $this->database->query("INSERT INTO `{}` (name) VALUES ({})", [$this->getMigrationTableName(), $migName]);
     }
 
     public function listDoneMigrations(): array

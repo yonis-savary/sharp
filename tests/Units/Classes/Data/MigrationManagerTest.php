@@ -3,6 +3,7 @@
 namespace YonisSavary\Sharp\Tests\Units\Classes\Data;
 
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use YonisSavary\Sharp\Classes\Data\Database;
 use YonisSavary\Sharp\Classes\Data\MigrationManager;
 use YonisSavary\Sharp\Classes\Data\MigrationManagerDrivers\SqliteDriver;
@@ -27,13 +28,13 @@ class MigrationManagerTest extends TestCase
 
         $firstMigName = $manager->createMigration("first-migration");
         $this->assertFileExists($firstMigName);
-        $this->assertMatchesRegularExpression("/^\d+\-first-migration\.sql$/", basename($firstMigName));
+        $this->assertMatchesRegularExpression("/^\d+\_first-migration\.sql$/", basename($firstMigName));
         $this->assertEquals([basename($firstMigName)], $manager->listAllMigrations());
 
 
         $secondMigName = $manager->createMigration("second-migration");
         $this->assertFileExists($secondMigName);
-        $this->assertMatchesRegularExpression("/^\d+\-second-migration\.sql$/", basename($secondMigName));
+        $this->assertMatchesRegularExpression("/^\d+\_second-migration\.sql$/", basename($secondMigName));
         $this->assertEquals([basename($firstMigName), basename($secondMigName)], $manager->listAllMigrations());
     }
 
@@ -46,7 +47,9 @@ class MigrationManagerTest extends TestCase
         file_put_contents($path, "CREATE TABLE user (id INTEGER PRIMARY KEY AUTOINCREMENT, login VARCHAR(100) NOT NULL UNIQUE);");
         $name = basename($path);
 
-        $this->assertFalse($manager->executeMigration("inexistant-one"));
+        $this->expectException(RuntimeException::class);
+        $manager->executeMigration("inexistant-one");
+
         $this->assertTrue($manager->executeMigration($name));
         $this->assertTrue($manager->executeMigration($name));
         $this->assertCount(1, $manager->listAllMigrations());
@@ -89,7 +92,9 @@ class MigrationManagerTest extends TestCase
         $this->assertCount(2, $manager->listAllMigrations());
         $this->assertCount(0, $manager->listDoneMigrations());
 
-        $this->assertTrue($manager->executeAllMigrations());
+        $r = $manager->executeAllMigrations();
+        debug($manager->getLastError());
+        $this->assertTrue($r);
         $this->assertCount(2, $manager->listDoneMigrations());
 
         $this->assertTrue($database->hasTable("user"));
@@ -144,5 +149,36 @@ class MigrationManagerTest extends TestCase
         $this->assertTrue($database->hasTable("some_data"));
         $this->assertFalse($manager->executeAllMigrations());
         $this->assertFalse($database->hasTable("user"));
+    }
+
+    public function test_catchUp()
+    {
+        $database = null;
+        $manager = $this->createManager(null, $database);
+
+        $manager->createMigration("mig-1");
+        $manager->createMigration("mig-2");
+        $manager->createMigration("mig-3");
+        $manager->createMigration("mig-4");
+        $manager->createMigration("mig-5");
+
+        $this->assertFalse($manager->migrationWasMade("mig-1"));
+        $this->assertTrue($manager->executeMigration("mig-1"));
+
+        $this->assertTrue($manager->migrationWasMade("mig-1"));
+        $results = $manager->catchUpTo("mig-4");
+        $this->assertTrue ($manager->migrationWasMade("mig-2"));
+        $this->assertTrue ($manager->migrationWasMade("mig-3"));
+        $this->assertTrue ($manager->migrationWasMade("mig-4"));
+        $this->assertTrue ($manager->migrationWasMade("mig-4"));
+        $this->assertFalse($manager->migrationWasMade("mig-5"));
+
+        $this->assertEquals([
+            $manager->adaptName("mig-1"),
+            $manager->adaptName("mig-2"),
+            $manager->adaptName("mig-3"),
+            $manager->adaptName("mig-4"),
+        ], $results);
+
     }
 }

@@ -7,11 +7,11 @@ use YonisSavary\Sharp\Classes\CLI\Args;
 use YonisSavary\Sharp\Classes\CLI\Terminal;
 use YonisSavary\Sharp\Classes\Data\MigrationManager;
 
-class MigrationCreate extends AbstractCommand
+class MigrationCatchUp extends AbstractCommand
 {
     public function getHelp(): string
     {
-        return "Create a migration file and display the output path";
+        return "Make your database catch up some migration without executing them (migrations will be marked as applied)";
     }
 
     public function __invoke(Args $args)
@@ -24,7 +24,14 @@ class MigrationCreate extends AbstractCommand
         if (!$name)
             return $this->log("Please enter a valid migration name.");
 
-        $path = $manager->createMigration($name);
-        $this->log("Made migration at [$path]");
+        if (!$manager->migrationExists($name))
+            return $this->log("No [$name] migration found !");
+
+        $this->log("Catching up to migration [$name]");
+        $files = $manager->catchUpTo($name);
+
+        $this->log("Marked these files as applied to your database");
+        foreach ($files as $file)
+            $this->log(" - $file");
     }
 }

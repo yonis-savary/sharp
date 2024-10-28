@@ -8,6 +8,11 @@ use YonisSavary\Sharp\Classes\Data\MigrationManager;
 
 class MigrationList extends AbstractCommand
 {
+    public function getHelp(): string
+    {
+        return "List all available/done migrations";
+    }
+
     public function __invoke(Args $args)
     {
         $manager = MigrationManager::getInstance();
