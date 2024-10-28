@@ -32,6 +32,7 @@ $cacheStorage     = new Cache($testStorage->getSubStorage('Cache'));
 // $testLogger->debug('Sharp root directory : {dir}', ['dir' => $GLOBALS['sharp-root']]);
 // $testLogger->debug('Sharp src directory : {dir}', ['dir' => $GLOBALS['sharp-src']]);
 
+Autoloader::initialize();
 Autoloader::loadApplication(Utils::relativePath("TestApp"));
 Logger::setInstance($testLogger);
 Storage::setInstance($testStorage);

@@ -9,10 +9,7 @@
         "psr-4": {
             "YonisSavary\\Sharp\\": "src/",
             "YonisSavary\\Sharp\\Tests\\": "tests/"
-        },
-        "files": [
-            "src/bootstrap.php"
-        ]
+        }
     },
     "authors": [
         {

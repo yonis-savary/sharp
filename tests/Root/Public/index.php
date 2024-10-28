@@ -1,16 +1,13 @@
 <?php
 
 use YonisSavary\Sharp\Classes\Core\Context;
-use YonisSavary\Sharp\Classes\Core\EventListener;
-use YonisSavary\Sharp\Classes\Events\LoadedFramework;
-use YonisSavary\Sharp\Classes\Events\LoadingFramework;
 use YonisSavary\Sharp\Classes\Http\Request;
 use YonisSavary\Sharp\Classes\Web\Router;
+use YonisSavary\Sharp\Core\Autoloader;
 
 require_once __DIR__ . '/../../bootstrap.php';
 
-EventListener::getInstance()->dispatch(new LoadingFramework());
-EventListener::getInstance()->dispatch(new LoadedFramework());
+Autoloader::initialize();
 
 $request = Request::fromGlobals();
 $request->logSelf();

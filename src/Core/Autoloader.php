@@ -9,6 +9,9 @@ use YonisSavary\Sharp\Classes\Data\ObjectArray;
 use YonisSavary\Sharp\Classes\Env\Cache;
 use YonisSavary\Sharp\Classes\Env\Configuration;
 use Throwable;
+use YonisSavary\Sharp\Classes\Core\EventListener;
+use YonisSavary\Sharp\Classes\Events\LoadedFramework;
+use YonisSavary\Sharp\Classes\Events\LoadingFramework;
 
 class Autoloader
 {
@@ -63,10 +66,17 @@ class Autoloader
 
     protected static array $loadedApplications = [];
 
+    /** When `true`, the autoloader will ignore thrown errors when requiring files and echo them */
+    public static bool $ignoreRequireErrors = false;
+
     public static function initialize()
     {
+        ErrorHandling::registerHandlers();
         self::findProjectRoot();
         self::loadApplications();
+
+        EventListener::getInstance()->dispatch(new LoadingFramework());
+        EventListener::getInstance()->dispatch(new LoadedFramework());
     }
 
     /**
@@ -102,6 +112,25 @@ class Autoloader
         return self::$projectRoot;
     }
 
+    protected static function requireHelpers()
+    {
+        foreach (self::getList(self::REQUIRE) as $file)
+        {
+            try
+            {
+                require_once $file;
+            }
+            catch (Throwable $thrown)
+            {
+                if (!self::$ignoreRequireErrors)
+                    throw $thrown;
+
+                echo "Warning: caught an error while including ". str_replace(self::projectRoot(), "", $file) ."\n";
+                echo $thrown->getMessage() . "\n\n";
+            }
+        }
+    }
+
     protected static function loadApplications()
     {
         if (!self::loadAutoloadCache())
@@ -119,8 +148,7 @@ class Autoloader
                 self::loadApplication(Utils::relativePath($app), false);
         }
 
-        foreach (self::getList(self::REQUIRE) as $file)
-            require_once $file;
+        self::requireHelpers();
     }
 
     public static function loadApplication(string $path, bool $requireHelpers=false)
@@ -145,10 +173,7 @@ class Autoloader
         }
 
         if ($requireHelpers)
-        {
-            foreach (self::getList(self::REQUIRE) as $file)
-                require_once $file;
-        }
+            self::requireHelpers();
     }
 
     public static function getLoadedApplications(): array
