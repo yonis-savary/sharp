@@ -7,7 +7,7 @@ use YonisSavary\Sharp\Classes\CLI\Args;
 use YonisSavary\Sharp\Classes\CLI\Terminal;
 use YonisSavary\Sharp\Classes\Data\MigrationManager;
 
-class MigrationCreate extends AbstractCommand
+class CreateMigration extends AbstractCommand
 {
     public function getHelp(): string
     {
