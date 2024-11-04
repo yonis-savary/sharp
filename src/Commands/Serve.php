@@ -25,14 +25,6 @@ class Serve extends AbstractCommand
             ''
         );
 
-        $stopServer = function() use (&$server) {
-            $this->log("", "Stopping Web Server", "");
-            $server->stop();
-        };
-
-        pcntl_signal(SIGINT, $stopServer);
-        register_shutdown_function($stopServer);
-
         $defaultCallback = fn($x) => $this->withDefaultColor($x, false);
         $callback = $defaultCallback;
         while ($server->isRunning())
