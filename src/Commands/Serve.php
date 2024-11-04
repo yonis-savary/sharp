@@ -16,9 +16,10 @@ class Serve extends AbstractCommand
 
     public function __invoke(Args $args)
     {
-        $port = (int) ($args->values()[0] ?? 8000);
+        $port = (int) ($args->get("p", "port") ?? 8000);
+        $host = $args->get("h", "hostname") ?? "localhost";
 
-        $server = new SharpServer($port);
+        $server = new SharpServer($port, hostname: $host);
         $this->log(
             '',
             "Serving on port $port (".($server->getURL()).')...',
