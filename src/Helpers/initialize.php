@@ -7,7 +7,10 @@
 
 use YonisSavary\Sharp\Classes\Core\EventListener;
 use YonisSavary\Sharp\Classes\Events\LoadedFramework;
+use YonisSavary\Sharp\Classes\Events\RequestNotValidated;
 use YonisSavary\Sharp\Classes\Extras\AssetServer;
+use YonisSavary\Sharp\Classes\Http\Classes\ResponseCodes;
+use YonisSavary\Sharp\Classes\Http\Response;
 use YonisSavary\Sharp\Classes\Web\Router;
 
 
@@ -21,4 +24,10 @@ EventListener::getInstance()->on(LoadedFramework::class, function(){
     // See doc. for more
     Router::getInstance()->executeQuickRouting();
 
+});
+
+
+EventListener::getInstance()->on(RequestNotValidated::class, function(RequestNotValidated $event){
+    Response::json($event->errors, ResponseCodes::BAD_REQUEST)->display();
+    die;
 });

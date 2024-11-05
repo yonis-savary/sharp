@@ -94,4 +94,33 @@ class EventListenerTest extends TestCase
         $this->assertEquals(2, $i);
     }
 
+    public function test_removeAllForEvent()
+    {
+        $dispatcher = new EventListener;
+
+        $i = 0;
+        $dispatcher->on("increment", function() use (&$i) { $i++; });
+
+        $dispatcher->dispatch(new CustomEvent("increment"));
+        $this->assertEquals(1, $i);
+
+        $dispatcher->removeAllForEvent("increment");
+        $dispatcher->dispatch(new CustomEvent("increment"));
+        $this->assertEquals(1, $i);
+    }
+
+    public function test_getAllForEvent()
+    {
+        $dispatcher = new EventListener;
+
+        $dispatcher->on("increment", fn() => "one", false);
+        $dispatcher->on("increment", fn() => "two", true);
+
+        $events = $dispatcher->getAllForEvent("increment");
+
+        $this->assertCount(2, $events);
+
+        $this->assertEquals("increment", $events[0][1]);
+        $this->assertEquals("increment", $events[1][1]);
+    }
 }

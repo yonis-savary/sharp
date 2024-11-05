@@ -30,6 +30,20 @@ class EventListener
         return $newIndex;
     }
 
+    public function removeAllForEvent(string $event)
+    {
+        $this->subscriptions = ObjectArray::fromArray($this->subscriptions)
+        ->filter(fn($subscription) => $subscription[1] !== $event)
+        ->collect();
+    }
+
+    public function getAllForEvent(string $event)
+    {
+        return ObjectArray::fromArray($this->subscriptions)
+        ->filter(fn($subscription) => $subscription[1] === $event)
+        ->collect();
+    }
+
     public function removeSubscription(int $subscriptionId): bool
     {
         $subscription = $this->subscriptions[$subscriptionId] ?? null;

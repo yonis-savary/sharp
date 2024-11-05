@@ -10,9 +10,11 @@ use YonisSavary\Sharp\Classes\Http\Classes\UploadFile;
 use YonisSavary\Sharp\Classes\Web\Route;
 use YonisSavary\Sharp\Classes\Core\Logger;
 use YonisSavary\Sharp\Classes\Data\ObjectArray;
-use YonisSavary\Sharp\Classes\Http\Classes\ResponseCodes;
 use YonisSavary\Sharp\Core\Utils;
 use Stringable;
+use YonisSavary\Sharp\Classes\Core\EventListener;
+use YonisSavary\Sharp\Classes\Events\RequestNotValidated;
+use YonisSavary\Sharp\Classes\Http\Classes\Validator;
 
 /**
  * This component purpose is to hold information about a HTTP Request,
@@ -599,85 +601,36 @@ class Request
     /**
      * Validate request parameters
      * @param array $requirements Associative array of [name => requirements flags]
-     * @param bool $errorMode Disable this to never show error to the client
      * @return array When not in error mode, returns `[isSuccess, values, errors]`
      * If error mode is enabled, return an array of value when successful, display a 400 HTTP Response on error
      */
-    public function validate(array $requirements, bool $errorMode=true): array
+    public function validate(array $requirements, EventListener $errorDispatcher=null): array|null
     {
         if (!Utils::isAssoc($requirements))
             throw new InvalidArgumentException('requirements must be an associative array');
 
-        $paramsToGet = array_keys($requirements);
-        $requirements = array_values($requirements);
-
-        $values = $this->list(...$paramsToGet);
+        $errorDispatcher ??= EventListener::getInstance();
+        $form = [];
         $errors = [];
 
-        $paramsCount = count($paramsToGet);
-        for ($i=0; $i<$paramsCount; $i++)
+        /** @var Validator $validator */
+        foreach ($requirements as $key => $validator)
         {
-            $requirement = $requirements[$i];
-            $name = $paramsToGet[$i];
-            $value = $values[$i];
+            $value = $this->params($key);
 
-            if (($requirement & self::IS_INT) && (!(is_numeric($value) && filter_var($value, FILTER_VALIDATE_INT))))
-                $errors[] = "[$name] must be an integer";
-
-            if (($requirement & self::IS_FLOAT) && (!(is_numeric($value) && filter_var($value, FILTER_VALIDATE_FLOAT))))
-                $errors[] = "[$name] must be a number";
-
-            if (($requirement & self::IS_STRING) && (!is_string($value)))
-                $errors[] = "[$name] must be a textual value";
-
-            if (($requirement & self::IS_EMAIL) && (!filter_var($value, FILTER_VALIDATE_EMAIL)))
-                $errors[] = "[$name] must be an email";
-
-            if (($requirement & self::IS_BOOLEAN) && ($value !== true && $value !== false))
-                $errors[] = "[$name] must be a boolean";
-
-            if (($requirement & self::IS_URL) && (!filter_var($value,  FILTER_VALIDATE_URL)))
-                $errors[] = "[$name] must be a url";
-
-            if (($requirement & self::IS_MAC) && (!filter_var($value,  FILTER_VALIDATE_MAC)))
-                $errors[] = "[$name] must be a mac";
-
-            if (($requirement & self::IS_DATE) && (!preg_match("/^\d{4}-\d{2}-\d{2}$/", $value ?? '')))
-                $errors[] = "[$name] must be a date (yyyy-mm-dd)";
-
-            if (($requirement & self::IS_DATETIME) && (!preg_match("/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/", $value ?? '')))
-                $errors[] = "[$name] must be a datetime value (yyyy-mm-dd HH:MM:SS)";
-
-            if (($requirement & self::IS_UUID) && (!preg_match("/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/", $value ?? '')))
-                $errors[] = "[$name] must be a UUID";
-
-            //if (($requirement & self::IS_DOMAIN) && (!filter_var($value,  FILTER_VALIDATE_DOMAIN)))
-            //        $errors[] = "[$name] must be a domain";
-
-            if (($requirement & self::IS_IP) && (!filter_var($value,  FILTER_VALIDATE_IP)))
-                $errors[] = "[$name] must be a ip";
-
-            //if (($requirement & self::IS_REGEXP) && (!filter_var($value,  FILTER_VALIDATE_REGEXP)))
-            //        $errors[] = "[$name] must be a regular expression";
-
-            if (($requirement & self::NOT_NULL) && ($value === null))
-                $errors[] = "[$name] parameter is required";
-
+            $validator->process($value);
+            if ($validator->isValid())
+                $form[$key] = $validator->getValue();
+            else
+                $errors[$key] = $validator->getErrorMessages();
         }
 
-        // faster than count ! Todo: put this in Utils
-        $hasError = isset($errors[0]);
-
-        if ($errorMode)
+        if (count($errors))
         {
-            if ($hasError)
-            {
-                Response::json($errors, ResponseCodes::BAD_REQUEST)->display();
-                die;
-            }
-            return $values;
+            $errorDispatcher->dispatch(new RequestNotValidated($errors));
+            return null;
         }
 
-        return [!$hasError, $values, $errors];
+        return $form;
     }
 }
