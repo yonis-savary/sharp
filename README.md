@@ -27,7 +27,7 @@ php do create-application MyProject
 # Launch built-in web server
 php do serve
 # specify port
-php do serve 8080
+php do serve --port=8080
 ```
 
 Your directory will look like

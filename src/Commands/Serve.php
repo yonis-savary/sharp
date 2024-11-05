@@ -11,7 +11,7 @@ class Serve extends AbstractCommand
 {
     public function getHelp(): string
     {
-        return 'Start built-in PHP server in Public, default port is 8000 (ex: php do serve 5000)';
+        return 'Start built-in PHP server in Public, default port is 8000 (ex: php do serve --port=5000 --hostname=0.0.0.0)';
     }
 
     public function __invoke(Args $args)
