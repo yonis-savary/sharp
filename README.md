@@ -2,7 +2,7 @@
 
 ## Welcome !
 
-Sharp is a framework for PHP 8 that focuses on code cleanliness and simplicity, the goal is to have a good balance between abstraction and concrete objects, make a framework that just work with your IDE and doesn't use some magic syntax or unecessary complexity.
+Sharp is a framework for PHP 8 that focuses on code cleanliness and simplicity, the goal is to have a good balance between abstraction and concrete objects, making a framework that can work with your IDE and doesn't use magic syntaxes or unnecessary complexity layers.
 
 ## 📚 Documentation and Tutorials
 
@@ -49,7 +49,7 @@ Your directory will look like
 - 🟡 - untested feature
 
 🫀 Core
-- 🟢 Configuration (JSON Format)
+- 🟢 Configuration (sharp.json)
 - 🟢 Caching
 - 🟢 Logging
 - 🟢 Events
@@ -68,7 +68,7 @@ Your directory will look like
 - 🟢 Database (With SQLite support)
 - 🔵 Simple migration system
 - 🟢 Models
-- 🟢 FTP Directory
+- 🟢 FTP directory support
 - 🟢 Queues support
 - 🟢 Array object (for functional programming)
 
@@ -77,8 +77,8 @@ Your directory will look like
 - 🟢 CSRF
 
 🚀 Extras
-- 🟢 Asset serving
-- 🟢 Automatic CRUD API for Models
-- 🔵 Scheduler System
+- 🟢 Simple assets serving
+- 🟢 Automatic CRUD API for your models
+- 🟢 Scheduler system
 
 ...and more ! The [`SharpExtension`](https://github.com/yonis-savary/sharp-extensions) repository got some additionnal features that can be used to make development faster
