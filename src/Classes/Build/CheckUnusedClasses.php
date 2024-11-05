@@ -45,7 +45,7 @@ class CheckUnusedClasses extends AbstractBuildTask
         $composerFile = Utils::relativePath("composer.json", $directory);
         if (!is_file($composerFile))
         {
-            $this->log("Composer file [$composerFile] not found !");
+            $this->log("Skipping [$directory]");
             return true;
         }
 
