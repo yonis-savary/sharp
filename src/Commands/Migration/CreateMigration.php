@@ -14,7 +14,7 @@ class CreateMigration extends AbstractCommand
         return "Create a migration file and display the output path";
     }
 
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         $manager = MigrationManager::getInstance();
 
@@ -22,9 +22,14 @@ class CreateMigration extends AbstractCommand
             $name = Terminal::prompt("migration name ? ");
 
         if (!$name)
-            return $this->log("Please enter a valid migration name.");
+        {
+            $this->log("Please enter a valid migration name.");
+            return 1;
+        }
 
         $path = $manager->createMigration($name);
         $this->log("Made migration at [$path]");
+
+        return 0;
     }
 }

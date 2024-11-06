@@ -15,10 +15,10 @@ class QueuesClear extends AbstractCommand
         return 'Delete every files from your application queues';
     }
 
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         if (!Terminal::confirm('This action will delete every queue item in your application, process ?'))
-            return;
+            return 0;
 
         /** @var QueueHandler $class */
         foreach (Autoloader::classesThatUses(QueueHandler::class) as $class)
@@ -30,5 +30,7 @@ class QueuesClear extends AbstractCommand
                 unlink($file);
             });
         }
+
+        return 0;
     }
 }

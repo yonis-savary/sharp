@@ -24,7 +24,7 @@ class Test extends AbstractCommand
         chdir($original);
     }
 
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         $toTest = Configuration::getInstance()->toArray('applications');
 

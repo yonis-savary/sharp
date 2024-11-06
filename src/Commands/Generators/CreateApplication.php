@@ -18,21 +18,26 @@ class CreateApplication extends AbstractCommand
         $appDirectory = Utils::relativePath($appName);
 
         if (is_dir($appDirectory))
-            return $this->log("[$appName] already exists");
+        {
+            $this->log("[$appName] already exists");
+            return 1;
+        }
 
         $this->log("Making [$appName]");
         mkdir($appName, recursive:true);
+        return 0;
     }
 
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         $values = $args->values();
 
         if (!count($values))
             $values = [Terminal::prompt('App name (PascalCase): ')];
 
+        $gotError = false;
         foreach($values as $app)
-            $this->createApplication($app);
+            $gotError |= $this->createApplication($app);
 
         $this->log('Enabling new applications');
 
@@ -42,6 +47,8 @@ class CreateApplication extends AbstractCommand
             return array_values(array_unique($applications));
         }, []);
         $config->save();
+
+        return (int) $gotError;
     }
 
     public function getHelp(): string

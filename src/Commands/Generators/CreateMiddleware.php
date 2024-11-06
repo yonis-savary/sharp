@@ -16,7 +16,7 @@ class CreateMiddleware extends AbstractCommand
 {
     use Controller;
 
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         $names = $args->values();
         if (!count($names))
@@ -27,14 +27,20 @@ class CreateMiddleware extends AbstractCommand
         foreach ($names as $name)
         {
             if (!preg_match("/^[A-Z][\d\w]*$/", $name))
-                return $this->log('Name be must a PascalCase string');
+            {
+                $this->log('Name be must a PascalCase string');
+                return 2;
+            }
 
             $middlewarePath = Utils::joinPath($application, 'Middlewares');
             $storage = new Storage($middlewarePath);
             $filename = $name . '.php';
 
             if ($storage->isFile($name))
-                return $this->log($storage->path($filename) . ' already exists !');
+            {
+                $this->log($storage->path($filename) . ' already exists !');
+                return 1;
+            }
 
             $storage->write($filename, Terminal::stringToFile(
             "<?php
@@ -55,6 +61,7 @@ class CreateMiddleware extends AbstractCommand
             "));
 
             $this->log('File written at '. $storage->path($filename));
+            return 0;
         }
     }
 

@@ -8,9 +8,10 @@ use YonisSavary\Sharp\Classes\Extras\Scheduler;
 
 class SchedulerLaunch extends AbstractCommand
 {
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         Scheduler::getInstance()->executeAll();
+        return 0;
     }
 
     public function getHelp(): string

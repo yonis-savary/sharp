@@ -13,7 +13,7 @@ class SchedulerGenerate extends AbstractCommand
         return "Generate a CRON command to launch the scheduler";
     }
 
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         $command = '* * * * * cd '.Autoloader::projectRoot() .' && php do scheduler-launch';
 
@@ -27,5 +27,7 @@ class SchedulerGenerate extends AbstractCommand
             "{ crontab -l; echo \"$command\"; } | crontab -",
             ''
         );
+
+        return 0;
     }
 }

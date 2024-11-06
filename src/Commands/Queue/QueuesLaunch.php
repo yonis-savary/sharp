@@ -14,7 +14,7 @@ class QueuesLaunch extends AbstractCommand
         return 'Tell your applications queues to process one batch of items';
     }
 
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         $this->log('Processing application queues');
 
@@ -24,5 +24,7 @@ class QueuesLaunch extends AbstractCommand
             $this->log("$class...");
             $class::processQueue();
         }
+
+        return 0;
     }
 }

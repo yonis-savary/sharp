@@ -64,7 +64,7 @@ class Build extends AbstractCommand
                 $logger->info($output);
         });
 
-        $gotAnyError |= Test::execute();
+        $gotAnyError |= Test::call();
 
         return (int) $gotAnyError;
     }
@@ -183,7 +183,7 @@ class Build extends AbstractCommand
 
 
 
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         return $args->isPresent("w", "watch") ?
             $this->startToWatch():

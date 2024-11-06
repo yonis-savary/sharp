@@ -34,12 +34,14 @@ class CacheClear extends AbstractCommand
         unlink($file);
     }
 
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         $cache = Storage::getInstance()->getSubStorage('Cache');
         $deletePermanent = $args->isPresent('a', 'all');
 
         foreach ($cache->exploreDirectory('/', Utils::ONLY_FILES) as $file)
             $this->processFile($file, $deletePermanent);
+
+        return 0;
     }
 }

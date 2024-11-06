@@ -15,7 +15,7 @@ class CreateModels extends AbstractCommand
         return 'Create model classes from your database tables';
     }
 
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         if ($args->isPresent("c", "choose"))
             $app = Terminal::chooseApplication();

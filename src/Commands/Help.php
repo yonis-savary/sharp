@@ -14,7 +14,7 @@ class Help extends AbstractCommand
         return 'Display a list of commands with a short description';
     }
 
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         /** @var array<Command> $commands */
         $commands = ObjectArray::fromArray(Console::listCommands())
@@ -44,5 +44,7 @@ class Help extends AbstractCommand
                 )
             );
         }
+
+        return 0;
     }
 }

@@ -15,12 +15,12 @@ class CacheDisable extends AbstractCommand
         return 'Disable every cache-able component (use -k to keep existants cache files)';
     }
 
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         if (!$args->isPresent('-k', '--keep-files'))
         {
             $this->log('Clearing all cache files...');
-            CacheClear::execute('--all');
+            CacheClear::call('--all');
         }
 
         $config = new Configuration(Configuration::DEFAULT_FILENAME);
@@ -41,5 +41,7 @@ class CacheDisable extends AbstractCommand
             });
         }
         $config->save();
+
+        return 0;
     }
 }

@@ -14,7 +14,7 @@ class CreateController extends AbstractCommand
 {
     use Controller;
 
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         $names = $args->values();
         if (!count($names))
@@ -22,17 +22,27 @@ class CreateController extends AbstractCommand
 
         $application = Terminal::chooseApplication();
 
+        $gotError = false;
+
         foreach ($names as $name)
         {
             if (!preg_match("/^[A-Z][\d\w]*$/", $name))
-                return $this->log('Name be must a PascalCase string');
+            {
+                $this->log('Name be must a PascalCase string');
+                $gotError = true;
+                continue;
+            }
 
             $controllerPath = Utils::joinPath($application, 'Controllers');
             $storage = new Storage($controllerPath);
             $filename = $name . '.php';
 
             if ($storage->isFile($name))
-                return $this->log($storage->path($filename) . ' already exists !');
+            {
+                $this->log($storage->path($filename) . ' already exists !');
+                $gotError = true;
+                continue;
+            }
 
             $storage->write($filename, Terminal::stringToFile(
             "<?php
@@ -58,6 +68,8 @@ class CreateController extends AbstractCommand
 
             $this->log('File written at '. $storage->path($filename));
         }
+
+        return (int) $gotError;
     }
 
     public function getHelp(): string

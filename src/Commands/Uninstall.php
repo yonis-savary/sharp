@@ -12,7 +12,7 @@ use YonisSavary\Sharp\Core\Utils;
 
 class Uninstall extends AbstractCommand
 {
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         $projectRoot = Autoloader::projectRoot();
         $this->shellInDirectory('git clean -dfXn', $projectRoot);
@@ -26,6 +26,8 @@ class Uninstall extends AbstractCommand
 
         foreach ($applications as $appName)
             $this->uninstallAppVendor($appName);
+
+        return 0;
     }
 
     public function getHelp(): string

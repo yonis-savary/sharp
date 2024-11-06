@@ -39,16 +39,17 @@ abstract class AbstractCommand extends CLIUtils
 
     /**
      * This function is executed when the command is called
+     * @return int A command exit code (0 = no error, 1..n = error code)
      */
-    public abstract function __invoke(Args $args);
+    public abstract function execute(Args $args): int;
 
     /**
      * Directly execute a command without having to instanciate an object
      * @param string $argv Console parameters
      */
-    final public static function execute(string $argv='')
+    final public static function call(string $argv='')
     {
         $class = get_called_class();
-        return (new $class)(new Args($argv));
+        return (new $class)->execute(new Args($argv));
     }
 }

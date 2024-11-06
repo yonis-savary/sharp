@@ -10,7 +10,7 @@ use YonisSavary\Sharp\Classes\Extras\SchedulerHandler;
 
 class SchedulerList extends AbstractCommand
 {
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         $handlers = Scheduler::getInstance()->listAll();
         $this->log('List of scheduler handlers');
@@ -34,6 +34,8 @@ class SchedulerList extends AbstractCommand
 
             $this->log(' - ' . $handler->identifier . " : $description");
         });
+
+        return 0;
     }
 
     public function getHelp(): string

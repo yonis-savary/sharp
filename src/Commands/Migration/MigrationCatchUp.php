@@ -14,7 +14,7 @@ class MigrationCatchUp extends AbstractCommand
         return "Make your database catch up some migration without executing them (migrations will be marked as applied)";
     }
 
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         $manager = MigrationManager::getInstance();
 
@@ -22,10 +22,16 @@ class MigrationCatchUp extends AbstractCommand
             $name = Terminal::prompt("migration name ? ");
 
         if (!$name)
-            return $this->log("Please enter a valid migration name.");
+        {
+            $this->log("Please enter a valid migration name.");
+            return 1;
+        }
 
         if (!$manager->migrationExists($name))
-            return $this->log("No [$name] migration found !");
+        {
+            $this->log("No [$name] migration found !");
+            return 2;
+        }
 
         $this->log("Catching up to migration [$name]");
         $files = $manager->catchUpTo($name);
@@ -33,5 +39,7 @@ class MigrationCatchUp extends AbstractCommand
         $this->log("Marked these files as applied to your database");
         foreach ($files as $file)
             $this->log(" - $file");
+
+        return 0;
     }
 }

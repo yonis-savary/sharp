@@ -13,7 +13,7 @@ class MigrationList extends AbstractCommand
         return "List all available/done migrations";
     }
 
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         $manager = MigrationManager::getInstance();
 
@@ -28,5 +28,7 @@ class MigrationList extends AbstractCommand
 
             $this->log($string);
         }
+
+        return 0;
     }
 }

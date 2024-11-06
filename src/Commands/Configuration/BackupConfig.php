@@ -9,12 +9,15 @@ use YonisSavary\Sharp\Core\Utils;
 
 class BackupConfig extends AbstractCommand
 {
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         $currentConfig = Utils::relativePath('sharp.json');
 
         if (!is_file($currentConfig))
-            return $this->log('No configuration to backup');
+        {
+            $this->log('No configuration to backup');
+            return 1;
+        }
 
         $copyBasename =
             'sharp-json-'.
@@ -27,6 +30,7 @@ class BackupConfig extends AbstractCommand
 
         copy($currentConfig, $copyPath);
         $this->log("Configuration backup written to ./Storage/$copyBasename");
+        return 0;
     }
 
     public function getHelp(): string

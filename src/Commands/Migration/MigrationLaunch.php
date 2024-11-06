@@ -14,7 +14,7 @@ class MigrationLaunch extends AbstractCommand
         return "Execute all missing migrations from your database";
     }
 
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         $manager = MigrationManager::getInstance();
         $logger = Logger::getInstance();

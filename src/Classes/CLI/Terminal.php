@@ -9,14 +9,18 @@ class Terminal
     /**
      * Simply an alias to `readline()`
      */
-    public static function prompt(string $question): string
+    public static function prompt(string $question): ?string
     {
-        return readline($question);
+        $output = readline($question);
+        if ($output === "")
+            $output = null;
+
+        return $output;
     }
 
     public static function confirm(string $question): bool
     {
-        $str = readline($question . ' (y/n) : ');
+        $str = readline($question . ' [n] (y/n) : ');
         $str = strtolower($str);
 
         return $str === 'y' || $str === 'yes';

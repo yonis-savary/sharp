@@ -11,18 +11,25 @@ use YonisSavary\Sharp\Core\Utils;
 
 class CreateMap extends AbstractCommand
 {
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         $application = Terminal::chooseApplication();
 
         $name = $args->values()[0] ?? readline('Map Name ?');
         if (!preg_match("/^([A-Z][a-zA-Z0-9]*)+$/", $name))
-            return $this->log('Given name must be made of PascalName words');
+        {
+            $this->log('Given name must be made of PascalName words');
+            return 2;
+        }
+
         $filename = $name . '.php';
 
         $mapsStorage = new Storage(Utils::joinPath($application, 'Classes/App/Maps'));
         if ($mapsStorage->isFile($filename))
-            return $this->log("$filename already exists !");
+        {
+            $this->log("$filename already exists !");
+            return 1;
+        }
 
         $applicationNamespace = str_replace('/', "\\", $application);
 
@@ -40,6 +47,7 @@ class CreateMap extends AbstractCommand
         "));
 
         $this->log('File written at : ' . $mapsStorage->path($filename));
+        return 0;
     }
 
     public function getHelp(): string

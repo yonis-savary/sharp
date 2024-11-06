@@ -16,7 +16,7 @@ class EnableApplication extends AbstractCommand
         return 'Enable applications by putting them in your configuration';
     }
 
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         $values = $args->values();
 
@@ -45,7 +45,8 @@ class EnableApplication extends AbstractCommand
 
         $config->save();
 
-        $build = new Build();
-        $build(new Args());
+        Build::call();
+
+        return 0;
     }
 }

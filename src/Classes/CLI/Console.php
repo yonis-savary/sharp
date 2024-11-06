@@ -37,7 +37,7 @@ class Console extends CLIUtils
 
     public function printCommandList(): void
     {
-        Help::execute('');
+        Help::call('');
     }
 
     /**

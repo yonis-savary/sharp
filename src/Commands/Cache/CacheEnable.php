@@ -15,7 +15,7 @@ class CacheEnable extends AbstractCommand
         return 'Enable every cache-able components !';
     }
 
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         $config = new Configuration(Configuration::DEFAULT_FILENAME);
 
@@ -35,5 +35,7 @@ class CacheEnable extends AbstractCommand
             });
         }
         $config->save();
+
+        return 0;
     }
 }

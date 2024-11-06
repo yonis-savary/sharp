@@ -15,7 +15,7 @@ class CreateConfiguration extends AbstractCommand
         return "Create or Complete your configuration with the framework's default configuration";
     }
 
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         $configurableList = Autoloader::classesThatUses(Configurable::class);
         $config = new Configuration(Configuration::DEFAULT_FILENAME);
@@ -40,5 +40,6 @@ class CreateConfiguration extends AbstractCommand
         }
 
         $config->save();
+        return 0;
     }
 }

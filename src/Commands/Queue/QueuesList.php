@@ -14,7 +14,7 @@ class QueuesList extends AbstractCommand
         return 'List items from your application queues, use --list to get a full list';
     }
 
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         $list = $args->isPresent('-l', '--list');
 
@@ -34,5 +34,6 @@ class QueuesList extends AbstractCommand
                 $this->log(" - $file");
         }
 
+        return 0;
     }
 }

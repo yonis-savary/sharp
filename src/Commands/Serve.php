@@ -14,7 +14,7 @@ class Serve extends AbstractCommand
         return 'Start built-in PHP server in Public, default port is 8000 (ex: php do serve --port=5000 --hostname=0.0.0.0)';
     }
 
-    public function __invoke(Args $args)
+    public function execute(Args $args): int
     {
         $port = (int) ($args->get("p", "port") ?? 8000);
         $host = $args->get("h", "hostname") ?? "localhost";
@@ -62,5 +62,6 @@ class Serve extends AbstractCommand
             usleep(1000* 100);
         }
 
+        return 0;
     }
 }
