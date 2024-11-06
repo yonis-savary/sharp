@@ -54,6 +54,7 @@ Your directory will look like
 - 🟢 Logging
 - 🟢 Events
 - 🟢 CLI Commands (With base utilities commands)
+- 🔵 CLI build system
 - 🟢 Tests
 
 🌐 Web
