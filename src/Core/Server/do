@@ -9,6 +9,4 @@ require_once 'vendor/autoload.php';
 Autoloader::$ignoreRequireErrors = true;
 Autoloader::initialize();
 
-Console::getInstance()->handleArgv($argv);
-
-die;
+exit(Console::getInstance()->handleArgv($argv));
