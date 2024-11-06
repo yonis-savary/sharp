@@ -35,7 +35,6 @@ class Test extends AbstractCommand
         else
             array_unshift($toTest, Utils::relativePath("vendor/yonis-savary/sharp/src"));
 
-
         try
         {
             $output = shell_exec("phpunit --version");
@@ -53,6 +52,7 @@ class Test extends AbstractCommand
             )
         );
 
+        $gotAnyError = false;
         foreach ($toTest as $application)
         {
             $phpunit = Utils::joinPath($application, 'vendor/bin/phpunit');
@@ -66,7 +66,7 @@ class Test extends AbstractCommand
                 continue;
             }
 
-            $this->executeInDir(function() use ($application, $applicationRelativePath, $useBinaryDirectory) {
+            $this->executeInDir(function() use ($application, $applicationRelativePath, $useBinaryDirectory, &$gotAnyError) {
 
                 $start = hrtime(true);
 
@@ -94,11 +94,15 @@ class Test extends AbstractCommand
                 }
                 else
                 {
+                    $gotAnyError = true;
                     $this->log($this->withRedColor("✗") . "  Errors/Warnings while testing [$application]");
                     $this->log($output);
                 }
 
             }, $application);
+
         }
+
+        return (int) $gotAnyError;
     }
 }

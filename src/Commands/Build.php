@@ -22,7 +22,10 @@ class Build extends AbstractCommand
         $logger = new Logger("build.csv");
 
         $buildClasses = Autoloader::classesThatExtends(AbstractBuildTask::class);
-        $this->progressBar($buildClasses, function($class) use (&$logger) {
+
+        $gotAnyError = false;
+
+        $this->progressBar($buildClasses, function($class) use (&$logger, &$gotAnyError) {
 
             $logger->info("---[{class}]---", ["class" => $class]);
 
@@ -51,6 +54,7 @@ class Build extends AbstractCommand
             }
             else
             {
+                $gotAnyError = true;
                 $this->log($this->withRedColor("✗") . " " . $class);
                 $this->log($output);
             }
@@ -59,6 +63,8 @@ class Build extends AbstractCommand
                 $logger->info($output);
         });
 
-        Test::execute();
+        $gotAnyError |= Test::execute();
+
+        return (int) $gotAnyError;
     }
 }

@@ -2,7 +2,12 @@
 
 namespace YonisSavary\Sharp\Classes\CLI;
 
+use RuntimeException;
 use YonisSavary\Sharp\Classes\Core\Logger;
+use YonisSavary\Sharp\Classes\Data\ObjectArray;
+use YonisSavary\Sharp\Classes\Env\Configuration;
+use YonisSavary\Sharp\Classes\Env\Storage;
+use YonisSavary\Sharp\Core\Utils;
 
 class CLIUtils
 {
@@ -122,4 +127,24 @@ class CLIUtils
     protected function withCyanBackground    (string $string) { return $this->withColor($string, 46); }
     protected function withWhiteBackground   (string $string) { return $this->withColor($string, 47); }
     protected function withDefaultBackground (string $string) { return $this->withColor($string, 49); }
+
+
+    final protected function getMainApplicationPath(Configuration $configuration=null): string
+    {
+        $configuration ??= Configuration::getInstance();
+        $applications = $configuration->toArray("applications", []);
+        if (!count($applications))
+            throw new RuntimeException("Could not find any application directory");
+
+        $mainApplication =
+            ObjectArray::fromArray($applications)
+            ->map(fn($x) => new Storage(Utils::relativePath($x)))
+            ->find(fn($x) => $x->isDirectory("Models"))
+        ;
+
+        if ($mainApplication)
+            return $mainApplication;
+
+        return Terminal::chooseApplication();
+    }
 }

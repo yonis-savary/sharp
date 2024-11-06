@@ -45,7 +45,7 @@ class Console extends CLIUtils
      * and then execute it by giving it arguments
      * @param array $argv Raw PHP $argv variable
      */
-    public function handleArgv(array $argv): void
+    public function handleArgv(array $argv): int
     {
         array_shift($argv); // Ignore script name !
 
@@ -53,7 +53,7 @@ class Console extends CLIUtils
         {
             $this->log('A command name is needed !');
             $this->printCommandList();
-            return;
+            return 0;
         }
 
         $commandName = array_shift($argv);
@@ -63,7 +63,7 @@ class Console extends CLIUtils
         {
             $this->log("No command with [$commandName] identifier found !");
             $this->printCommandList();
-            return;
+            return 1;
         }
 
         if (count($commands) > 1)
@@ -71,7 +71,7 @@ class Console extends CLIUtils
             $this->log("Multiple commands for identifier [$commandName] found !");
             foreach ($commands as $command)
                 $this->log(' - ' . $command->getIdentifier());
-            return;
+            return 2;
         }
 
         $command = $commands[0];
@@ -79,10 +79,11 @@ class Console extends CLIUtils
         $this->log(
             sprintf("%s[ %s ]%s\n", str_repeat('-', 5), $command->getIdentifier() , str_repeat('-', 25))
         );
-        $return = $command(Args::fromArray($argv));
+        $return = intval($command(Args::fromArray($argv)));
 
         EventListener::getInstance()->dispatch(new CalledCommand($command, $return));
 
         $this->log("");
+        return $return;
     }
 }

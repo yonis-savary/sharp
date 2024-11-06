@@ -2,6 +2,7 @@
 
 namespace YonisSavary\Sharp\Commands\Generators;
 
+use Throwable;
 use YonisSavary\Sharp\Classes\CLI\Args;
 use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 use YonisSavary\Sharp\Classes\CLI\Terminal;
@@ -16,8 +17,23 @@ class CreateModels extends AbstractCommand
 
     public function __invoke(Args $args)
     {
-        $app = Terminal::chooseApplication();
+        if ($args->isPresent("c", "choose"))
+            $app = Terminal::chooseApplication();
+        else
+            $app = $this->getMainApplicationPath();
+
         $generator = ModelGenerator::getInstance();
-        $generator->generateAll($app);
+        try
+        {
+            $generator->generateAll($app);
+            $this->log($this->withGreenColor("Models fetched into [$app] !"));
+            return 0;
+        }
+        catch(Throwable $err)
+        {
+            error($err);
+            $this->log($this->withRedColor("Caught an error while fetching models ! Please see your logs"));
+            return 1;
+        }
     }
 }

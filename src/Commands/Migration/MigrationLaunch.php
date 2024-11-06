@@ -35,6 +35,7 @@ class MigrationLaunch extends AbstractCommand
         if ($migrationSuccess)
         {
             $this->log($this->withGreenColor("Migration applied successfuly !"));
+            return 0;
         }
         else
         {
@@ -42,6 +43,7 @@ class MigrationLaunch extends AbstractCommand
             $this->log($this->withRedColor("Error while executing ".$manager->getLastErrorFile()." content !"));
             $this->log($this->withRedColor($error->getMessage() . ". Please see your logs for more"));
             $logger->error($error);
+            return 1;
         }
     }
 }

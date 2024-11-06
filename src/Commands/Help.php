@@ -28,7 +28,7 @@ class Help extends AbstractCommand
 
         foreach ($commands as $command)
         {
-            $maxLength['name'] = max($maxLength['name'], strlen($command->getName()));
+            $maxLength['name']       = max($maxLength['name'], strlen($command->getName()));
             $maxLength['identifier'] = max($maxLength['identifier'], strlen($command->getIdentifier()));
         }
 
