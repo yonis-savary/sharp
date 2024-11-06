@@ -75,6 +75,8 @@ Your directory will look like
 - 🟢 Automatic CRUD API for your models
 - 🟢 Scheduler system
 
+...and more ! The [`SharpExtension`](https://github.com/yonis-savary/sharp-extensions) repository got some additionnal features that can be used to make development faster
+
 # Next release objectives
 
 - [x] Scheduler system
@@ -84,5 +86,3 @@ Your directory will look like
 - [ ] Test every framework commands
 - [ ] Test app creation/integration
 - [ ] Test caching & benchmark performances
-
-...and more ! The [`SharpExtension`](https://github.com/yonis-savary/sharp-extensions) repository got some additionnal features that can be used to make development faster
