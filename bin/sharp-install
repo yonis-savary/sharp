@@ -1,0 +1,52 @@
+<?php
+
+if (!is_dir("./vendor/yonis-savary/sharp"))
+{
+    echo "\033[33;1m";
+    echo "Error ! Could not locate ./vendor/yonis-savary/sharp\n";
+    echo "Please be sure that you are in your project root directory\n";
+    echo "And that composer install was launched\n";
+    echo "Exiting.\n";
+    echo "\033[0m";
+    exit(1);
+}
+
+if (is_dir("./Public") || is_file("./do"))
+{
+    echo "\033[33;1m";
+    echo "Error ! It seems that your directory was already initialized\n";
+    echo "Exiting.\n";
+    echo "\033[0m";
+    exit(1);
+}
+
+if (str_contains(strtolower(PHP_OS), "win"))
+{
+    shell_exec("xcopy /s vendor/yonis-savary/sharp/src/Core/Server/* .");
+
+    echo "Sharp tools was successfuly installed in your directory !\n";
+    exit(0);
+}
+else if (str_contains(strtolower(PHP_OS), "linux"))
+{
+    shell_exec("cp -r vendor/yonis-savary/sharp/src/Core/Server/* .");
+    shell_exec("cp -r vendor/yonis-savary/sharp/src/Core/Server/.gitignore .");
+    shell_exec("cp -r vendor/yonis-savary/sharp/src/Core/Server/.dockerignore .");
+    shell_exec("rm ./do");
+    shell_exec("rm ./Public/index.php");
+    shell_exec("rmdir ./Public");
+    shell_exec("ln -s vendor/yonis-savary/sharp/src/Core/Server/Public Public");
+    shell_exec("ln -s vendor/yonis-savary/sharp/src/Core/Server/do do");
+
+    echo "Sharp tools was successfuly installed in your directory !\n";
+    exit(0);
+}
+else
+{
+    echo "\033[31;1m";
+    echo "This script does not support os such as " . PHP_OS . ".\n";
+    echo "To install Sharp, please copy what's in vendor/yonis-savary/sharp/src/Core/Server in your current directory\n";
+    echo "Then execute 'php do initialize'\n";
+    echo "\033[0m";
+    exit(1);
+}

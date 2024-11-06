@@ -5,6 +5,9 @@
     "keywords": ["PHP8", "Framework", "library", "MVC"],
     "homepage": "https://github.com/yonis-savary/sharp",
     "license": "MIT",
+    "bin": [
+        "bin/sharp-install"
+    ],
     "autoload": {
         "psr-4": {
             "YonisSavary\\Sharp\\": "src/",

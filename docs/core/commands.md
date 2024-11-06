@@ -18,9 +18,10 @@ use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 
 class ClearCaches extends AbstractCommand
 {
-    public function __invoke(Args $args)
+    public function __invoke(Args $args): int
     {
         $this->log("I'am clearing caches !");
+        return 0;
     }
 }
 ```
