@@ -144,8 +144,7 @@ class Build extends AbstractCommand
             if ($changeCount)
                 $this->log("Found changes in $changeCount files");
 
-            $taskToLaunch = array_unique($taskToLaunch);
-
+            $taskToLaunch = array_values(array_unique($taskToLaunch));
 
             $this->progressBar($taskToLaunch, function($class) {
                 /** @var AbstractBuildTask $task */

@@ -33,6 +33,16 @@ class MyCssCompiler extends AbstractBuildTask
         $this->shellInDirectory("$command main.less ../css/assets-kit/style.css --verbose", $styleDir, true);
         return 0;
     }
+
+    # This method is completly optionnal
+    # It helps the `build` command to know which file to watch
+    # It must return an array of files/directories
+    public function getWatchList(): array
+    {
+        return [
+            Utils::relativePath('MyApp/Assets/less')
+        ];
+    }
 }
 ```
 
