@@ -7,7 +7,7 @@ use YonisSavary\Sharp\Classes\Data\MigrationManager;
 
 class CheckForAvailableMigrations extends AbstractBuildTask
 {
-    public function execute(): bool
+    public function execute(): int
     {
         $manager = MigrationManager::getInstance();
 
@@ -23,9 +23,17 @@ class CheckForAvailableMigrations extends AbstractBuildTask
             $this->log("");
             foreach ($todo as $migrationName)
                 $this->log("- $migrationName");
-            return false;
+
+            return 1;
         }
 
-        return true;
+        return 0;
+    }
+
+    public function getWatchList(): array
+    {
+        return [
+            MigrationManager::getInstance()->getStorage()->getRoot()
+        ];
     }
 }

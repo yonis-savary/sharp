@@ -8,7 +8,7 @@ use YonisSavary\Sharp\Classes\Env\Configuration;
 use YonisSavary\Sharp\Core\Autoloader;
 use YonisSavary\Sharp\Core\Utils;
 
-class CheckNamespaces extends AbstractBuildTask
+class CheckPSR4Namespaces extends AbstractBuildTask
 {
     public function analyseDirectory(string $directory)
     {
@@ -16,13 +16,13 @@ class CheckNamespaces extends AbstractBuildTask
         if (!is_file($composerFile))
         {
             $this->log("Composer file [$composerFile] not found !");
-            return true;
+            return false;
         }
 
         $composer = new Configuration($composerFile);
         $map = $composer->get("autoload", [])["psr-4"] ?? [];
 
-        $noError = true;
+        $gotError = false;
 
         foreach ($map as $composerNamespace => $namespaceDirectory)
         {
@@ -49,31 +49,38 @@ class CheckNamespaces extends AbstractBuildTask
                     " - Found    : $fileNamespace",
                     " - Expected : $expectedNamespace"
                 );
-                $noError = false;
+                $gotError = true;
             }
 
         }
 
-        if ($noError)
+        if (!$gotError)
             $this->log("Everything is okay inside $directory");
 
-        return $noError;
+        return $gotError;
     }
 
-    public function execute(): bool
+    public function execute(): int
     {
         if ($sharpRoot = $GLOBALS["sharp-src"] ?? null)
             $sharpRoot = realpath(Utils::joinPath($sharpRoot, ".."));
 
         $sharpRoot ??= Utils::relativePath("vendor/yonis-savary/sharp");
 
-        return ObjectArray::fromArray([
+        return (int) ObjectArray::fromArray([
             Autoloader::projectRoot(),
             $sharpRoot
         ])
         ->unique()
         ->reduce(function(bool $acc, string $cur) {
-            return $acc &= $this->analyseDirectory($cur);
-        }, true);
+            return $acc |= $this->analyseDirectory($cur);
+        }, false);
+    }
+
+    public function getWatchList(): array
+    {
+        return ObjectArray::fromArray(Configuration::getInstance()->toArray("applications"))
+            ->map(fn($x) => Utils::relativePath($x))
+            ->collect();
     }
 }

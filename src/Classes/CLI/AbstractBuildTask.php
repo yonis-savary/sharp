@@ -6,7 +6,15 @@ abstract class AbstractBuildTask extends CLIUtils
 {
     /**
      * Main function of your build task, called every build
-     * @return bool `true` if the task was successful, `false` if there was an error
+     * @return int 0 if the task was successful, a positive integer if there was an error
      */
-    public abstract function execute(): bool;
+    public abstract function execute(): int;
+
+    /**
+     * Return a list of directories/files that must be watched when using `build --watch`
+     */
+    public function getWatchList(): array
+    {
+        return [];
+    }
 }

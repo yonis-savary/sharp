@@ -12,7 +12,7 @@ use YonisSavary\Sharp\Core\Utils;
  */
 class InstallDependencies extends AbstractBuildTask
 {
-    public function execute(): bool
+    public function execute(): int
     {
         $this->log('Installing dependencies...');
 
@@ -21,7 +21,7 @@ class InstallDependencies extends AbstractBuildTask
         foreach ($applications as $appName)
             $this->installDependenciesInApp($appName);
 
-        return true;
+        return 0;
     }
 
     protected function installDependenciesInApp(string $appName)

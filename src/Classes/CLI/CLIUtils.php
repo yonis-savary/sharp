@@ -74,6 +74,8 @@ class CLIUtils
             fn($_) => null
         ;
 
+        if (!count($array))
+            return;
 
         $log("\e7");
 
@@ -91,7 +93,7 @@ class CLIUtils
             $callback($array[$i], $i, $array);
             $output = ob_get_clean();
 
-            if ($output)
+            if (strlen($output))
             {
                 if (!str_ends_with($output, "\n"))
                     $output .= "\n";
