@@ -1,5 +1,10 @@
-<phpunit bootstrap="tests/bootstrap.php">
-  <testsuite name="Framework unit tests">
-    <directory>tests/Units</directory>
-  </testsuite>
+<phpunit bootstrap="tests/bootstrap.php" stopOnError="true" stopOnFailure="true">
+  <testsuites>
+    <testsuite name="Framework unit tests">
+      <directory>tests/Units</directory>
+    </testsuite>
+    <testsuite name="Framework integration tests">
+      <file>tests/Integration/CommandTests.php</file>
+    </testsuite>
+  </testsuites>
 </phpunit>
