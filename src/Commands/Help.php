@@ -33,6 +33,7 @@ class Help extends AbstractCommand
         }
 
         $this->log('Available commands with their identifier and purposes:');
+        $this->log('Use --command-output-only to only display what the command shall display without any title or decoration');
 
         foreach ($commands as $command)
         {
