@@ -10,12 +10,18 @@ class SchedulerGenerate extends AbstractCommand
 {
     public function getHelp(): string
     {
-        return "Generate a CRON command to launch the scheduler";
+        return 'Generate a CRON command to launch the scheduler (use -c|--cron-only to only get the cron command)';
     }
 
     public function execute(Args $args): int
     {
         $command = '* * * * * cd '.Autoloader::projectRoot() .' && php do scheduler-launch';
+
+        if ($args->isPresent("c", "cron-only"))
+        {
+            $this->log($command);
+            return 0;
+        }
 
         $this->log(
             "Here's the CRON syntax to launch your app scheduler",
