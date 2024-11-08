@@ -18,7 +18,7 @@ class CreateStraw extends AbstractCommand
             return 2;
         }
 
-        $directory = Utils::joinPath($app, 'Classes/Straws');
+        $directory = Utils::joinPath($app, 'Classes/App/Straws');
         $file = Utils::joinPath($directory, $name. '.php');
 
         $namespace = Utils::pathToNamespace($directory);
