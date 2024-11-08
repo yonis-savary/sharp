@@ -74,16 +74,20 @@ class Console extends CLIUtils
             return 2;
         }
 
+        $args = Args::fromArray($argv);
+
         $command = $commands[0];
 
-        $this->log(
-            sprintf("%s[ %s ]%s\n", str_repeat('-', 5), $command->getIdentifier() , str_repeat('-', 25))
-        );
-        $return = intval($command(Args::fromArray($argv)));
+        if (!$args->isPresent(null, "command-output-only"))
+            $this->log(
+                sprintf("%s[ %s ]%s\n", str_repeat('-', 5), $command->getIdentifier() , str_repeat('-', 25))
+            );
+        $return = intval($command->execute($args));
 
         EventListener::getInstance()->dispatch(new CalledCommand($command, $return));
 
-        $this->log("");
+        if (!$args->isPresent(null, "command-output-only"))
+            $this->log("");
         return $return;
     }
 }
