@@ -145,7 +145,7 @@ class CLIUtils
         ;
 
         if ($mainApplication)
-            return $mainApplication;
+            return $mainApplication->getRoot();
 
         return Terminal::chooseApplication();
     }
