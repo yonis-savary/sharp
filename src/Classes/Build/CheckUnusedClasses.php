@@ -60,7 +60,12 @@ class CheckUnusedClasses extends AbstractBuildTask
             $files = Utils::exploreDirectory($namespaceDirectory, Utils::ONLY_FILES);
 
             foreach ($files as $file)
+            {
+                if (str_contains($file, "vendor/"))
+                    continue;
+
                 $gotError |= $this->analyseFile($file);
+            }
         }
 
         if (!$gotError)

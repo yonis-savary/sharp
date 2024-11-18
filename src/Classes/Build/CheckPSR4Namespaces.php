@@ -31,6 +31,9 @@ class CheckPSR4Namespaces extends AbstractBuildTask
 
             foreach ($files as $file)
             {
+                if (str_contains($file, "vendor/"))
+                    continue;
+
                 $content = file_get_contents($file);
                 $matches = [];
                 if (!preg_match("/^namespace (.+);/m", $content, $matches))
