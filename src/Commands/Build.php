@@ -17,7 +17,7 @@ class Build extends AbstractCommand
         return 'Call every AbstractBuildTask classes in your application';
     }
 
-    public function launchAllTasks()
+    public function launchAllTasks(Args $args)
     {
         $this->log('Building application...');
         $logger = new Logger("build.csv");
@@ -26,7 +26,7 @@ class Build extends AbstractCommand
 
         $gotAnyError = false;
 
-        $this->progressBar($buildClasses, function($class) use (&$logger, &$gotAnyError) {
+        $this->progressBar($buildClasses, function($class) use (&$logger, &$gotAnyError, $args) {
 
             $logger->info("---[{class}]---", ["class" => $class]);
 
@@ -64,7 +64,8 @@ class Build extends AbstractCommand
                 $logger->info($output);
         });
 
-        $gotAnyError |= Test::call();
+        if (!$args->isPresent("-i", "--ignore-tests"))
+            $gotAnyError |= Test::call();
 
         return (int) $gotAnyError;
     }
@@ -187,6 +188,6 @@ class Build extends AbstractCommand
     {
         return $args->isPresent("w", "watch") ?
             $this->startToWatch():
-            $this->launchAllTasks();
+            $this->launchAllTasks($args);
     }
 }

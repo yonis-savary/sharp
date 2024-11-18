@@ -45,7 +45,7 @@ class EnableApplication extends AbstractCommand
 
         $config->save();
 
-        Build::call();
+        Build::call("--ignore-tests");
 
         return 0;
     }
