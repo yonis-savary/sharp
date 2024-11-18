@@ -32,11 +32,6 @@ else if (str_contains(strtolower(PHP_OS), "linux"))
     shell_exec("cp -r vendor/yonis-savary/sharp/src/Core/Server/* .");
     shell_exec("cp -r vendor/yonis-savary/sharp/src/Core/Server/.gitignore .");
     shell_exec("cp -r vendor/yonis-savary/sharp/src/Core/Server/.dockerignore .");
-    shell_exec("rm ./do");
-    shell_exec("rm ./Public/index.php");
-    shell_exec("rmdir ./Public");
-    shell_exec("ln -s vendor/yonis-savary/sharp/src/Core/Server/Public Public");
-    shell_exec("ln -s vendor/yonis-savary/sharp/src/Core/Server/do do");
 
     echo "Sharp tools was successfuly installed in your directory !\n";
     exit(0);
