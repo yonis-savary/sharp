@@ -95,7 +95,7 @@ class Args implements \Countable
 
     public function values(): array
     {
-        return array_values($this->arguments);
+        return array_values(array_filter($this->arguments, fn($x) => $x !== null));
     }
 
     /**
