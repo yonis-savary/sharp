@@ -17,6 +17,7 @@ use YonisSavary\Sharp\Core\Utils;
 use YonisSavary\Sharp\Classes\Web\Controller;
 use Throwable;
 use YonisSavary\Sharp\Classes\Core\Context;
+use YonisSavary\Sharp\Classes\Env\Configuration;
 
 /**
  * Given a set of `Routes`, this component is able to
@@ -36,9 +37,9 @@ class Router
     protected bool $loadedRoutes = false;
 
 
-    public function __construct(Cache $cache=null)
+    public function __construct(Cache $cache=null, Configuration $configuration=null)
     {
-        $this->loadConfiguration();
+        $this->loadConfiguration($configuration);
         $this->cache = $cache ?? Cache::getInstance()->getSubCache('router');
     }
 
