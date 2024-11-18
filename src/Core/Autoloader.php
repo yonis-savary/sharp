@@ -10,8 +10,10 @@ use YonisSavary\Sharp\Classes\Env\Cache;
 use YonisSavary\Sharp\Classes\Env\Configuration;
 use Throwable;
 use YonisSavary\Sharp\Classes\Core\EventListener;
+use YonisSavary\Sharp\Classes\Core\Logger;
 use YonisSavary\Sharp\Classes\Events\LoadedFramework;
 use YonisSavary\Sharp\Classes\Events\LoadingFramework;
+use YonisSavary\Sharp\Classes\Events\PreloadFramework;
 
 class Autoloader
 {
@@ -64,6 +66,12 @@ class Autoloader
     /** Used to cache the results of `getClassesList()` */
     protected static array $cachedClassList = [];
 
+    public static array $cachedClassesHierarchy = [
+        "extends" => [],
+        "implements" => [],
+        "uses" => [],
+    ];
+
     protected static array $loadedApplications = [];
 
     /** When `true`, the autoloader will ignore thrown errors when requiring files and echo them */
@@ -72,17 +80,21 @@ class Autoloader
     public static function initialize()
     {
         ErrorHandling::registerHandlers();
-        self::findProjectRoot();
+        $projectRoot = self::findProjectRoot();
+
+        $listener = EventListener::getInstance();
+        $listener->dispatch(new PreloadFramework($projectRoot));
+
         self::loadApplications();
 
-        EventListener::getInstance()->dispatch(new LoadingFramework());
-        EventListener::getInstance()->dispatch(new LoadedFramework());
+        $listener->dispatch(new LoadingFramework());
+        $listener->dispatch(new LoadedFramework());
     }
 
     /**
      * Try to find the project root directory, crash on failure
      */
-    protected static function findProjectRoot()
+    protected static function findProjectRoot(): string
     {
         if (self::$projectRoot)
             return self::$projectRoot;
@@ -105,6 +117,7 @@ class Autoloader
         }
 
         chdir($original);
+        return self::$projectRoot;
     }
 
     public static function projectRoot(): string
@@ -235,7 +248,10 @@ class Autoloader
      */
     public static function classesThatImplements(string $interface): array
     {
-        return self::filterClasses(fn($e)=> Utils::implements($e, $interface));
+        return array_values(array_filter(
+            self::$cachedClassesHierarchy["implements"][$interface] ??
+            self::filterClasses(fn($e)=> Utils::implements($e, $interface))
+        )) ;
     }
 
     /**
@@ -243,7 +259,8 @@ class Autoloader
      */
     public static function classesThatExtends(string $class): array
     {
-        return self::filterClasses(fn($e)=> Utils::extends($e, $class));
+        return self::$cachedClassesHierarchy["extends"][$class] ??
+            self::filterClasses(fn($e)=> Utils::extends($e, $class));
     }
 
     /**
@@ -251,7 +268,8 @@ class Autoloader
      */
     public static function classesThatUses(string $trait): array
     {
-        return self::filterClasses(fn($e)=> Utils::uses($e, $trait));
+        return self::$cachedClassesHierarchy["uses"][$trait] ??
+            self::filterClasses(fn($e)=> Utils::uses($e, $trait));
     }
 
     public static function loadAutoloadCache(): bool
@@ -263,41 +281,90 @@ class Autoloader
         if (!is_file($cacheFile))
             return false;
 
-        list(
-            self::$lists,
-            self::$cachedClassList
-        ) = include($cacheFile);
+        try
+        {
+            list(
+                self::$lists,
+                self::$cachedClassList,
+                self::$cachedClassesHierarchy,
+            ) = include($cacheFile);
+        }
+        catch (Throwable $err)
+        {
+            Logger::getInstance()->warning("Could not load autoloader cache file");
+            return false;
+        }
 
         return true;
     }
 
+    protected static function getArrayPHPString(array $var): string
+    {
+        if (Utils::isAssoc($var))
+        {
+            $entries = [];
+            foreach ($var as $key => &$value)
+                $entries[] = "'$key' => " . (is_array($value) ? self::getArrayPHPString($value): "'$value'");
+
+            return "[".join(",", $entries)."]";
+        }
+
+        return '['.join(',', array_map(fn($e) => "'$e'", $var)).']';
+    }
+
     public static function writeAutoloadCache()
     {
-        $toString = function($var) {
-            if (Utils::isAssoc($var))
-            {
-                foreach ($var as $key => &$value)
-                    $value = "'$key' => ['".join("','", $value)."']";
-            }
-            else
-            {
-                $var = array_map(fn($e) => "'$e'", $var);
-            }
+        self::$cachedClassesHierarchy = [
+            "extends" => [],
+            "implements" => [],
+            "uses" => [],
+        ];
 
-            return '['.join(',', array_values($var)).']';
+        $pushToCache = function(string $type, string $targetClass, array $results)
+        {
+            self::$cachedClassesHierarchy[$type] ??= [];
+            foreach ($results as $row)
+            {
+                $target = &self::$cachedClassesHierarchy[$type][$row];
+                $target ??= [];
+                $target[] = $targetClass;
+                $target = array_values(array_unique($target));
+            }
         };
 
         // Calling `getList` to cache every possible results
         foreach (array_keys(self::$lists) as $key)
-            self::getList($key);
+        {
+            $files = self::getList($key);
+
+            if ($key === self::VIEWS || $key === self::REQUIRE)
+                continue;
+
+            foreach ($files as $file)
+                require_once $file;
+
+            foreach (get_declared_classes() as $class)
+            {
+                if ($parents = class_parents($class))
+                    $pushToCache("extends", $class, $parents);
+
+                if ($interfaces = class_implements($class))
+                    $pushToCache("implements", $class, $interfaces);
+
+                if ($traits = array_keys(class_uses($class)))
+                    $pushToCache("uses", $class, $traits);
+            }
+        }
+
 
         $cacheFile = Cache::getInstance()->getStorage()->path(self::CACHE_FILE);
         file_put_contents($cacheFile, Terminal::stringToFile(
         "<?php
 
         return [".join(",", [
-            $toString(self::$lists),
-            $toString(self::$cachedClassList),
+            self::getArrayPHPString(self::$lists),
+            self::getArrayPHPString(self::$cachedClassList),
+            self::getArrayPHPString(self::$cachedClassesHierarchy),
         ]).'];', 2));
     }
 }
