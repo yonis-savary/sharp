@@ -26,7 +26,7 @@ class AssetServer
         return [
             'enabled'     => true,
             'cached'      => true,
-            'url'         => '/assets',
+            'url'         => '/assets/{any:filename}',
             'middlewares' => [],
             'max-age'     => false
         ];
@@ -73,10 +73,7 @@ class AssetServer
      */
     public function getURL(string $assetName): string
     {
-        $encodedAssetName = urlencode($assetName);
-        $routePath = $this->configuration['url'];
-
-        return "$routePath?file=$encodedAssetName";
+        return preg_replace("/\{.+?\}/", $assetName, $this->configuration['url']);
     }
 
     public function handleRequest(Request $request, bool $returnResponse=false): Response|false
@@ -100,7 +97,7 @@ class AssetServer
 
     protected function serve(Request $req): Response
     {
-        if (!$searchedFile = ($req->params('file') ?? false))
+        if (!$searchedFile = ($req->getSlug('filename') ?? false))
             return Response::json("A 'file' parameter is needed", 401);
 
         if (!$path = $this->findAsset($searchedFile))
