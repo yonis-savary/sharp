@@ -6,6 +6,7 @@ use YonisSavary\Sharp\Classes\CLI\Args;
 use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 use YonisSavary\Sharp\Classes\CLI\Terminal;
 use YonisSavary\Sharp\Classes\Env\Configuration;
+use YonisSavary\Sharp\Core\Autoloader;
 use YonisSavary\Sharp\Core\Utils;
 
 class CreateApplication extends AbstractCommand
@@ -47,6 +48,32 @@ class CreateApplication extends AbstractCommand
             return array_values(array_unique($applications));
         }, []);
         $config->save();
+
+
+        if (is_file(Utils::relativePath("composer.json")))
+        {
+            $addToPSR4 = $args->isPresent("a", "add-autoload") || Terminal::confirm("Add applications to composer file ? ");
+
+            if ($addToPSR4)
+            {
+                $composerFile = new Configuration(Utils::relativePath("composer.json"));
+
+                $this->log("Adding " . count($values) . " entries to composer.json autoload");
+                $composerFile->edit("autoload", function(array $autoload) use ($values) {
+                    $autoload["psr-4"] ??= [];
+                    foreach ($values as $app)
+                        $autoload["psr-4"]["$app\\"] = $app;
+
+                    return $autoload;
+                }, []);
+
+                $this->log("Saving composer.json");
+                $composerFile->save();
+
+                $this->log("Performing dump-autoload");
+                $this->shellInDirectory("composer dump-autoload", Autoloader::projectRoot());
+            }
+        }
 
         return (int) $gotError;
     }
