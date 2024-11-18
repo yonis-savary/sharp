@@ -22,7 +22,6 @@ use YonisSavary\Sharp\Classes\Events\AutobahnEvents\AutobahnReadAfter;
 use YonisSavary\Sharp\Classes\Events\AutobahnEvents\AutobahnReadBefore;
 use YonisSavary\Sharp\Classes\Events\AutobahnEvents\AutobahnUpdateAfter;
 use YonisSavary\Sharp\Classes\Events\AutobahnEvents\AutobahnUpdateBefore;
-use YonisSavary\Sharp\Classes\Data\Model;
 use Throwable;
 use YonisSavary\Sharp\Classes\Data\AbstractModel;
 
