@@ -58,7 +58,7 @@ class SharpServer
             ['port' => $this->port, 'directory' => $publicDirectory]
         );
 
-        $this->process = new Process(['php','-S',$url], $publicDirectory);
+        $this->process = new Process(['php','-S',$url, "index.php"], $publicDirectory);
         $this->process->start();
 
         usleep(50*1000);
