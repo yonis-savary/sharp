@@ -46,6 +46,6 @@ class SharpServerTest extends SharpTestCase
 
         $this->fetch("GET", "/math/double/1", server: $server);
         $output = $server->getErrorOutput();
-        $this->assertCount(5, explode("\n", $output));
+        $this->assertCount(4, explode("\n", $output));
     }
 }

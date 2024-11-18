@@ -93,7 +93,6 @@ class MigrationManagerTest extends TestCase
         $this->assertCount(0, $manager->listDoneMigrations());
 
         $r = $manager->executeAllMigrations();
-        debug($manager->getLastError());
         $this->assertTrue($r);
         $this->assertCount(2, $manager->listDoneMigrations());
 

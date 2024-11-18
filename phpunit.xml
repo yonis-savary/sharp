@@ -3,6 +3,9 @@
     <testsuite name="Framework unit tests">
       <directory>tests/Units</directory>
     </testsuite>
+    <testsuite name="Framework benchmark tests">
+      <directory>tests/Benchmark</directory>
+    </testsuite>
     <testsuite name="Framework integration tests">
       <file>tests/Integration/CommandTests.php</file>
     </testsuite>

@@ -40,7 +40,7 @@ class ArgsTest extends TestCase
     public function test_values()
     {
         $args = new Args('-a -b -c --long="value1" -d value2');
-        $this->assertEquals([null, null, null, "value1", null, "value2"], $args->values());
+        $this->assertEquals(["value1", "value2"], $args->values());
     }
 
     public function test_getOption()

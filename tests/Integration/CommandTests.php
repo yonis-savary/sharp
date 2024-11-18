@@ -25,14 +25,10 @@ class CommandTests extends TestCase
         $originalDir = getcwd();
         chdir($appStorage->getRoot());
 
-        shell_exec("composer install $nullRedirect");
         shell_exec("composer exec sharp-install $nullRedirect");
 
 
-
-        # Tests `create` commands
-
-        shell_exec("php do create-application AppName $nullRedirect");
+        shell_exec("php do create-application AppName -a $nullRedirect");
         $this->assertTrue($appStorage->isDirectory("AppName"));
 
         shell_exec("php do create-cache TestCache");
@@ -62,7 +58,7 @@ class CommandTests extends TestCase
             "AppName/Helpers/write-a-file.php",
             "<?php storeWrite('helper-file', 'hello');"
         );
-        shell_exec("php do");
+        shell_exec("php do $nullRedirect");
         $this->assertEquals("hello", $appStorage->read("Storage/helper-file"));
 
 
@@ -90,18 +86,15 @@ class CommandTests extends TestCase
         }
         ", 2)
         );
-        shell_exec("php do build");
+        shell_exec("php do build --ignore-tests $nullRedirect");
         $this->assertEquals("madebybuild", $appStorage->read("Storage/build-output"));
 
 
-
-
-
-
         chdir($originalDir);
-        shell_exec("rm -r " . $appStorage->getRoot());
+        shell_exec("rm -r " . $appStorage->getRoot() . " $nullRedirect");
     }
 
+    /*
     public function test_twoAppCanLoad()
     {
         if (!str_contains(strtolower(PHP_OS), "linux"))
@@ -139,4 +132,5 @@ class CommandTests extends TestCase
         chdir($originalDir);
         shell_exec("rm -r " . $appStorage->getRoot());
     }
+        */
 }

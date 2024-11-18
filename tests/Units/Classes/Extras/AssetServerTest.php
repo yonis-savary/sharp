@@ -35,8 +35,8 @@ class AssetServerTest extends TestCase
     {
         $s = $this->getNewAssetServer();
 
-        $this->assertEquals('/assets?file=file.js', $s->getURL('file.js'));
-        $this->assertEquals('/assets?file=directory%2Fstyle.css', $s->getURL('directory/style.css'));
+        $this->assertEquals('/assets/file.js', $s->getURL('file.js'));
+        $this->assertEquals('/assets/directory/style.css', $s->getURL('directory/style.css'));
     }
 
     public function test_handleRequest()
@@ -44,7 +44,7 @@ class AssetServerTest extends TestCase
         $s = $this->getNewAssetServer();
 
         $res = $s->handleRequest(
-            new Request('GET', '/assets', ['file' => 'sharp-tests-script.js']),
+            new Request('GET', '/assets/sharp-tests-script.js'),
             true
         );
         $this->assertInstanceOf(Response::class, $res);
