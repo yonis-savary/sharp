@@ -43,6 +43,11 @@ $generator = new ModelGenerator(SQLite::class, TestClassFactory::createDatabase(
 $generator->generateAll(Utils::relativePath("TestApp"), 'YonisSavary\\Sharp\\Tests\\Root\\TestApp\\Models');
 
 
+$original = getcwd();
+chdir($GLOBALS['sharp-root']);
+shell_exec("npm i");
+chdir($original);
+
 register_shutdown_function(function(){
     if (!SharpServer::hasInstance())
         return;

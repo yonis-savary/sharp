@@ -20,15 +20,23 @@ class AssetServerTest extends TestCase
         $s = $this->getNewAssetServer();
 
         $script = Utils::relativePath('/TestApp/Assets/sharp-tests/sharp-tests-script.js');
-        $style = Utils::relativePath('/TestApp/Assets/sharp-tests/sharp-tests-style.css');
+        $style  = Utils::relativePath('/TestApp/Assets/sharp-tests/sharp-tests-style.css');
 
         $this->assertEquals($script, $s->findAsset('sharp-tests-script.js'));
-        $this->assertEquals($style, $s->findAsset('sharp-tests-style.css'));
+        $this->assertEquals($style , $s->findAsset('sharp-tests-style.css'));
         $this->assertEquals($script, $s->findAsset('sharp-tests/sharp-tests-script.js'));
-        $this->assertEquals($style, $s->findAsset('sharp-tests/sharp-tests-style.css'));
+        $this->assertEquals($style , $s->findAsset('sharp-tests/sharp-tests-style.css'));
 
         $this->assertFalse($s->findAsset('sharp-tests-script.css'));
         $this->assertFalse($s->findAsset('sharp-tests-style.js'));
+    }
+
+    public function test_nodeServing()
+    {
+        $s = $this->getNewAssetServer();
+        $personSvgPath = Utils::relativePath("/node_modules/bootstrap-icons/icons/person.svg");
+
+        $this->assertEquals($personSvgPath, $s->findAsset("person.svg"));
     }
 
     public function test_getURL()

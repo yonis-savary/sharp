@@ -87,4 +87,26 @@ To address this, your can be more precise when giving an asset name
 script('contact/creation.js')
 ```
 
+
+## Node packages serving
+
+The `AssetServer` can also serve files from your `node_module` directory.
+
+With this configuration
+```json
+"asset-server": {
+    "node-packages": [
+        "bootstrap-icons"
+    ]
+}
+```
+
+`AssetServer` will serve every files that are indexed in `bootstrap-icons/package.json` (`files` key)
+
+You can also add packages to serve with the `publish-node-package`
+
+```bash
+php do publish-node-package bootstrap-icons
+```
+
 [< Back to summary](../README.md)

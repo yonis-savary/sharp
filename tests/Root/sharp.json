@@ -11,5 +11,10 @@
         "login-field": "login",
         "password-field": "password",
         "salt-field": "salt"
+    },
+    "asset-server": {
+        "node-packages": [
+            "bootstrap-icons"
+        ]
     }
 }

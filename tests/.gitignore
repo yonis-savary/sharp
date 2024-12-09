@@ -1,4 +1,7 @@
 /Root/Storage
+/Root/package-lock.json
+/Root/node_modules
+
 /Integration-apps
 /Manual-test-app
 /test-suite.csv

@@ -72,6 +72,7 @@ Your directory will look like
 
 🚀 Extras
 - 🟢 Simple assets serving
+- 🔵 Node modules dist file serving !
 - 🟢 Automatic CRUD API for your models
 - 🟢 Scheduler system
 

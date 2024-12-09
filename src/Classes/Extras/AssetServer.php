@@ -4,22 +4,31 @@ namespace YonisSavary\Sharp\Classes\Extras;
 
 use YonisSavary\Sharp\Classes\Core\Component;
 use YonisSavary\Sharp\Classes\Core\Configurable;
+use YonisSavary\Sharp\Classes\Core\Logger;
 use YonisSavary\Sharp\Classes\Env\Cache;
+use YonisSavary\Sharp\Classes\Env\Configuration;
 use YonisSavary\Sharp\Classes\Http\Request;
 use YonisSavary\Sharp\Classes\Http\Response;
 use YonisSavary\Sharp\Classes\Web\Route;
 use YonisSavary\Sharp\Core\Autoloader;
+use YonisSavary\Sharp\Core\Utils;
 
 class AssetServer
 {
     use Component, Configurable;
 
     const EXTENSIONS_MIMES = [
-        'js'  => 'application/javascript',
-        'css' => 'text/css'
+        'js'   => 'application/javascript',
+        'ejs'  => 'application/javascript',
+        'mjs'  => 'application/javascript',
+        'css'  => 'text/css',
+        'scss' => 'text/css',
+        'sass' => 'text/css',
+        'json' => 'application/json',
     ];
 
     protected $cacheIndex = [];
+    protected $nodeCacheIndex = [];
 
     public static function getDefaultConfiguration(): array
     {
@@ -28,7 +37,8 @@ class AssetServer
             'cached'      => true,
             'url'         => '/assets/{any:filename}',
             'middlewares' => [],
-            'max-age'     => false
+            'max-age'     => false,
+            'node-packages' => []
         ];
     }
 
@@ -40,11 +50,47 @@ class AssetServer
             return;
 
         if ($this->isCached())
-            $this->cacheIndex = &Cache::getInstance()->getReference('sharp.asset-server');
+        {
+            $cache = Cache::getInstance();
+            $this->cacheIndex = &$cache->getReference('sharp.asset-server');
+            $this->nodeCacheIndex = &$cache->getReference("sharp.asset-server-node");
+        }
+
+        foreach (Utils::toArray($this->configuration["node-packages"] ?? []) as $package)
+            $this->publishNodePackage($package);
 
         $req = Request::fromGlobals();
         $this->handleRequest($req);
+
     }
+
+    public function publishNodePackage(string $nodePackage)
+    {
+        if ($files = ($this->nodeCacheIndex[$nodePackage] ?? []))
+            return Autoloader::addToList(Autoloader::ASSETS, ...$files);
+
+        $packagePath = Utils::relativePath("node_modules/$nodePackage");
+
+        if (!is_dir($packagePath))
+            return Logger::getInstance()->error("Could not publish $nodePackage ($packagePath is not a directory)");
+
+        $packageConfig = new Configuration(Utils::joinPath($packagePath, "package.json"));
+
+        $toAdd = [];
+        foreach ($packageConfig->toArray("files") as $file)
+        {
+            $filePath = Utils::joinPath($packagePath, $file);
+
+            if (is_dir($filePath))
+                $toAdd[] = $filePath;
+            else if ($subfiles = glob($filePath))
+                array_push($toAdd, ...$subfiles);
+        }
+
+        $this->nodeCacheIndex[$nodePackage] = $toAdd;
+        Autoloader::addToList(Autoloader::ASSETS, ...$toAdd);
+    }
+
 
     /**
      * Find an asset absolute path from its path end
@@ -56,6 +102,9 @@ class AssetServer
     {
         if ($path = $this->cacheIndex[$assetName] ?? false)
             return $path;
+
+        if (!str_starts_with($assetName, "/"))
+            $assetName = "/$assetName";
 
         foreach (Autoloader::getList(Autoloader::ASSETS) as $file)
         {
