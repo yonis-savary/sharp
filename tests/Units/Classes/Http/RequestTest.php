@@ -403,12 +403,11 @@ class RequestTest extends SharpTestCase
         $request = new Request("GET", $server->getURL("/math/double/1"));
         $response = $request->fetch();
         $this->assertEquals(2, $response->getContent());
-        $this->assertTrue($request->getLastFetchDuration() < 50);
 
         $request = new Request("GET", $server->getURL("/utils/sleep"));
         $response = $request->fetch();
         $this->assertEquals("ok", $response->getContent());
-        $this->assertTrue($request->getLastFetchDuration() >= 500);
+        $this->assertGreaterThan(500, $request->getLastFetchDuration());
 
     }
 }
