@@ -77,6 +77,8 @@ class Autoloader
     /** When `true`, the autoloader will ignore thrown errors when requiring files and echo them */
     public static bool $ignoreRequireErrors = false;
 
+    protected static bool $isCached = false;
+
     public static function initialize()
     {
         ErrorHandling::registerHandlers();
@@ -142,6 +144,11 @@ class Autoloader
                 echo $thrown->getMessage() . "\n\n";
             }
         }
+    }
+
+    public static function isCached(): bool
+    {
+        return self::$isCached;
     }
 
     protected static function loadApplications()
@@ -288,6 +295,8 @@ class Autoloader
                 self::$cachedClassList,
                 self::$cachedClassesHierarchy,
             ) = include($cacheFile);
+
+            self::$isCached = true;
         }
         catch (Throwable $err)
         {
