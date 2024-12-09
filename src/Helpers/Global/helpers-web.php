@@ -24,15 +24,17 @@ function asset(string $target) : string
  * @return string `script` tag with the script linked to it or inside directly (see the `$inject` parameter)
  * @see \Sharp\Classes\Extras\AssetServer::getUrl()
  */
-function script(string $target, bool $inject=false): string
+function script(string $target, bool $inject=false, string $type=null): string
 {
+    $typeAttribute = $type ? " type=\"$type\" ": "";
+
     if (!$inject)
-        return "<script src='".asset($target)."'></script>";
+        return "<script $typeAttribute src='".asset($target)."'></script>";
 
     if (!($path = AssetServer::getInstance()->findAsset($target)))
         throw new Exception("Script not found [$target]");
 
-    return '<script>'.file_get_contents($path).'</script>';
+    return "<script $typeAttribute>".file_get_contents($path).'</script>';
 }
 
 /**
