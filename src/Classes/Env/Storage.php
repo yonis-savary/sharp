@@ -4,7 +4,9 @@ namespace YonisSavary\Sharp\Classes\Env;
 
 use Exception;
 use RuntimeException;
+use Throwable;
 use YonisSavary\Sharp\Classes\Core\Component;
+use YonisSavary\Sharp\Classes\Core\Logger;
 use YonisSavary\Sharp\Classes\Data\ObjectArray;
 use YonisSavary\Sharp\Classes\Env\Drivers\FileDriverInterface;
 use YonisSavary\Sharp\Classes\Env\Drivers\LocalDiskDriver;
@@ -145,7 +147,16 @@ class Storage
         $this->makeDirectory($directory);
         $this->assertIsWritable($directory);
 
-        $driver->filePutContents($path, $content, $flags);
+        try
+        {
+            $driver->filePutContents($path, $content, $flags);
+        }
+        catch (Throwable $thrown)
+        {
+            $logger = Logger::getInstance();
+            $logger->critical("Could not write file [$path]");
+            $logger->critical($thrown);
+        }
     }
 
     /**
