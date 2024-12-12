@@ -57,6 +57,8 @@ class Database
     {
         $this->loadConfiguration();
 
+        $this->driver = trim(strtolower($this->driver));
+
         $dsn = $this->getDSN();
         $this->connection = new PDO($dsn, $user, $password);
 
@@ -121,6 +123,38 @@ class Database
 
         return "{$driver}:host={$host};port={$port};dbname={$dbname}";
     }
+
+    /**
+     * @return string Get used PDO driver (trimmed & lowercase)
+     */
+    public function getDriver(): string
+    {
+        return  $this->driver;
+    }
+
+    /**
+     * @return ?string Return used database name (can be `null` for a in-memory database)
+     */
+    public function getDatabase(): ?string
+    {
+        return $this->database;
+    }
+
+    public function getHost(): ?string
+    {
+        return $this->host;
+    }
+
+    public function getPort(): ?string
+    {
+        return $this->port;
+    }
+
+    public function getUser(): ?string
+    {
+        return $this->user;
+    }
+
 
     /**
      * @return int The last inserted Id by the connection (if any, `false` otherwise)
