@@ -496,8 +496,8 @@ class ModelQuery
 
     /**
      * Call a function for each result
-     * Use (limit/offset) to fetch rows one by one
-     * @experimental
+     * Use (limit/offset) to make batches or rows
+     * (Useful to process a large number or results)
      */
     public function forEach(callable $function): self
     {

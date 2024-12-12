@@ -8,9 +8,6 @@ use YonisSavary\Sharp\Classes\Data\ModelQueryIterator;
 use YonisSavary\Sharp\Tests\Root\TestApp\Models\TestTvShow;
 use YonisSavary\Sharp\Tests\Units\TestClassFactory;
 
-/**
- * @warning (WIP) This class is not tested yet, use it at your own risk
- */
 class ModelQueryIteratorTest extends TestCase
 {
     protected function setUp(): void
@@ -34,20 +31,5 @@ class ModelQueryIteratorTest extends TestCase
     {
         $iterator = new ModelQueryIterator(TestTvShow::select());
         $this->assertEquals(5, $iterator->getCount());
-    }
-
-    public function test_next()
-    {
-        $iterator = new ModelQueryIterator(TestTvShow::select());
-
-        $i=0;
-        while ($data = $iterator->next())
-        {
-            $this->assertEquals($i, $iterator->getLastIndex());
-            $this->assertInstanceOf(TestTvShow::class, $data);
-            $i++;
-        }
-
-        $this->assertEquals(5, $i);
     }
 }

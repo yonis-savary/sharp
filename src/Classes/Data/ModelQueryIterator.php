@@ -2,25 +2,28 @@
 
 namespace YonisSavary\Sharp\Classes\Data;
 
-/**
- * @warning (WIP) This class is not tested yet, use it at your own risk
- */
 class ModelQueryIterator
 {
+    protected int $batchSize;
     protected int $count;
     protected int $index;
     protected ModelQuery $query;
 
-    public static function forEach(ModelQuery $query, callable $function): void
+    public static function forEach(ModelQuery $query, callable $function, int $batchSize=500): void
     {
-        $iterator = new self($query);
+        $iterator = new self($query, $batchSize);
 
-        while ($data = $iterator->next())
-            $function($data, $iterator->getLastIndex(), $iterator->getCount());
+        while ($batch = $iterator->nextBatch())
+        {
+            foreach ($batch as $data)
+                $function($data, $iterator->getLastIndex(), $iterator->getCount());
+        }
     }
 
-    public function __construct(ModelQuery $query)
+    public function __construct(ModelQuery $query, int $batchSize=500)
     {
+        $this->batchSize = $batchSize;
+
         $sql = $query->build();
         $this->query = $query;
         $this->count = Database::getInstance()->query("SELECT COUNT(*) as c FROM ($sql) as _ti")[0]['c'] ?? 0;
@@ -38,16 +41,16 @@ class ModelQueryIterator
         return $this->count;
     }
 
-    public function next(): AbstractModel|false
+    protected function nextBatch(): array|false
     {
         if ($this->index >= $this->count)
             return false;
 
         $array = $this->query
-            ->limit(1, $this->index)
-            ->first() ?? false;
+            ->limit($this->batchSize, $this->index)
+            ->fetch() ?? false;
 
-        $this->index++;
+        $this->index += $this->batchSize;
         return $array;
     }
 }
