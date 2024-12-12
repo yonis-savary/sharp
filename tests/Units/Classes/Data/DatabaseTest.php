@@ -45,6 +45,37 @@ class DatabaseTest extends TestCase
         $this->assertIsInt($statement->rowCount());
     }
 
+    public function test_getDriver()
+    {
+        $db = $this->database;
+        $this->assertEquals("sqlite", $db->getDriver());
+    }
+    public function test_getDatabase()
+    {
+        $db = $this->database;
+        $this->assertNull($db->getDatabase());
+    }
+
+    public function test_getHost()
+    {
+        $db = $this->database;
+        $this->assertNull($db->getHost());
+    }
+
+    public function test_getPort()
+    {
+        $db = $this->database;
+        $this->assertNull($db->getPort());
+    }
+
+    public function test_getUser()
+    {
+        $db = $this->database;
+        $this->assertNull($db->getUser());
+    }
+
+
+
     public function test_lastInsertId()
     {
         $db = $this->database;
