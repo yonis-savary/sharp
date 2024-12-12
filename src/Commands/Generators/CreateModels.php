@@ -7,6 +7,7 @@ use YonisSavary\Sharp\Classes\CLI\Args;
 use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 use YonisSavary\Sharp\Classes\CLI\Terminal;
 use YonisSavary\Sharp\Classes\Data\ModelGenerator\ModelGenerator;
+use YonisSavary\Sharp\Core\Autoloader;
 
 class CreateModels extends AbstractCommand
 {
@@ -26,7 +27,8 @@ class CreateModels extends AbstractCommand
         try
         {
             $generator->generateAll($app);
-            $this->log($this->withGreenColor("Models fetched into [$app] !"));
+            $appRelPath = str_replace(Autoloader::projectRoot()."/", "", $app);
+            $this->log($this->withGreenColor("Models fetched into [./$appRelPath] !"));
             return 0;
         }
         catch(Throwable $err)
