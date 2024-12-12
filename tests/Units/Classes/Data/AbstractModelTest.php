@@ -233,6 +233,17 @@ class AbstractModelTest extends TestCase
         $this->assertNull(TestUser::findId(1309809));
     }
 
+
+    public function test_findOrCreate()
+    {
+        $newInstance = TestTvShow::findOrCreate(["name" => 'Dark', 'episode_number' => 26]);
+        $this->assertEquals(6, $newInstance->id);
+
+        $existing = TestTvShow::findOrCreate(["name" => "Malcolm in the middle"]);
+        $this->assertEquals(1, $existing->id);
+
+    }
+
     public function test_findWhere()
     {
         $this->assertInstanceOf(AbstractModel::class, TestUser::findWhere(['id' => 1]));

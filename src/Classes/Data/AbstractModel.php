@@ -6,6 +6,7 @@ use Exception;
 use InvalidArgumentException;
 use JsonSerializable;
 use stdClass;
+use YonisSavary\Sharp\Classes\Core\Logger;
 use YonisSavary\Sharp\Classes\Data\DatabaseField;
 use YonisSavary\Sharp\Core\Utils;
 
@@ -285,6 +286,30 @@ abstract class AbstractModel implements JsonSerializable
         return $self::findWhere([$column => $value], $explore, $database);
     }
 
+
+    /**
+     * Find a row with specified data or create one
+     *
+     * @param array $data specified data
+     * @param bool $recursive Fetch foreign model data when `true`
+     * @param Database $database Database to use when fetching/creating data
+     * @return static New or existing row instance
+     */
+    public static function findOrCreate(array $data, bool $recursive=true, Database $database=null): self
+    {
+        $self = get_called_class();
+        $database ??= Database::getInstance();
+
+        $primaryKey = $self::getPrimaryKey();
+        if (array_key_exists($primaryKey, $data))
+            Logger::getInstance()->warning("$primaryKey key data was used with ".self::getTable()." findOrCreate() method");
+
+        if ($existing = $self::findWhere($data, $recursive, $database))
+            return $existing;
+
+        $id = $self::insertArray($data, $database);
+        return $self::findId($id, $recursive, $database);
+    }
 
     /**
      * Select the first row where conditions from $condition are matched
