@@ -68,8 +68,7 @@ class Router
 
         $response = Response::adapt($route($request));
         $response->logSelf();
-        $response->display();
-        die;
+        $response->displayAndDie();
     }
 
     protected function putRouteToCache(Route $route, Request $request): void

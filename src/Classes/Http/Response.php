@@ -203,6 +203,12 @@ class Response
         echo $this->getClientContent();
     }
 
+    public function displayAndDie(bool $sendHeaders=true): void
+    {
+        $this->display($sendHeaders);
+        die;
+    }
+
     /**
      * @param string HTML Content
      * @param int $responseCode HTTP response code

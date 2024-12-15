@@ -140,8 +140,7 @@ class AssetServer
             return $response;
 
         $response->logSelf();
-        $response->display();
-        die;
+        $response->displayAndDie();
     }
 
     protected function serve(Request $req): Response

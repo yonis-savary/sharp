@@ -28,6 +28,5 @@ EventListener::getInstance()->on(LoadedFramework::class, function(){
 
 
 EventListener::getInstance()->on(RequestNotValidated::class, function(RequestNotValidated $event){
-    Response::json($event->errors, ResponseCodes::BAD_REQUEST)->display();
-    die;
+    Response::json($event->errors, ResponseCodes::BAD_REQUEST)->displayAndDie();
 });
