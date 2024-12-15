@@ -11,17 +11,10 @@ You can find resources to work/learn with Sharp in the [`docs/` directory](./doc
 ## 📦 Get Sharp
 
 ```bash
-# Add Sharp to your project
-composer require yonis-savary/sharp
+composer create-project yonis-savary/sharp-project NewProject
+cd NewProject
 
-# Copy Public directory and 'do' script, .gitignore, etc.
-# Then initialize your Sharp project
-composer exec sharp-install && php do initialize
-
-# Launch built-in web server
 php do serve
-# specify port
-php do serve --port=8080
 ```
 
 Your directory will look like
