@@ -45,8 +45,7 @@ class ErrorHandling
                     $errorMessage .= "\n" . $exception->getTraceAsString();
                 }
 
-                (new Response($errorMessage, 500, ['Content-Type' => 'text/plain']))->display();
-                die;
+                (new Response($errorMessage, 500, ['Content-Type' => 'text/plain']))->displayAndDie();
             }
             catch (Throwable $err)
             {
