@@ -7,17 +7,18 @@ use YonisSavary\Sharp\Classes\Env\Storage;
 
 final class AppMapInstance extends AbstractMap {
 
+    private Storage $dataStorage;
     private string $hashName;
 
-    public function __construct(string $hashName, $data)
+    public function __construct(Storage $dataStorage, string $hashName, $data)
     {
+        $this->dataStorage = $dataStorage;
         $this->hashName = $hashName;
         $this->storage = $data;
     }
 
     public function __destruct()
     {
-        Storage::getInstance()->getSubStorage('Sharp/AppMaps')
-        ->write($this->hashName, serialize($this->storage));
+        $this->dataStorage->write($this->hashName, serialize($this->storage));
     }
 }

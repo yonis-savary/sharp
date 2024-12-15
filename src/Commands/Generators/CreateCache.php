@@ -23,7 +23,7 @@ class CreateCache extends AbstractCommand
         }
         $filename = $name . '.php';
 
-        $cacheStorage = new Storage(Utils::joinPath($application, 'Classes/App/Caches'));
+        $cacheStorage = new Storage(Utils::joinPath($application, 'Classes/Caches'));
         if ($cacheStorage->isFile($filename))
         {
             $this->log("$filename already exists !");
@@ -35,7 +35,7 @@ class CreateCache extends AbstractCommand
         $cacheStorage->write($filename, Terminal::stringToFile(
             "<?php
 
-            namespace $applicationNamespace\\Classes\\App\\Caches;
+            namespace $applicationNamespace\\Classes\\Caches;
 
             use ".AppCache::class.";
 

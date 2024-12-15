@@ -24,7 +24,7 @@ class CreateMap extends AbstractCommand
 
         $filename = $name . '.php';
 
-        $mapsStorage = new Storage(Utils::joinPath($application, 'Classes/App/Maps'));
+        $mapsStorage = new Storage(Utils::joinPath($application, 'Classes/Maps'));
         if ($mapsStorage->isFile($filename))
         {
             $this->log("$filename already exists !");
@@ -36,7 +36,7 @@ class CreateMap extends AbstractCommand
         $mapsStorage->write($filename, Terminal::stringToFile(
             "<?php
 
-            namespace $applicationNamespace\\Classes\\App\\Maps;
+            namespace $applicationNamespace\\Classes\\Maps;
 
             use ".AppMap::class.";
 

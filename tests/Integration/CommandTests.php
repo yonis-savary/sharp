@@ -32,22 +32,22 @@ class CommandTests extends TestCase
         $this->assertTrue($appStorage->isDirectory("AppName"));
 
         shell_exec("php do create-cache TestCache");
-        $this->assertTrue($appStorage->isFile("AppName/Classes/App/Caches/TestCache.php"));
+        $this->assertTrue($appStorage->isFile("AppName/Classes/Caches/TestCache.php"));
 
         shell_exec("php do create-controller TestController");
         $this->assertTrue($appStorage->isFile("AppName/Controllers/TestController.php"));
 
         shell_exec("php do create-map TestMap");
-        $this->assertTrue($appStorage->isFile("AppName/Classes/App/Maps/TestMap.php"));
+        $this->assertTrue($appStorage->isFile("AppName/Classes/Maps/TestMap.php"));
 
         shell_exec("php do create-middleware TestMiddleware");
         $this->assertTrue($appStorage->isFile("AppName/Middlewares/TestMiddleware.php"));
 
         shell_exec("php do create-storage TestStorage");
-        $this->assertTrue($appStorage->isFile("AppName/Classes/App/Storages/TestStorage.php"));
+        $this->assertTrue($appStorage->isFile("AppName/Classes/Storages/TestStorage.php"));
 
         shell_exec("php do create-straw TestStraw");
-        $this->assertTrue($appStorage->isFile("AppName/Classes/App/Straws/TestStraw.php"));
+        $this->assertTrue($appStorage->isFile("AppName/Classes/Straws/TestStraw.php"));
 
 
 

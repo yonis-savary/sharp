@@ -23,7 +23,7 @@ class CreateStorage extends AbstractCommand
         }
         $filename = $name . '.php';
 
-        $storagePath = new Storage(Utils::joinPath($application, 'Classes/App/Storages'));
+        $storagePath = new Storage(Utils::joinPath($application, 'Classes/Storages'));
         if ($storagePath->isFile($filename))
         {
             $this->log("$filename already exists !");
@@ -35,7 +35,7 @@ class CreateStorage extends AbstractCommand
         $storagePath->write($filename, Terminal::stringToFile(
             "<?php
 
-            namespace $applicationNamespace\\Classes\\App\\Storages;
+            namespace $applicationNamespace\\Classes\\Storages;
 
             use ".AppStorage::class.";
 
