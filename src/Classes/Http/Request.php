@@ -294,6 +294,71 @@ class Request
     }
 
     /**
+     * Test if the request has one or more parameters
+     * @param bool $acceptNulls If `true`, check if the parameters are present, otherwise, check if the parameters has any value
+     */
+    public function has(string|array $keys, bool $acceptNulls=false): bool
+    {
+        $allParams = $this->all();
+        $keys = ObjectArray::fromArray(Utils::toArray($keys));
+
+        return $acceptNulls ?
+            $keys->all(fn($x) => array_key_exists($x, $allParams)):
+            $keys->all(fn($x) => ($allParams[$x] ?? null) !== null);
+    }
+
+
+    public function integer(string $key, bool $crashOnNonNumeric=true): int
+    {
+        if (!$this->has($key))
+        {
+            EventListener::getInstance()->dispatch(new RequestNotValidated(["The $key parameter is needed !"]));
+            return -1;
+        }
+
+        $value = $this->params($key);
+
+        if ((!is_numeric($value)) && $crashOnNonNumeric)
+        {
+            EventListener::getInstance()->dispatch(new RequestNotValidated(["The $key parameter must be an integer !"]));
+            return -1;
+        }
+
+        return (int) $value;
+    }
+
+    public function float(string $key, bool $crashOnNonNumeric=true): float
+    {
+        if (!$this->has($key))
+        {
+            EventListener::getInstance()->dispatch(new RequestNotValidated(["The $key parameter is needed !"]));
+            return -1;
+        }
+
+        $value = $this->params($key);
+
+        if ((!is_numeric($value)) && $crashOnNonNumeric)
+        {
+            EventListener::getInstance()->dispatch(new RequestNotValidated(["The $key parameter must be a float !"]));
+            return -1;
+        }
+
+        return (float) $value;
+    }
+
+    public function json(string $key): mixed
+    {
+        if (!$this->has($key))
+        {
+            EventListener::getInstance()->dispatch(new RequestNotValidated(["The $key parameter is needed !"]));
+            return -1;
+        }
+
+        $rawValue = $this->params($key);
+        return json_decode($rawValue, true, flags: JSON_THROW_ON_ERROR);
+    }
+
+    /**
      * @return string HTTP Method
      */
     public function getMethod(): string

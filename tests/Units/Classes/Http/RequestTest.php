@@ -206,6 +206,97 @@ class RequestTest extends SharpTestCase
         $this->assertNull($post->paramsFromPost('C'));
     }
 
+
+    public function test_has()
+    {
+        $request = new Request("GET", "/", ["A" => 1, "B" => 2, "C" => null]);
+
+        $this->assertFalse($request->has("C"));
+        $this->assertTrue($request->has("C", true));
+
+        $this->assertTrue($request->has(["A", "B"]));
+        $this->assertTrue($request->has(["A", "B"], true));
+
+        $this->assertFalse($request->has(["A", "B", "C"]));
+        $this->assertTrue($request->has(["A", "B", "C"], true));
+    }
+
+    public function test_integer()
+    {
+        $dispatched = false;
+        $listener = EventListener::getInstance();
+        $listener->removeAllForEvent(RequestNotValidated::class);
+        $listener->on(RequestNotValidated::class, function() use (&$dispatched) {
+            $dispatched = true;
+        });
+
+        $request = new Request("GET", "/", ["A" => "qskqsdml", "B" => "12", "C" => "0"]);
+
+        $this->assertEquals(0, $request->integer("A", false));
+        $this->assertEquals(12, $request->integer("B", false));
+        $this->assertEquals(0, $request->integer("C", false));
+
+        $dispatched = false;
+        $this->assertEquals(-1, $request->integer("A"));
+        $this->assertTrue($dispatched);
+        $this->assertEquals(12, $request->integer("B"));
+        $this->assertEquals(0, $request->integer("C"));
+
+
+        $dispatched = false;
+        $this->assertEquals(-1, $request->integer("D"));
+        $this->assertTrue($dispatched);
+    }
+
+
+    public function test_float()
+    {
+        $dispatched = false;
+        $listener = EventListener::getInstance();
+        $listener->removeAllForEvent(RequestNotValidated::class);
+        $listener->on(RequestNotValidated::class, function() use (&$dispatched) {
+            $dispatched = true;
+        });
+
+        $request = new Request("GET", "/", ["A" => "qskqsdml", "B" => "12.5", "C" => "0"]);
+
+        $this->assertEquals(0, $request->float("A", false));
+        $this->assertEquals(12.5, $request->float("B", false));
+        $this->assertEquals(0, $request->float("C", false));
+
+        $dispatched = false;
+        $this->assertEquals(-1, $request->float("A"));
+        $this->assertTrue($dispatched);
+        $this->assertEquals(12.5, $request->float("B"));
+        $this->assertEquals(0, $request->float("C"));
+
+
+        $dispatched = false;
+        $this->assertEquals(-1, $request->float("D"));
+        $this->assertTrue($dispatched);
+    }
+
+    public function test_json()
+    {
+        $myObject = ["i'm an example" => ['Of a JSON object' => ['That holds' => ['Some value', 950983]]]];
+        $myObjectString = json_encode($myObject);
+
+        $dispatched = false;
+        $listener = EventListener::getInstance();
+        $listener->removeAllForEvent(RequestNotValidated::class);
+        $listener->on(RequestNotValidated::class, function() use (&$dispatched) {
+            $dispatched = true;
+        });
+
+        $request = new Request("GET", "/", ["object" => $myObjectString]);
+
+        $this->assertEquals($myObject, $request->json("object"));
+
+        $dispatched = false;
+        $this->assertEquals(-1, $request->float("inexistant"));
+        $this->assertTrue($dispatched);
+    }
+
     public function test_getMethod()
     {
         $get = $this->sampleGetRequest();
