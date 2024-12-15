@@ -3,35 +3,30 @@
 namespace YonisSavary\Sharp\Classes\Security;
 
 use YonisSavary\Sharp\Classes\Core\Component;
-use YonisSavary\Sharp\Classes\Core\Configurable;
 use YonisSavary\Sharp\Classes\Env\Session;
 use YonisSavary\Sharp\Classes\Http\Request;
+use YonisSavary\Sharp\Classes\Security\Configuration\CsrfConfiguration;
 
 class Csrf
 {
-    use Component, Configurable;
+    use Component;
 
     const CACHE_KEY = 'sharp.security.csrf.token';
 
     protected Session $session;
 
-    public static function getDefaultConfiguration(): array
-    {
-        return [
-            'html-input-name' => 'csrf-token'
-        ];
-    }
+    protected CsrfConfiguration $configuration;
 
-    public function __construct(Session $session)
+    public function __construct(Session $session, CsrfConfiguration $configuration=null)
     {
-        $this->loadConfiguration();
+        $this->configuration = $configuration ?? CsrfConfiguration::resolve();
         $this->session = $session ?? Session::getInstance();
     }
 
     public function getHTMLInput(): string
     {
         $token = $this->getToken();
-        $inputName = $this->configuration['html-input-name'];
+        $inputName = $this->configuration->htmlInputName;
 
         return "<input type='hidden' name='$inputName' value='$token'>";
     }
@@ -58,7 +53,7 @@ class Csrf
      */
     public function checkRequest(Request $request): bool
     {
-        $inputName = $this->configuration['html-input-name'];
+        $inputName = $this->configuration->htmlInputName;
         $requestToken = $request->params($inputName);
         $validToken = $this->getToken();
 

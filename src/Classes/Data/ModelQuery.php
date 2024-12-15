@@ -5,7 +5,6 @@ namespace YonisSavary\Sharp\Classes\Data;
 use Exception;
 use InvalidArgumentException;
 use PDO;
-use YonisSavary\Sharp\Classes\Core\Configurable;
 use YonisSavary\Sharp\Classes\Core\Logger;
 use YonisSavary\Sharp\Classes\Data\Classes\DummyModel;
 use YonisSavary\Sharp\Classes\Data\Classes\QueryCondition;
@@ -14,13 +13,12 @@ use YonisSavary\Sharp\Classes\Data\Classes\QueryJoin;
 use YonisSavary\Sharp\Classes\Data\Classes\QueryOrder;
 use YonisSavary\Sharp\Classes\Data\Classes\QuerySet;
 use YonisSavary\Sharp\Classes\Data\Classes\QueryConditionRaw;
+use YonisSavary\Sharp\Classes\Data\Configuration\ModelQueryConfiguration;
 use YonisSavary\Sharp\Classes\Data\Database;
 use YonisSavary\Sharp\Core\Utils;
 
 class ModelQuery
 {
-    use Configurable;
-
     const INSERT = 1;
     const CREATE = 1;
 
@@ -58,10 +56,7 @@ class ModelQuery
 
     protected int $lastRowCount = -1;
 
-    public static function getDefaultConfiguration(): array
-    {
-        return ["join-limit" => 50];
-    }
+    protected ModelQueryConfiguration $configuration;
 
     /**
      * @param string|AbstractModel $modelClass
@@ -75,12 +70,16 @@ class ModelQuery
     /**
      * @param string|AbstractModel $modelClass
      */
-    public function __construct(string|AbstractModel $modelClass, int $mode)
+    public function __construct(
+        string|AbstractModel $modelClass,
+        int $mode,
+        ModelQueryConfiguration $configuration=null
+    )
     {
+        $this->configuration = $configuration ?? ModelQueryConfiguration::resolve();
         $this->registerTable($modelClass);
         $this->targetTable = $modelClass::getTable();
         $this->setMode($mode);
-        $this->loadConfiguration();
     }
 
     public function set(string $field, mixed $value, string $table=null): self
@@ -186,7 +185,7 @@ class ModelQuery
                 $target
             );
 
-            if (count($this->joins) == $this->configuration["join-limit"])
+            if (count($this->joins) == $this->configuration->joinLimit)
                 return;
 
             foreach ($model::getFields() as $fieldName => $field)
@@ -302,7 +301,7 @@ class ModelQuery
         string $alias,
         string $targetField
     ): self {
-        $joinLimit = $this->configuration["join-limit"];
+        $joinLimit = $this->configuration->joinLimit;
 
         if (count($this->joins)+1 >= $joinLimit)
             throw new Exception("Cannot exceed $joinLimit join statement on a query");

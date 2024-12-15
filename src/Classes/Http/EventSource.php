@@ -2,25 +2,22 @@
 
 namespace YonisSavary\Sharp\Classes\Http;
 
-use YonisSavary\Sharp\Classes\Core\Configurable;
+use YonisSavary\Sharp\Classes\Http\Configuration\EventSourceConfiguration;
 
 class EventSource
 {
-    use Configurable;
-
     const MESSAGE_END = "\n\n";
     const LINE_END = "\n";
 
     protected $started = false;
 
-    public static function getDefaultConfiguration(): array
+    protected EventSourceConfiguration $configuration;
+
+    public function __construct(
+        EventSourceConfiguration $configuration=null
+    )
     {
-        return [
-            'use-default-event-name' => true,
-            'start-event' => 'event-source-start',
-            'end-event' => 'event-source-end',
-            'die-on-end' => true
-        ];
+        $this->configuration = $configuration ?? EventSourceConfiguration::resolve();
     }
 
     public function start(string $startEvent=null, bool $sendHeaders=true)
@@ -35,8 +32,7 @@ class EventSource
             header('Content-Type: text/event-stream');
         }
 
-        if ($this->configuration['use-default-event-name'])
-            $startEvent ??= $this->configuration['start-event'];
+        $startEvent ??= $this->configuration->startEvent;
 
         if ($startEvent)
             $this->send($startEvent);
@@ -76,15 +72,14 @@ class EventSource
 
     public function end(string $endEvent=null)
     {
-        if ($this->configuration['use-default-event-name'])
-            $endEvent ??= $this->configuration['end-event'];
+        $endEvent ??= $this->configuration->endEvent;
 
         if ($endEvent)
             $this->send($endEvent);
 
         $this->started = false;
 
-        if ($this->configuration['die-on-end'])
+        if ($this->configuration->dieOnEnd)
             die;
     }
 

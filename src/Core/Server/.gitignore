@@ -1,7 +1,7 @@
 # Sharp
 /Storage
-sharp.json
-env.json
+sharp.php
+env.php
 
 # Composer
 /vendor

@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use YonisSavary\Sharp\Classes\Security\Csrf;
 use YonisSavary\Sharp\Classes\Env\Session;
 use YonisSavary\Sharp\Classes\Http\Request;
+use YonisSavary\Sharp\Classes\Security\Configuration\CsrfConfiguration;
 
 class CsrfTest extends TestCase
 {
@@ -63,7 +64,7 @@ class CsrfTest extends TestCase
     {
         $csrf = $this->getDummyCsrf();
 
-        $inputName = $csrf->getConfiguration()['html-input-name'];
+        $inputName = CsrfConfiguration::resolve()->htmlInputName;
 
         $validToken = $csrf->getToken();
         $invalidToken = 'nothing!';

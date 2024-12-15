@@ -7,13 +7,14 @@ use RuntimeException;
 use YonisSavary\Sharp\Classes\CLI\Terminal;
 use YonisSavary\Sharp\Classes\Data\ObjectArray;
 use YonisSavary\Sharp\Classes\Env\Cache;
-use YonisSavary\Sharp\Classes\Env\Configuration;
 use Throwable;
 use YonisSavary\Sharp\Classes\Core\EventListener;
 use YonisSavary\Sharp\Classes\Core\Logger;
+use YonisSavary\Sharp\Classes\Env\Configuration\Configuration;
 use YonisSavary\Sharp\Classes\Events\LoadedFramework;
 use YonisSavary\Sharp\Classes\Events\LoadingFramework;
 use YonisSavary\Sharp\Classes\Events\PreloadFramework;
+use YonisSavary\Sharp\Core\Configuration\ApplicationsToLoad;
 
 class Autoloader
 {
@@ -155,8 +156,7 @@ class Autoloader
     {
         if (!self::loadAutoloadCache())
         {
-            $config = Configuration::getInstance();
-            $applications = $config->toArray('applications', []);
+            $applications = ApplicationsToLoad::resolve()->applications;
 
             // The framework is loaded as an application
             if ($customSrc = $GLOBALS['sharp-src'] ?? false)

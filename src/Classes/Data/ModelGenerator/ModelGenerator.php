@@ -5,8 +5,8 @@ namespace YonisSavary\Sharp\Classes\Data\ModelGenerator;
 use Exception;
 use InvalidArgumentException;
 use YonisSavary\Sharp\Classes\Core\Component;
+use YonisSavary\Sharp\Classes\Data\Configuration\DatabaseConfiguration;
 use YonisSavary\Sharp\Classes\Data\Database;
-use YonisSavary\Sharp\Classes\Env\Configuration;
 use YonisSavary\Sharp\Core\Utils;
 
 class ModelGenerator
@@ -17,16 +17,16 @@ class ModelGenerator
 
     public static function getDefaultInstance()
     {
-        $dbConfig = Configuration::getInstance()->get('database', []);
+        $dbConfig = DatabaseConfiguration::resolve();
 
-        $driver = match(strtolower($dbConfig['driver']) ?? null) {
+        $driver = match(strtolower($dbConfig->driver) ?? null) {
             'mysql'  => MySQL::class,
             'sqlite' => SQLite::class,
             default  => null
         };
 
         if (!$driver)
-            throw new Exception('Cannot adapt ['. $dbConfig['driver'] .'] database tables');
+            throw new Exception('Cannot adapt ['. $dbConfig->driver .'] database tables');
 
         return new self($driver);
     }

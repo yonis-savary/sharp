@@ -3,9 +3,11 @@
 namespace YonisSavary\Sharp\Core;
 
 use InvalidArgumentException;
-use YonisSavary\Sharp\Classes\Env\Configuration;
+use YonisSavary\Sharp\Classes\Env\Configuration\Configuration;
 use YonisSavary\Sharp\Classes\Env\Drivers\FileDriverInterface;
 use YonisSavary\Sharp\Classes\Env\Drivers\LocalDiskDriver;
+use YonisSavary\Sharp\Core\Configuration\ApplicationsToLoad;
+use YonisSavary\Sharp\Core\Configuration\Environmnent;
 
 /**
  * This class holds utilities statical methods that can be reused
@@ -215,21 +217,19 @@ class Utils
      *
      * @return `true` if 'env' is set to 'production' in your configuration
      */
-    public static function isProduction(Configuration $configuration=null): bool
+    public static function isProduction(Environmnent $env=null): bool
     {
-        $configuration ??= Configuration::getInstance();
-        $env = $configuration->get('env', 'dev');
-
-        return strtolower($env) === 'production';
+        $env ??= $env::resolve();
+        return str_starts_with($env->environment, 'prod');
     }
 
     /**
-     * Check if an application is present in 'application' in 'sharp.json'
+     * Check if an application is present in 'application' in 'sharp.php'
      */
-    public static function isApplicationEnabled(string $application, Configuration $configuration=null): bool
+    public static function isApplicationEnabled(string $application, ApplicationsToLoad $applicationsToLoad=null): bool
     {
-        $configuration ??= Configuration::getInstance();
-        $enabled = $configuration->toArray('applications');
+        $applicationsToLoad ??= ApplicationsToLoad::resolve();
+        $enabled = $applicationsToLoad->applications;
 
         return in_array($application, $enabled);
     }

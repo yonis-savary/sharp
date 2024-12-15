@@ -3,7 +3,6 @@
 namespace YonisSavary\Sharp\Classes\Web;
 
 use YonisSavary\Sharp\Classes\Core\Component;
-use YonisSavary\Sharp\Classes\Core\Configurable;
 use YonisSavary\Sharp\Classes\Core\EventListener;
 use YonisSavary\Sharp\Classes\Http\Request;
 use YonisSavary\Sharp\Classes\Http\Response;
@@ -17,7 +16,7 @@ use YonisSavary\Sharp\Core\Utils;
 use YonisSavary\Sharp\Classes\Web\Controller;
 use Throwable;
 use YonisSavary\Sharp\Classes\Core\Context;
-use YonisSavary\Sharp\Classes\Env\Configuration;
+use YonisSavary\Sharp\Classes\Web\Configuration\RouterConfiguration;
 
 /**
  * Given a set of `Routes`, this component is able to
@@ -25,7 +24,7 @@ use YonisSavary\Sharp\Classes\Env\Configuration;
  */
 class Router
 {
-    use Component, Configurable;
+    use Component;
 
     protected array $group = [];
 
@@ -36,16 +35,12 @@ class Router
     protected ?Cache $cache = null;
     protected bool $loadedRoutes = false;
 
+    protected RouterConfiguration $configuration;
 
-    public function __construct(Cache $cache=null, Configuration $configuration=null)
+    public function __construct(Cache $cache=null, RouterConfiguration $configuration=null)
     {
-        $this->loadConfiguration($configuration);
+        $this->configuration = $configuration ?? RouterConfiguration::resolve();
         $this->cache = $cache ?? Cache::getInstance()->getSubCache('router');
-    }
-
-    public static function getDefaultConfiguration(): array
-    {
-        return ['cached' => false, 'quick-routing' => false];
     }
 
     protected function getCacheKey(Request $request): string
@@ -55,7 +50,7 @@ class Router
 
     public function executeQuickRouting(Request $request=null)
     {
-        if (!($this->isCached() && $this->configuration['quick-routing']))
+        if (!($this->configuration->cached && $this->configuration->quickRouting))
             return;
 
         $request ??= Request::fromGlobals();
@@ -96,7 +91,7 @@ class Router
 
     protected function getCachedRouteForRequest(Request $request): ?Route
     {
-        if (!$this->isCached())
+        if (!$this->configuration->cached)
             return null;
 
         $key = $this->getCacheKey($request);
@@ -231,7 +226,7 @@ class Router
             if (!$route->match($req))
                 continue;
 
-            if ($this->isCached())
+            if ($this->configuration->cached)
                 $this->putRouteToCache($route, $req);
 
             return $route;

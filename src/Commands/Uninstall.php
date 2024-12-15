@@ -5,9 +5,9 @@ namespace YonisSavary\Sharp\Commands;
 use YonisSavary\Sharp\Classes\CLI\Args;
 use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 use YonisSavary\Sharp\Classes\CLI\Terminal;
-use YonisSavary\Sharp\Classes\Env\Configuration;
 use YonisSavary\Sharp\Classes\Env\Storage;
 use YonisSavary\Sharp\Core\Autoloader;
+use YonisSavary\Sharp\Core\Configuration\ApplicationsToLoad;
 use YonisSavary\Sharp\Core\Utils;
 
 class Uninstall extends AbstractCommand
@@ -22,7 +22,7 @@ class Uninstall extends AbstractCommand
 
         $this->log('Uninstalling dependencies...');
 
-        $applications = Configuration::getInstance()->toArray('applications');
+        $applications = ApplicationsToLoad::resolve()->applications;
 
         foreach ($applications as $appName)
             $this->uninstallAppVendor($appName);

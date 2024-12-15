@@ -5,11 +5,11 @@ namespace YonisSavary\Sharp\Tests\Units\Classes\Env;
 use PHPUnit\Framework\TestCase;
 use YonisSavary\Sharp\Classes\Core\Logger;
 use YonisSavary\Sharp\Classes\Data\ObjectArray;
-use YonisSavary\Sharp\Classes\Env\Configuration;
 use YonisSavary\Sharp\Classes\Env\Drivers\FTPDriver;
 use YonisSavary\Sharp\Classes\Env\Storage;
 use YonisSavary\Sharp\Core\Utils;
 use Throwable;
+use YonisSavary\Sharp\Classes\Env\Configuration\Configuration;
 
 class FTPStorageTest extends TestCase
 {
@@ -51,7 +51,7 @@ class FTPStorageTest extends TestCase
             return true;
 
         $this->enabled = false;
-        if ($this->config = Configuration::getInstance()->try('ftp-test'))
+        if ($this->config = Configuration::getInstance()->resolveByName('ftp-test'))
         {
             $this->enabled = true;
 

@@ -204,10 +204,12 @@ it is the driver that defines the API behavior, which means that you can change 
 
 If you decide to use one, the only step required is to specify it in the configuration:
 
-```json
-"autobahn": {
-    "driver": "Sharp\\Classes\\Extras\\AutobahnDrivers\\BaseDriver"
-}
+```php
+return [
+	new AutobahnConfiguration(
+		driver: new BaseDriver()
+	),
+]
 ```
 
 [< Back to summary](../README.md)

@@ -4,8 +4,9 @@ namespace YonisSavary\Sharp\Classes\Build;
 
 use YonisSavary\Sharp\Classes\CLI\AbstractBuildTask;
 use YonisSavary\Sharp\Classes\Data\ObjectArray;
-use YonisSavary\Sharp\Classes\Env\Configuration;
+use YonisSavary\Sharp\Classes\Env\Configuration\JSONConfiguration;
 use YonisSavary\Sharp\Core\Autoloader;
+use YonisSavary\Sharp\Core\Configuration\ApplicationsToLoad;
 use YonisSavary\Sharp\Core\Utils;
 
 class CheckUnusedClasses extends AbstractBuildTask
@@ -49,7 +50,7 @@ class CheckUnusedClasses extends AbstractBuildTask
             return false;
         }
 
-        $composer = new Configuration($composerFile);
+        $composer = new JSONConfiguration($composerFile);
         $map = $composer->get("autoload", [])["psr-4"] ?? [];
 
         $gotError = false;
@@ -93,7 +94,7 @@ class CheckUnusedClasses extends AbstractBuildTask
 
     public function getWatchList(): array
     {
-        return ObjectArray::fromArray(Configuration::getInstance()->toArray("applications"))
+        return ObjectArray::fromArray(ApplicationsToLoad::resolve()->applications)
             ->map(fn($x) => Utils::relativePath($x))
             ->collect();
     }

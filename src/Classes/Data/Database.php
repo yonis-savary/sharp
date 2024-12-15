@@ -6,42 +6,29 @@ use PDO;
 use PDOException;
 use PDOStatement;
 use YonisSavary\Sharp\Classes\Core\Component;
-use YonisSavary\Sharp\Classes\Core\Configurable;
 use YonisSavary\Sharp\Classes\Core\EventListener;
+use YonisSavary\Sharp\Classes\Data\Configuration\DatabaseConfiguration;
 use YonisSavary\Sharp\Classes\Env\Storage;
 use YonisSavary\Sharp\Classes\Events\ConnectedDatabase;
 
 class Database
 {
-    use Component, Configurable;
+    use Component;
 
     protected ?PDO $connection = null;
     protected PDOStatement $lastStatement;
 
-    public static function getDefaultConfiguration(): array
-    {
-        return [
-            'driver' => 'mysql',
-            'database' => 'database',
-            'host' => 'localhost',
-            'port' => 3306,
-            'user' => 'root',
-            'password' => null,
-            'charset' => 'utf8'
-        ];
-    }
-
     public static function getDefaultInstance()
     {
-        $configuration = self::readConfiguration();
+        $configuration = DatabaseConfiguration::resolve();
         return new self(
-            $configuration['driver'],
-            $configuration['database'],
-            $configuration['host'],
-            $configuration['port'],
-            $configuration['user'],
-            $configuration['password'],
-            $configuration['charset']
+            $configuration->driver,
+            $configuration->database,
+            $configuration->host,
+            $configuration->port,
+            $configuration->user,
+            $configuration->password,
+            $configuration->charset,
         );
     }
 
@@ -55,8 +42,6 @@ class Database
         public string $charset='utf8'
     )
     {
-        $this->loadConfiguration();
-
         $this->driver = trim(strtolower($this->driver));
 
         $dsn = $this->getDSN();

@@ -14,13 +14,17 @@ Your applications assets should be stored in `<YourApp>/Assets` (They can be sto
 
 Here is the default configuration for `AssetServer`
 
-```json
-"asset-server": {
-    "enabled": true,
-    "url": "/assets",
-    "middlewares": [],
-    "max-age": false
-}
+```php
+return [
+	new AssetServerConfiguration(
+		enabled: true,
+		cached: true,
+		url: "/assets/{any:filename}",
+		middlewares: [],
+		maxAge: false,
+		nodePackages: [],
+	),
+]
 ```
 
 - setting `enabled` to `true` make sure the component analyze any incoming request, you can set it to `false` to disable the component
@@ -93,12 +97,13 @@ script('contact/creation.js')
 The `AssetServer` can also serve files from your `node_module` directory.
 
 With this configuration
-```json
-"asset-server": {
-    "node-packages": [
-        "bootstrap-icons"
-    ]
-}
+
+```php
+return [
+	new AssetServerConfiguration(
+		nodePackages: ["bootstrap-icons"],
+	),
+]
 ```
 
 `AssetServer` will serve every files that are indexed in `bootstrap-icons/package.json` (`files` key)

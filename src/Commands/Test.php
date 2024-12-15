@@ -5,8 +5,8 @@ namespace YonisSavary\Sharp\Commands;
 use Throwable;
 use YonisSavary\Sharp\Classes\CLI\Args;
 use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
-use YonisSavary\Sharp\Classes\Env\Configuration;
 use YonisSavary\Sharp\Core\Autoloader;
+use YonisSavary\Sharp\Core\Configuration\ApplicationsToLoad;
 use YonisSavary\Sharp\Core\Utils;
 
 class Test extends AbstractCommand
@@ -26,7 +26,7 @@ class Test extends AbstractCommand
 
     public function execute(Args $args): int
     {
-        $toTest = Configuration::getInstance()->toArray('applications');
+        $toTest = ApplicationsToLoad::resolve()->applications;
 
         array_unshift($toTest, Autoloader::projectRoot());
 

@@ -10,7 +10,7 @@ use YonisSavary\Sharp\Classes\Core\Logger;
 use YonisSavary\Sharp\Classes\Data\ModelGenerator\ModelGenerator;
 use YonisSavary\Sharp\Classes\Data\ModelGenerator\SQLite;
 use YonisSavary\Sharp\Classes\Env\Cache;
-use YonisSavary\Sharp\Classes\Env\Configuration;
+use YonisSavary\Sharp\Classes\Env\Configuration\Configuration;
 use YonisSavary\Sharp\Classes\Env\Storage;
 use YonisSavary\Sharp\Classes\Test\SharpServer;
 use YonisSavary\Sharp\Core\Autoloader;
@@ -22,17 +22,18 @@ $GLOBALS['sharp-src']  = realpath(__DIR__ . '/../src');
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+Autoloader::initialize();
+
 $rootDirectory    = new Storage($GLOBALS['sharp-root']);
 $testLogger       = new Logger('test-suite.csv', new Storage(__DIR__));
 $testStorage      = new Storage($rootDirectory->path('/Storage'));
-$testConfig       = new Configuration($rootDirectory->path('/sharp.json'));
+$testConfig       = new Configuration($rootDirectory->path('/sharp.php'));
 $cacheStorage     = new Cache($testStorage->getSubStorage('Cache'));
 
 // $testLogger->debug('Starting test suite');
 // $testLogger->debug('Sharp root directory : {dir}', ['dir' => $GLOBALS['sharp-root']]);
 // $testLogger->debug('Sharp src directory : {dir}', ['dir' => $GLOBALS['sharp-src']]);
 
-Autoloader::initialize();
 Autoloader::loadApplication(Utils::relativePath("TestApp"));
 Logger::setInstance($testLogger);
 Storage::setInstance($testStorage);

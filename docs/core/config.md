@@ -23,30 +23,31 @@ One application is made of those directories (All of them are optional):
 
 ## Configuration
 
-Your application(s) configuration is stored inside `sharp.json`,
+Your application(s) configuration is stored inside `sharp.php`,
+which is a script that return a set of configuration objects
 
-(You can also put your environment variables in `env.json`, it shall be merged with the content of `sharp.json`)
+Example :
 
-The configuration is written as
-
-```json
-{
-    "snake-case-component-name": {
-        "option-name": "some-value"
-    }
-}
+```php
+return [
+    new ApplicationToLoad([
+        "FirstApp",
+        "SomeModule"
+    ])
+];
 ```
 
 > [!NOTE]
 > Every component's configuration is described in their respective documentation
 
-If your configuration is missing some keys, or if you want to create one from nothing, you can execute
+If you want to make a default configuration for your application, you can execute
 
 ```bash
-php do fill-configuration
+php do create-configuration
 ```
 
-This will complete your actual configuration with every possible default configuration
+This will create a new configuration with every possible default configuration
+(it also make a backup of your current configuration)
 
 
 
@@ -56,10 +57,12 @@ This will complete your actual configuration with every possible default configu
 Let's say your application is in a directory named `ShippingApp`, to load it,
 you only have to add this in your configuration
 
-```json
-"applications": [
-    "ShippingApp"
-]
+```php
+return [
+    new ApplicationToLoad([
+        "ShippingApp"
+    ])
+];
 ```
 
 
@@ -69,22 +72,16 @@ you only have to add this in your configuration
 
 Now, let's say that you want to make a module for your application named `ShippingCRM` (located in `ShippingApp/ShippingCRM`) then, you will need to add it in your configuration too
 
-```json
-"applications": [
+```php
+return [
+    new ApplicationToLoad([
     "ShippingApp",
     "ShippingApp/ShippingCRM"
-]
+    ])
+];
 ```
 
 This feature allows you to extends your application and disable any part of it just by editing your configuration
-
-Also, you can also use the `enable-application` command to add applications in your configuration
-
-```bash
-php do enable-application ShippingApp/ShippingCRM
-# This means you can also use *
-php do enable-application ShippingApp/Modules/*
-```
 
 > [!IMPORTANT]
 > Applications are loaded in the order they're written in your configuration

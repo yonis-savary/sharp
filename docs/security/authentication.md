@@ -10,14 +10,16 @@ Authentication is made through a [Model](../data/database.md) that you can choos
 
 You have to configure those five parameters in your configuration:
 
-```json
-"authentication": {
-    "model": "App\\Models\\User",
-    "login-field": "login",
-    "password-field": "password",
-    "salt-field": "salt",
-    "session-duration": 3600
-}
+```php
+return [
+	new AuthenticationConfiguration(
+		model: User::class,
+		loginField: "login",
+		passwordField: "password",
+		saltField: null,
+		sessionDuration: 3600,
+	),
+];
 ```
 
 - `model` is the full classname to your model class
@@ -78,14 +80,17 @@ This will create `MagicShip/Models/User.php` file containing our model.
 
 Then we must configure authentication before using it
 
-`sharp.json`:
-```json
-"authentication": {
-    "model": "MagicShip\\Models\\User",
-    "login-field": "login",
-    "password-field": "password",
-    "salt-field": "salt"
-}
+`sharp.php`:
+```php
+return [
+	new AuthenticationConfiguration(
+		model: User::class,
+		loginField: "login",
+		passwordField: "password",
+		saltField: "salt",
+		sessionDuration: 3600,
+	),
+];
 ```
 
 ### Authentication

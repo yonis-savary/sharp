@@ -34,10 +34,12 @@ By default, `Csrf` gives you an HTML Input as is :
 In the case where you need to use the `csrf-token` name for another input, you can edit the default input name in the component configuration
 
 
-```json
-"csrf": {
-    "html-input-name": "csrf-token"
-}
+```php
+return [
+	new CsrfConfiguration(
+		htmlInputName: "csrf-token",
+	),
+];
 ```
 
 ## Making a middleware

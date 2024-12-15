@@ -7,6 +7,7 @@ use YonisSavary\Sharp\Classes\Env\Cache;
 use YonisSavary\Sharp\Classes\Env\Storage;
 use YonisSavary\Sharp\Classes\Http\Request;
 use YonisSavary\Sharp\Classes\Http\Response;
+use YonisSavary\Sharp\Classes\Web\Configuration\RouterConfiguration;
 use YonisSavary\Sharp\Classes\Web\MiddlewareInterface;
 use YonisSavary\Sharp\Classes\Web\Route;
 use YonisSavary\Sharp\Classes\Web\Router;
@@ -141,10 +142,7 @@ class RouterTest extends TestCase
         $cache = new Cache(Storage::getInstance()->getSubStorage('test_router_issue_1'));
         $cache->deleteAll();
 
-        $router = new Router($cache);
-        $router->setConfiguration(['cached' => true]);
-
-        $this->assertTrue($router->isCached());
+        $router = new Router($cache, new RouterConfiguration(true));
 
         $router->addRoutes(
             Route::get('/', [self::class, 'sampleCallbackA']),

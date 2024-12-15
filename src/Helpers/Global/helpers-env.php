@@ -9,7 +9,6 @@
  */
 
 use YonisSavary\Sharp\Classes\Env\Cache;
-use YonisSavary\Sharp\Classes\Env\Configuration;
 use YonisSavary\Sharp\Classes\Env\Session;
 
 /**
@@ -32,14 +31,6 @@ function session(string $key): mixed
 function sessionSet(string $key, mixed $value): void
 {
     Session::getInstance()->set($key, $value);
-}
-
-/**
- * Get a value from the global configuration instance
- */
-function config(string $key, mixed $default=null): mixed
-{
-    return Configuration::getInstance()->get($key, $default);
 }
 
 /**

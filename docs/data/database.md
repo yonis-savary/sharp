@@ -6,17 +6,20 @@ Database connection is made through the [`Database`](../../src/Classes/Data/Data
 
 ## Using the database
 
-Before using the database, we have to configure its connection
+Before using the database, we have to configure its connection in `sharp.php`
 
-```json
-"database": {
-    "driver": "mysql",
-    "database": "shipping_app",
-    "host": "localhost",
-    "port": 3306,
-    "user": "root",
-    "password": "sh1pp1ng_1s_gre@t"
-}
+```php
+return [
+	new DatabaseConfiguration(
+		driver: "mysql",
+		database: "database",
+		host: "localhost",
+		port: 3306,
+		user: "root",
+		password: null,
+		charset: "utf8",
+	),
+]
 ```
 
 > [!NOTE]
@@ -59,12 +62,13 @@ $db->hasField('ship_order', 'fk_ship');
 
 `Database` also support SQLite connections ! Here is an example of configuration
 
-```json
-"database": {
-    "driver": "sqlite",
-    "database": "myDatabase.db",
-    "enable-foreign-keys": true
-}
+```php
+return [
+	new DatabaseConfiguration(
+		driver: "sqlite",
+		database: "myDatabase.db",
+	),
+]
 ```
 
 This config will create a `Storage/myDatabase.db` file with your data inside

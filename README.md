@@ -33,7 +33,7 @@ Your directory will look like
 - `composer.json`
 - `composer.lock`
 - `do`
-- `sharp.json`
+- `sharp.php`
 
 ## Release's features
 
@@ -42,7 +42,7 @@ Your directory will look like
 - 🟡 - untested feature
 
 🫀 Core
-- 🟢 Configuration (sharp.json)
+- 🟢 Configuration (sharp.php)
 - 🟢 Caching
 - 🟢 Logging
 - 🟢 Events

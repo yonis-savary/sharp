@@ -3,20 +3,15 @@
 namespace YonisSavary\Sharp\Tests\Units\Classes\Http;
 
 use PHPUnit\Framework\TestCase;
+use YonisSavary\Sharp\Classes\Http\Configuration\EventSourceConfiguration;
 use YonisSavary\Sharp\Classes\Http\EventSource;
 
 class EventSourceTest extends TestCase
 {
-    public static function getDummyEventSource(array $configuration=[]): EventSource
+    public static function getDummyEventSource(EventSourceConfiguration $configuration=null): EventSource
     {
-        $configuration ??= [
-            'use-default-event-name' => true,
-            'start-event' => 'event-source-start',
-            'end-event' => 'event-source-end',
-            'die-on-end' => false
-        ];
-        $eventSource = new EventSource();
-        $eventSource->setConfiguration($configuration);
+        $configuration ??= new EventSourceConfiguration(dieOnEnd: false);
+        $eventSource = new EventSource($configuration);
         return $eventSource;
     }
 
@@ -33,7 +28,7 @@ class EventSourceTest extends TestCase
 
     public function test_send()
     {
-        $eventSource = self::getDummyEventSource(["use-default-event-name" => false, "die-on-end" => false]);
+        $eventSource = self::getDummyEventSource(new EventSourceConfiguration(null, null, false));
         $eventSource->start(null, sendHeaders: false);
 
         ob_start();
@@ -55,7 +50,7 @@ class EventSourceTest extends TestCase
 
     public function test_data()
     {
-        $eventSource = self::getDummyEventSource(["use-default-event-name" => false, "die-on-end" => false]);
+        $eventSource = self::getDummyEventSource(new EventSourceConfiguration(null, null, false));
         $eventSource->start(sendHeaders: false);
 
         ob_start();
@@ -65,7 +60,7 @@ class EventSourceTest extends TestCase
 
     public function test_end()
     {
-        $eventSource = self::getDummyEventSource(["use-default-event-name" => false, "die-on-end" => false]);
+        $eventSource = self::getDummyEventSource(new EventSourceConfiguration(null, null, false));
         $eventSource->start(sendHeaders: false);
 
         $this->assertTrue($eventSource->isStarted());

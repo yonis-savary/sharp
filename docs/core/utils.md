@@ -80,13 +80,13 @@ Utils::isAssoc($array);
 # If the value is a list, does not make any change
 Utils::toArray($value);
 
-# Check if "environment" is set to "production" inside your configuration
+# Resolve a `Environment` object in your configuration and check if its value starts with 'prod'
 Utils::isProduction();
-Utils::isProduction($someConfiguration);
+Utils::isProduction(new Environment('debug'));
 
 # Check if a specified application is present inside the "applications" key inside given configuration (global configuration is not specified)
 Utils::isApplicationEnabled($application);
-Utils::isApplicationEnabled($application, $someConfiguration);
+Utils::isApplicationEnabled($application, new ApplicationsToLoad([...]));
 ```
 
 [< Back to summary](../README.md)

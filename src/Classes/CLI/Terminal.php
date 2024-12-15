@@ -2,7 +2,7 @@
 
 namespace YonisSavary\Sharp\Classes\CLI;
 
-use YonisSavary\Sharp\Classes\Env\Configuration;
+use YonisSavary\Sharp\Core\Configuration\ApplicationsToLoad;
 
 class Terminal
 {
@@ -53,7 +53,7 @@ class Terminal
      */
     public static function chooseApplication(): string
     {
-        $applications = Configuration::getInstance()->toArray('applications');
+        $applications = ApplicationsToLoad::resolve()->applications;
 
         if (count($applications) === 1)
             return $applications[0];

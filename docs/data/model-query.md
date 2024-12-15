@@ -244,10 +244,12 @@ $sql = $query->build();
 
 `ModelQuery` don't have a big configurable, so far, you can only change the maximum number of `JOIN` a query can handle (50 by default)
 
-```json
-"database-query": {
-    "join-limit": 50
-}
+```php
+return [
+	new ModelQueryConfiguration(
+		joinLimit: 50,
+	),
+]
 ```
 
 [< Back to summary](../README.md)

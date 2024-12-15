@@ -4,9 +4,9 @@ namespace YonisSavary\Sharp\Tests\Benchmark;
 
 use PHPUnit\Framework\TestCase;
 use YonisSavary\Sharp\Classes\Env\Cache;
-use YonisSavary\Sharp\Classes\Env\Configuration;
 use YonisSavary\Sharp\Classes\Env\Storage;
 use YonisSavary\Sharp\Classes\Http\Request;
+use YonisSavary\Sharp\Classes\Web\Configuration\RouterConfiguration;
 use YonisSavary\Sharp\Classes\Web\Route;
 use YonisSavary\Sharp\Classes\Web\Router;
 
@@ -20,7 +20,7 @@ class RouterBenchmarkTest extends TestCase
     public function test_cachingTime()
     {
         $cache = new Cache(Storage::getInstance()->getSubStorage(uniqid("router-cache")));
-        $config = Configuration::fromArray(["router" => ["cached" => true]]);
+        $config = new RouterConfiguration(true);
 
         $router = new Router($cache, $config);
 

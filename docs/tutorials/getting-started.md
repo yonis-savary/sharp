@@ -42,14 +42,14 @@ To create your application, make a directory named with a name in `PascalFormat`
 mkdir MyFirstApp
 ```
 
-Then, create a `sharp.json` file in your **project root** (where your `composer.json` file is), and put this inside
+Then, create a `sharp.php` file in your **project root** (where your `composer.json` file is), and put this inside
 
-```json
-{
-    "applications": [
+```php
+return [
+    new ApplicationsToLoad([
         "MyFirstApp"
-    ]
-}
+    ])
+];
 ```
 
 This tells Sharp that the `MyFirstApp` is treated as an application and should be loaded when launching Sharp

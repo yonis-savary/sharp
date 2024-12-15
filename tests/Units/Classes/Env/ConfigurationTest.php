@@ -3,74 +3,50 @@
 namespace YonisSavary\Sharp\Tests\Units\Classes\Env;
 
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
-use YonisSavary\Sharp\Classes\Env\Configuration;
-use YonisSavary\Sharp\Classes\Env\Storage;
+use YonisSavary\Sharp\Classes\Env\Configuration\Configuration;
+use YonisSavary\Sharp\Classes\Env\Configuration\GenericConfiguration;
+use YonisSavary\Sharp\Classes\Http\Configuration\RequestConfiguration;
+use YonisSavary\Sharp\Classes\Security\Configuration\CsrfConfiguration;
+use YonisSavary\Sharp\Classes\Web\Configuration\RouterConfiguration;
 
 class ConfigurationTest extends TestCase
 {
-    // Most of Configuration feature are tested by [./AbstractMapTest.php]
-
-    public function test___construct()
-    {
-        $storage = Storage::getInstance();
-
-        $storage->write(
-            'config-test-construct.json',
-            json_encode(['A' => 5])
-        );
-
-        $config = new Configuration($storage->path('config-test-construct.json'));
-        $this->assertEquals(5, $config->get('A'));
-    }
-
-    public function test_save()
-    {
-        $storage = Storage::getInstance();
-
-        $file = $storage->path('config-test.json');
-
-        $unrelated = new Configuration();
-        $unrelated->set('key', 'A');
-        $unrelated->save($file);
-
-        $fromFile = new Configuration($file);
-        $this->assertEquals('A', $fromFile->get('key'));
-    }
-
-    public function test_fromArray()
-    {
-        $config = Configuration::fromArray([
-            'A' => 1,
-            'B' => 2,
-            'C' => 3,
-        ]);
-
-        $this->assertEquals(1, $config->get('A'));
-        $this->assertEquals(2, $config->get('B'));
-        $this->assertEquals(3, $config->get('C'));
-        $this->assertNull($config->get('D'));
-    }
-
     public function test_mergeWithFile()
     {
-        $storage = Storage::getInstance();
-        $storage->write('config-a.json', '{"a": "first config"}');
-        $storage->write('config-b.json', '{"b": "second config"}');
+        $config = new Configuration();
+        $config->mergeWithFile("another-config.php");
 
-        $mergeConfig = new Configuration($storage->path('config-a.json'));
-
-        $this->assertEquals('first config', $mergeConfig->get('a'));
-
-        $this->expectException(RuntimeException::class);
-        $mergeConfig->mergeWithFile($storage->path('config-c.json'), true);
-
-        $mergeConfig->mergeWithFile($storage->path('config-b.json'), true);
-
-        $this->assertEquals('second config', $mergeConfig->get('b'));
-
-        $this->expectException(RuntimeException::class);
-        $mergeConfig->save();
+        $this->assertEquals(
+            "Hello",
+            $config->resolveByName("custom-element")["word"]
+        );
     }
 
+    public function test_resolve()
+    {
+        $config = new Configuration();
+        $config->addElements(
+            new CsrfConfiguration("one"),
+            new CsrfConfiguration("two"),
+            new RequestConfiguration(false),
+            new CsrfConfiguration("three"),
+        );
+
+        $this->assertEquals("one", $config->resolve(CsrfConfiguration::class, false)->htmlInputName);
+        $this->assertEquals(false, $config->resolve(RequestConfiguration::class, false)->typedParameters);
+        $this->assertFalse($config->resolve(RouterConfiguration::class, false));
+    }
+
+    public function test_resolveByName()
+    {
+        $config = new Configuration();
+        $config->addElements(
+            new GenericConfiguration("hello", "Hello world !"),
+            new GenericConfiguration("goodbye", "Goodbye world !"),
+        );
+
+        $this->assertEquals("Hello world !", $config->resolveByName("hello"));
+        $this->assertEquals("Goodbye world !", $config->resolveByName("goodbye"));
+        $this->assertFalse($config->resolveByName("farewell", false));
+    }
 }

@@ -4,19 +4,18 @@ namespace YonisSavary\Sharp\Tests\Units\Classes\Data;
 
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use YonisSavary\Sharp\Classes\Data\Configuration\MigrationManagerConfiguration;
 use YonisSavary\Sharp\Classes\Data\Database;
 use YonisSavary\Sharp\Classes\Data\MigrationManager;
 use YonisSavary\Sharp\Classes\Data\MigrationManagerDrivers\SqliteDriver;
-use YonisSavary\Sharp\Classes\Env\Configuration;
 use YonisSavary\Sharp\Classes\Env\Storage;
 
 class MigrationManagerTest extends TestCase
 {
-    public function createManager(array $config=null, Database &$database=null): MigrationManager
+    public function createManager(MigrationManagerConfiguration $config=null, Database &$database=null): MigrationManager
     {
         $database = new Database("sqlite", null);
 
-        $config = $config ? Configuration::fromArray($config): null;
         $uniqueStorage = Storage::getInstance()->getSubStorage(uniqid("migration-"));
 
         return new SqliteDriver($database, $uniqueStorage, $config);

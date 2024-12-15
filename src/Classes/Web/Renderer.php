@@ -5,7 +5,6 @@ namespace YonisSavary\Sharp\Classes\Web;
 use Exception;
 use InvalidArgumentException;
 use YonisSavary\Sharp\Classes\Core\Component;
-use YonisSavary\Sharp\Classes\Core\Configurable;
 use YonisSavary\Sharp\Classes\Core\EventListener;
 use YonisSavary\Sharp\Classes\Core\Logger;
 use YonisSavary\Sharp\Classes\Env\Cache;
@@ -14,10 +13,11 @@ use YonisSavary\Sharp\Classes\Events\BeforeViewRender;
 use YonisSavary\Sharp\Classes\Web\Classes\RenderShard;
 use YonisSavary\Sharp\Core\Autoloader;
 use Throwable;
+use YonisSavary\Sharp\Classes\Web\Configuration\RenderedConfiguration;
 
 class Renderer
 {
-    use Component, Configurable;
+    use Component;
 
     protected array $pathCache = [];
 
@@ -25,19 +25,12 @@ class Renderer
     protected ?RenderShard $current = null;
     protected array $sections = [];
 
-    public static function getDefaultConfiguration() : array
-    {
-        return [
-            'cached' => false,
-            'file_extension' => '.php'
-        ];
-    }
+    protected RenderedConfiguration $configuration;
 
-    public function __construct()
+    public function __construct(RenderedConfiguration $configuration=null)
     {
-        $this->loadConfiguration();
-
-        if (!$this->isCached())
+        $this->configuration = $configuration ?? RenderedConfiguration::resolve();
+        if (!$this->configuration->cached)
             return;
 
         $this->pathCache = &Cache::getInstance()->getReference('sharp.renderer.path-cache');
@@ -53,7 +46,7 @@ class Renderer
         if ($cached = $this->pathCache[$template] ?? false)
             return $cached;
 
-        $ext = $this->configuration['file_extension'];
+        $ext = $this->configuration->fileExtension;
 
         if (!str_ends_with($template, $ext))
             $template .= $ext;

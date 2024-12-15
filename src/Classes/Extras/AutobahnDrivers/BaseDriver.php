@@ -116,8 +116,6 @@ class BaseDriver implements DriverInterface
             $query->insertValues(array_values($element));
         });
 
-        debug($query->build());
-
         $query->fetch($database);
         $lastInsert = $database->lastInsertId();
         $insertedIdList = range($lastInsert-$data->length()+1, $lastInsert);

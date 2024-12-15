@@ -5,7 +5,6 @@ namespace YonisSavary\Sharp\Classes\Http;
 use CurlHandle;
 use InvalidArgumentException;
 use RuntimeException;
-use YonisSavary\Sharp\Classes\Core\Configurable;
 use YonisSavary\Sharp\Classes\Http\Classes\UploadFile;
 use YonisSavary\Sharp\Classes\Web\Route;
 use YonisSavary\Sharp\Classes\Core\Logger;
@@ -15,6 +14,7 @@ use Stringable;
 use YonisSavary\Sharp\Classes\Core\EventListener;
 use YonisSavary\Sharp\Classes\Events\RequestNotValidated;
 use YonisSavary\Sharp\Classes\Http\Classes\Validator;
+use YonisSavary\Sharp\Classes\Http\Configuration\RequestConfiguration;
 
 /**
  * This component purpose is to hold information about a HTTP Request,
@@ -22,8 +22,6 @@ use YonisSavary\Sharp\Classes\Http\Classes\Validator;
  */
 class Request
 {
-    use Configurable;
-
     protected array $slugs = [];
     protected ?Route $route = null;
 
@@ -71,11 +69,6 @@ class Request
 
     /** Debug every sent/received informations */
     const DEBUG_ALL              = 0b1111_1111;
-
-    public static function getDefaultConfiguration(): array
-    {
-        return ['typed-parameters' => true];
-    }
 
     /**
      * @param string $method HTTP Method (GET, POST...)
@@ -136,7 +129,7 @@ class Request
     /**
      * Build a Request object from PHP's global variables and return it
      */
-    public static function fromGlobals(bool $fixParametersTypes=true): Request
+    public static function fromGlobals(RequestConfiguration $configuration=null): Request
     {
         $headers = function_exists('getallheaders') ?
             getallheaders() :
@@ -145,7 +138,8 @@ class Request
         $get = $_GET;
         $post = $_POST;
 
-        if ($fixParametersTypes === true)
+        $configuration ??= RequestConfiguration::resolve();
+        if ($configuration->typedParameters === true)
         {
             $get = self::parseDictionaryValueTypes($get);
             $post = self::parseDictionaryValueTypes($post);

@@ -152,10 +152,12 @@ $response->display(false);
 
 Here is the default configuration for `Request`
 
-```json
-"request": {
-    "typed-parameters": true
-}
+```php
+return [
+	new RequestConfiguration(
+		typedParameters: true,
+	),
+];
 ```
 
 `typed-parameters` means that every `GET` parameters that comes as a string will be interpreted.

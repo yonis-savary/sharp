@@ -2,41 +2,27 @@
 
 namespace YonisSavary\Sharp\Classes\Extras;
 
-use Exception;
 use InvalidArgumentException;
 use YonisSavary\Sharp\Classes\Core\Component;
-use YonisSavary\Sharp\Classes\Core\Configurable;
 use YonisSavary\Sharp\Classes\Data\AbstractModel;
 use YonisSavary\Sharp\Classes\Data\Database;
-use YonisSavary\Sharp\Classes\Extras\AutobahnDrivers\BaseDriver;
 use YonisSavary\Sharp\Classes\Extras\AutobahnDrivers\DriverInterface;
+use YonisSavary\Sharp\Classes\Extras\Configuration\AutobahnConfiguration;
 use YonisSavary\Sharp\Classes\Web\Route;
 use YonisSavary\Sharp\Core\Utils;
-use YonisSavary\Sharp\Classes\Http\Request;
 
 class Autobahn
 {
-    use Component, Configurable;
+    use Component;
 
     protected ?Database $database = null;
     protected DriverInterface $driver;
 
-    public static function getDefaultConfiguration(): array
+    public function __construct(Database $database=null, AutobahnConfiguration $configuration=null)
     {
-        return ['driver' => BaseDriver::class];
-    }
-
-    public function __construct(Database $database=null)
-    {
-        $this->loadConfiguration();
+        $configuration ??= AutobahnConfiguration::resolve();
         $this->database = $database ?? Database::getInstance();
-
-        $driver = $this->configuration['driver'];
-
-        if (!Utils::implements($driver, DriverInterface::class))
-            throw new Exception('Autobahn driver must implements '. DriverInterface::class);
-
-        $this->driver = new $driver($this->database);
+        $this->driver = $configuration->driver;
     }
 
     public function throwOnInvalidModel(string $model): AbstractModel|string

@@ -5,19 +5,18 @@ namespace YonisSavary\Sharp\Classes\Data;
 use RuntimeException;
 use Throwable;
 use YonisSavary\Sharp\Classes\Core\Component;
-use YonisSavary\Sharp\Classes\Core\Configurable;
 use YonisSavary\Sharp\Classes\Core\Logger;
+use YonisSavary\Sharp\Classes\Data\Configuration\MigrationManagerConfiguration;
 use YonisSavary\Sharp\Classes\Data\Database;
 use YonisSavary\Sharp\Classes\Data\MigrationManagerDrivers\MySqlDriver;
 use YonisSavary\Sharp\Classes\Data\MigrationManagerDrivers\SqliteDriver;
-use YonisSavary\Sharp\Classes\Env\Configuration;
 use YonisSavary\Sharp\Classes\Env\Storage;
+use YonisSavary\Sharp\Core\Configuration\ApplicationsToLoad;
 use YonisSavary\Sharp\Core\Utils;
 
 abstract class MigrationManager
 {
     use Component;
-    use Configurable;
 
     protected Database $database;
     protected Storage $storage;
@@ -25,28 +24,21 @@ abstract class MigrationManager
     protected ?Throwable $lastError = null;
     protected ?string $lastErrorFile = null;
 
-    public static function getDefaultConfiguration(): array
-    {
-        return [
-            "table-name" => "__sharp_app_migrations",
-            "directory-name" => "Migrations"
-        ];
-    }
+    protected MigrationManagerConfiguration $configuration;
 
     public function __construct(
         Database $database,
         Storage $storage=null,
-        Configuration $configuration=null
+        MigrationManagerConfiguration $configuration=null
     )
     {
         $this->database = $database;
 
-        $configuration ??= Configuration::getInstance();
-        $this->loadConfiguration($configuration);
+        $this->configuration ??= MigrationManagerConfiguration::resolve();
 
         if (!$storage)
         {
-            $applications = $configuration->toArray("applications", []);
+            $applications = ApplicationsToLoad::resolve()->applications;
             if (!count($applications))
                 throw new RuntimeException("Could not assume your application migration directory");
 
@@ -56,7 +48,7 @@ abstract class MigrationManager
             ;
 
             $storage = (new Storage(Utils::relativePath($mainApplication)))
-            ->getSubStorage($this->configuration["directory-name"]);
+            ->getSubStorage($this->configuration->directoryName);
         }
 
         $this->storage = $storage;
@@ -67,7 +59,7 @@ abstract class MigrationManager
 
     public function getMigrationTableName(): string
     {
-        return $this->configuration["table-name"];
+        return $this->configuration->tableName;
     }
 
     public function getLastError(): ?Throwable

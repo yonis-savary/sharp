@@ -11,7 +11,7 @@ You can search (Ctrl+F) some tags like (autoload, configuration, routing...etc)
 tags: directory, application
 
 1. Create `YourAppName` directory (or `[AnySubDir/...]/YouAppName`)
-2. Add relative path to `YourAppName` directory to `applications` in `sharp.json`
+2. Add relative path to `YourAppName` directory through a `ApplicationsToLoad` in `sharp.php`
 
 ## 🔵 Logic - Adding routes
 

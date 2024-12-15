@@ -52,7 +52,7 @@ You may have noticed the use of `$this->log` and `$this->shellInDirectory`, thos
 - `shellInDirectory(string $command, string $directory, bool $log=true): void`
 - `executeInDirectory(callable $function, string $directory): void`
 - `progressBar(array $array, callable $callback, int $progressBarSize=40, string $filledChar='█', string $emptyChar='░')`
-- `getMainApplicationPath(Configuration $configuration=null): string`
+- `getMainApplicationPath(ApplicationsToLoad $configuration=null): string`
 
 
 [< Back to summary](../README.md)

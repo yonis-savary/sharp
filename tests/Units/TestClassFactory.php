@@ -29,6 +29,8 @@ class TestClassFactory
         foreach ($schema as $query)
             $newDB->query($query);
 
+        Database::setInstance($newDB);
+
         return $newDB;
     }
 

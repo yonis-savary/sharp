@@ -1,28 +1,16 @@
 <?php
 
-namespace YonisSavary\Sharp\Classes\Env;
+namespace YonisSavary\Sharp\Classes\Env\Configuration;
 
 use Exception;
 use RuntimeException;
 use YonisSavary\Sharp\Classes\Core\AbstractMap;
-use YonisSavary\Sharp\Classes\Core\Component;
 use YonisSavary\Sharp\Core\Utils;
 
-class Configuration extends AbstractMap
+class JSONConfiguration extends AbstractMap
 {
-    const DEFAULT_FILENAME = 'sharp.json';
-
-    use Component;
-
     protected ?string $filename = null;
     protected bool $merged = false;
-
-    public static function getDefaultInstance()
-    {
-        $config = new self(self::DEFAULT_FILENAME);
-        $config->mergeWithFile('env.json', false);
-        return $config;
-    }
 
     /**
      * @param string $filename `null` if the config is only an object, a relative path if it must be saved
@@ -51,7 +39,7 @@ class Configuration extends AbstractMap
     /**
      * Create a new Configuration object from an array(assoc) of data
      */
-    public static function fromArray(array $data): Configuration
+    public static function fromArray(array $data): self
     {
         $config = new self(null);
         $config->merge($data);

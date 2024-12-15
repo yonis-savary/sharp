@@ -16,12 +16,14 @@ By default, FTP cannot be tested directly, it needs to be configured first
 
 To test [`FTPDriver`](../../src/Classes/Env/Drivers/FTPDriver.php), edit `ftp-test` in your configuration
 
-```json
-"ftp-test" : {
-    "username": "foo",
-    "password": "bar",
-    "port": 21
-}
+```php
+return [
+    new GenericConfiguration("ftp-test", [
+        "username" => "foo",
+        "password" => "bar",
+        "port" => 21
+    ])
+];
 ```
 
 > [!NOTE]

@@ -2,25 +2,24 @@
 
 namespace YonisSavary\Sharp\Classes\Security;
 
-use InvalidArgumentException;
 use YonisSavary\Sharp\Classes\Core\Component;
-use YonisSavary\Sharp\Classes\Core\Configurable;
 use YonisSavary\Sharp\Classes\Core\EventListener;
 use YonisSavary\Sharp\Classes\Data\AbstractModel;
 use YonisSavary\Sharp\Classes\Data\Database;
-use YonisSavary\Sharp\Classes\Env\Configuration;
 use YonisSavary\Sharp\Classes\Env\Session;
-use YonisSavary\Sharp\Core\Utils;
 use YonisSavary\Sharp\Classes\Events\AuthenticatedUser;
+use YonisSavary\Sharp\Classes\Security\Configuration\AuthenticationConfiguration;
 
 class Authentication
 {
-    use Component, Configurable;
+    use Component;
 
     const ATTEMPTS_NUMBER     = 'failed-attempt-number';
     const SESSION_EXPIRE_TIME = 'session-expire-time';
     const USER_DATA           = 'user-data';
     const IS_LOGGED           = 'is-logged';
+
+    protected AuthenticationConfiguration $configuration;
 
     public readonly string $model;
     public readonly string $loginField;
@@ -32,16 +31,6 @@ class Authentication
     protected Session $session;
     protected Database $database;
 
-    public static function getDefaultConfiguration(): array
-    {
-        return [
-            'model' => 'App\Models\User',
-            'login-field' => 'login',
-            'password-field' => 'password',
-            'salt-field' => null,
-            'session-duration' => 3600
-        ];
-    }
 
     public function sessionKey(string $key)
     {
@@ -58,38 +47,19 @@ class Authentication
         $this->session->set($this->sessionKey($key), $value);
     }
 
-    public function __construct(Session $session=null, Configuration|array $config=null, Database $database=null)
+    public function __construct(Session $session=null, AuthenticationConfiguration $configuration=null, Database $database=null)
     {
+        $this->configuration = $configuration ?? AuthenticationConfiguration::resolve();
+
         $this->session = $session ?? Session::getInstance();
         $this->database = $database ?? Database::getInstance();
 
-        if (is_array($config))
-            $config = Configuration::fromArray($config);
+        $this->model         = $this->configuration->model;
+        $this->loginField    = $this->configuration->loginField;
+        $this->passwordField = $this->configuration->passwordField;
+        $this->saltField     = $this->configuration->saltField;
 
-        $this->loadConfiguration($config);
-
-        $model         = $this->model         = $this->configuration['model'];
-        $loginField    = $this->loginField    = $this->configuration['login-field'];
-        $passwordField = $this->passwordField = $this->configuration['password-field'];
-        $saltField     = $this->saltField     = $this->configuration['salt-field'];
-
-        $this->sessionNamespace =
-            $this->configuration['session-namespace'] ??
-            md5($this->model . $this->loginField . $this->passwordField)
-        ;
-
-        if (!class_exists($model))
-            throw new InvalidArgumentException("[$model] class does not exists");
-
-        if (!Utils::extends($model, AbstractModel::class))
-            throw new InvalidArgumentException("[$model] class must use AbstractModel class");
-
-        $modelFields = $model::getFieldNames();
-        foreach (array_filter([$loginField, $passwordField, $saltField]) as $field)
-        {
-            if (!in_array($field, $modelFields))
-                throw new InvalidArgumentException("[$model] does not have a [$field] field");
-        }
+        $this->sessionNamespace = md5($this->model . $this->loginField . $this->passwordField);
 
         if (!$this->isLogged())
             return;
@@ -161,7 +131,7 @@ class Authentication
 
     protected function refreshExpireTime(): void
     {
-        $sessionDuration = (int) $this->configuration['session-duration'];
+        $sessionDuration = (int) $this->configuration->sessionDuration;
         $this->setSessionKey(self::SESSION_EXPIRE_TIME, time() + $sessionDuration);
     }
 

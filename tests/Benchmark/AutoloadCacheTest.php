@@ -9,6 +9,7 @@ use YonisSavary\Sharp\Classes\CLI\Args;
 use YonisSavary\Sharp\Classes\CLI\Terminal;
 use YonisSavary\Sharp\Classes\Core\Logger;
 use YonisSavary\Sharp\Core\Autoloader;
+use YonisSavary\Sharp\Core\Configuration\ApplicationsToLoad;
 use YonisSavary\Sharp\Tests\Integration\IntegrationAppFactory;
 
 class AutoloadCacheTest extends TestCase
@@ -24,6 +25,16 @@ class AutoloadCacheTest extends TestCase
 
         shell_exec("composer exec sharp-install $nullRedirect");
         shell_exec("php do create-application AppName --add-autoload $nullRedirect");
+
+        file_put_contents(
+            $appStorage->path("sharp.php"),
+            Terminal::stringToFile(
+            "<?php
+
+            return [
+                new ".ApplicationsToLoad::class."([\"AppName\"])
+            ];
+        "));
 
         for ($i=0; $i<=1000; $i++)
         {

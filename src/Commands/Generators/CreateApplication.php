@@ -5,7 +5,7 @@ namespace YonisSavary\Sharp\Commands\Generators;
 use YonisSavary\Sharp\Classes\CLI\Args;
 use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
 use YonisSavary\Sharp\Classes\CLI\Terminal;
-use YonisSavary\Sharp\Classes\Env\Configuration;
+use YonisSavary\Sharp\Classes\Env\Configuration\JSONConfiguration;
 use YonisSavary\Sharp\Core\Autoloader;
 use YonisSavary\Sharp\Core\Utils;
 
@@ -40,15 +40,7 @@ class CreateApplication extends AbstractCommand
         foreach($values as $app)
             $gotError |= $this->createApplication($app);
 
-        $this->log('Enabling new applications');
-
-        $config = new Configuration(Configuration::DEFAULT_FILENAME);
-        $config->edit('applications', function($applications) use ($values) {
-            array_push($applications, ...$values);
-            return array_values(array_unique($applications));
-        }, []);
-        $config->save();
-
+        $this->log($this->withYellowBackground("Do not forget to enable this application in sharp.php"));
 
         if (is_file(Utils::relativePath("composer.json")))
         {
@@ -56,7 +48,7 @@ class CreateApplication extends AbstractCommand
 
             if ($addToPSR4)
             {
-                $composerFile = new Configuration(Utils::relativePath("composer.json"));
+                $composerFile = new JSONConfiguration(Utils::relativePath("composer.json"));
 
                 $this->log("Adding " . count($values) . " entries to composer.json autoload");
                 $composerFile->edit("autoload", function(array $autoload) use ($values) {

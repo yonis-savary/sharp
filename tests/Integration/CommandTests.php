@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use YonisSavary\Sharp\Classes\CLI\AbstractBuildTask;
 use YonisSavary\Sharp\Classes\CLI\Terminal;
 use YonisSavary\Sharp\Classes\Core\Logger;
+use YonisSavary\Sharp\Core\Configuration\ApplicationsToLoad;
 
 class CommandTests extends TestCase
 {
@@ -27,9 +28,25 @@ class CommandTests extends TestCase
 
         shell_exec("composer exec sharp-install $nullRedirect");
 
+        file_put_contents(
+            $appStorage->path("sharp.php"),
+            Terminal::stringToFile(
+            "<?php
+            return [];
+        "));
 
         shell_exec("php do create-application AppName -a $nullRedirect");
         $this->assertTrue($appStorage->isDirectory("AppName"));
+
+        file_put_contents(
+            $appStorage->path("sharp.php"),
+            Terminal::stringToFile(
+            "<?php
+
+            return [
+                new ".ApplicationsToLoad::class."([\"AppName\"])
+            ];
+        "));
 
         shell_exec("php do create-cache TestCache");
         $this->assertTrue($appStorage->isFile("AppName/Classes/Caches/TestCache.php"));

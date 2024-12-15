@@ -3,10 +3,10 @@
 namespace YonisSavary\Sharp\Classes\Extras;
 
 use YonisSavary\Sharp\Classes\Core\Component;
-use YonisSavary\Sharp\Classes\Core\Configurable;
 use YonisSavary\Sharp\Classes\Core\Logger;
 use YonisSavary\Sharp\Classes\Env\Cache;
-use YonisSavary\Sharp\Classes\Env\Configuration;
+use YonisSavary\Sharp\Classes\Env\Configuration\JSONConfiguration;
+use YonisSavary\Sharp\Classes\Extras\Configuration\AssetServerConfiguration;
 use YonisSavary\Sharp\Classes\Http\Request;
 use YonisSavary\Sharp\Classes\Http\Response;
 use YonisSavary\Sharp\Classes\Web\Route;
@@ -15,7 +15,7 @@ use YonisSavary\Sharp\Core\Utils;
 
 class AssetServer
 {
-    use Component, Configurable;
+    use Component;
 
     const EXTENSIONS_MIMES = [
         'js'   => 'application/javascript',
@@ -29,34 +29,23 @@ class AssetServer
 
     protected $cacheIndex = [];
     protected $nodeCacheIndex = [];
+    protected AssetServerConfiguration $configuration;
 
-    public static function getDefaultConfiguration(): array
+    public function __construct(AssetServerConfiguration $configuration=null)
     {
-        return [
-            'enabled'     => true,
-            'cached'      => true,
-            'url'         => '/assets/{any:filename}',
-            'middlewares' => [],
-            'max-age'     => false,
-            'node-packages' => []
-        ];
-    }
+        $this->configuration = $configuration ?? AssetServerConfiguration::resolve();
 
-    public function __construct()
-    {
-        $this->loadConfiguration();
-
-        if (!$this->isEnabled())
+        if (!$this->configuration->enabled)
             return;
 
-        if ($this->isCached())
+        if ($this->configuration->cached)
         {
             $cache = Cache::getInstance();
             $this->cacheIndex = &$cache->getReference('sharp.asset-server');
             $this->nodeCacheIndex = &$cache->getReference("sharp.asset-server-node");
         }
 
-        foreach (Utils::toArray($this->configuration["node-packages"] ?? []) as $package)
+        foreach (Utils::toArray($this->configuration->nodePackages ?? []) as $package)
             $this->publishNodePackage($package);
 
         $req = Request::fromGlobals();
@@ -74,7 +63,7 @@ class AssetServer
         if (!is_dir($packagePath))
             return Logger::getInstance()->error("Could not publish $nodePackage ($packagePath is not a directory)");
 
-        $packageConfig = new Configuration(Utils::joinPath($packagePath, "package.json"));
+        $packageConfig = new JSONConfiguration(Utils::joinPath($packagePath, "package.json"));
 
         $toAdd = [];
         foreach ($packageConfig->toArray("files") as $file)
@@ -122,13 +111,13 @@ class AssetServer
      */
     public function getURL(string $assetName): string
     {
-        return preg_replace("/\{.+?\}/", $assetName, $this->configuration['url']);
+        return preg_replace("/\{.+?\}/", $assetName, $this->configuration->url);
     }
 
     public function handleRequest(Request $request, bool $returnResponse=false): Response|false
     {
-        $routePath = $this->configuration['url'];
-        $middlewares = $this->configuration['middlewares'];
+        $routePath = $this->configuration->url;
+        $middlewares = $this->configuration->middlewares;
 
         $selfRoute = Route::get($routePath, fn($_) => null, $middlewares);
         if (!$selfRoute->match($request))
@@ -153,7 +142,7 @@ class AssetServer
 
         $response = Response::file($path);
 
-        if ($cacheTime = $this->configuration['max-age'])
+        if ($cacheTime = $this->configuration->maxAge)
         $response->withHeaders(['Cache-Control' => "max-age=$cacheTime"]);
 
         $extension = pathinfo($path, PATHINFO_EXTENSION);

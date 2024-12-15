@@ -4,9 +4,10 @@ namespace YonisSavary\Sharp\Tests\Units\Core;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use YonisSavary\Sharp\Classes\Env\Configuration;
 use YonisSavary\Sharp\Classes\Env\Storage;
 use YonisSavary\Sharp\Core\Autoloader;
+use YonisSavary\Sharp\Core\Configuration\ApplicationsToLoad;
+use YonisSavary\Sharp\Core\Configuration\Environmnent;
 use YonisSavary\Sharp\Core\Utils;
 use YonisSavary\Sharp\Tests\Root\TestApp\Classes\Animals\AbstractAnimal;
 use YonisSavary\Sharp\Tests\Root\TestApp\Classes\Animals\CanTalk;
@@ -171,25 +172,25 @@ class UtilsTest extends TestCase
 
     public function test_isProduction()
     {
-        $configInProduction = Configuration::fromArray(["env" => "production"]);
-        $this->assertTrue(Utils::isProduction($configInProduction));
+        foreach ([
+            "prod",
+            "production",
+            "PRODUCTION"
+        ] as $env){
+            $configInProduction = new Environmnent($env);
+            $this->assertTrue(Utils::isProduction($configInProduction));
+        }
 
-        $configInDebug = Configuration::fromArray(["env" => "debug"]);
+        $configInDebug = new Environmnent("debug");
         $this->assertFalse(Utils::isProduction($configInDebug));
-
-        $emptyConfig = Configuration::fromArray([]);
-        $this->assertFalse(Utils::isProduction($emptyConfig));
     }
 
     public function test_isApplicationEnabled()
     {
-        $dummyConfig = new Configuration();
-        $dummyConfig->set('applications', ['A','B','C']);
+        $dummyConfig = new ApplicationsToLoad(['TestApp']);
 
-        $this->assertTrue(Utils::isApplicationEnabled('A', $dummyConfig));
-        $this->assertTrue(Utils::isApplicationEnabled('B', $dummyConfig));
-        $this->assertTrue(Utils::isApplicationEnabled('C', $dummyConfig));
-        $this->assertFalse(Utils::isApplicationEnabled('D', $dummyConfig));
+        $this->assertTrue(Utils::isApplicationEnabled('TestApp', $dummyConfig));
+        $this->assertFalse(Utils::isApplicationEnabled('OtherApp', $dummyConfig));
     }
 
     public function test_randomHexString()
