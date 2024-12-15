@@ -76,7 +76,7 @@ class Autobahn
         return ['autobahn-model' => $model, 'autobahn-middlewares' => $middlewares];
     }
 
-    protected function addRoute(
+    protected function getRoute(
         string $model,
         array $middlewares,
         callable $callback,
@@ -98,26 +98,26 @@ class Autobahn
 
     public function create(string $model, callable ...$middlewares): Route
     {
-        return $this->addRoute($model, $middlewares, fn(Request $request) => $this->driver->createCallback($request), ['POST']);
+        return $this->getRoute($model, $middlewares, [$this->driver::class, "createCallback"], ['POST']);
     }
 
     public function createMultiples(string $model, callable ...$middlewares): Route
     {
-        return $this->addRoute($model, $middlewares, fn(Request $request) => $this->driver->multipleCreateCallback($request), ['POST'], '/create-multiples');
+        return $this->getRoute($model, $middlewares, [$this->driver::class, "multipleCreateCallback"], ['POST'], '/create-multiples');
     }
 
     public function read(string $model, callable ...$middlewares): Route
     {
-        return $this->addRoute($model, $middlewares, fn(Request $request) => $this->driver->readCallback($request), ['GET']);
+        return $this->getRoute($model, $middlewares, [$this->driver::class, "readCallback"], ['GET']);
     }
 
     public function update(string $model, callable ...$middlewares): Route
     {
-        return $this->addRoute($model, $middlewares, fn(Request $request) => $this->driver->updateCallback($request), ['PUT', 'PATCH']);
+        return $this->getRoute($model, $middlewares, [$this->driver::class, "updateCallback"], ['PUT', 'PATCH']);
     }
 
     public function delete(string $model, callable ...$middlewares): Route
     {
-        return $this->addRoute($model, $middlewares, fn(Request $request) => $this->driver->deleteCallback($request), ['DELETE']);
+        return $this->getRoute($model, $middlewares, [$this->driver::class, "deleteCallback"], ['DELETE']);
     }
 }

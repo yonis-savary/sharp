@@ -27,13 +27,6 @@ use YonisSavary\Sharp\Classes\Data\AbstractModel;
 
 class BaseDriver implements DriverInterface
 {
-    protected Database $database;
-
-    public function __construct(Database $database=null)
-    {
-        $this->database = $database ?? Database::getInstance();
-    }
-
     /**
      * Extract model name and middlewares from a route extras
      * @return array[AbstractModel,array]
@@ -50,8 +43,10 @@ class BaseDriver implements DriverInterface
         return [$model, $middlewares];
     }
 
-    public function createCallback(Request $request): Response
+    public static function createCallback(Request $request, Database $database=null): Response
     {
+        $database ??= Database::getInstance();
+
         /** @var Model|string $model */
         list($model, $middlewares) = self::extractRouteData($request);
 
@@ -75,9 +70,9 @@ class BaseDriver implements DriverInterface
             $events = EventListener::getInstance();
             $events->dispatch(new AutobahnCreateBefore($model, $fields, $values));
 
-            $model::insertArray($row, $this->database);
+            $model::insertArray($row, $database);
 
-            $inserted = $this->database->lastInsertId();
+            $inserted = $database->lastInsertId();
             $insertedIds[] = $inserted;
 
             $events->dispatch(new AutobahnCreateAfter($model, $fields, $values, $inserted));
@@ -89,8 +84,10 @@ class BaseDriver implements DriverInterface
 
 
 
-    public function multipleCreateCallback(Request $request): Response
+    public static function multipleCreateCallback(Request $request, Database $database=null): Response
     {
+        $database ??= Database::getInstance();
+
         /** @var AbstractModel $model */
         list($model, $middlewares) = self::extractRouteData($request);
 
@@ -119,8 +116,10 @@ class BaseDriver implements DriverInterface
             $query->insertValues(array_values($element));
         });
 
-        $query->fetch($this->database);
-        $lastInsert = $this->database->lastInsertId();
+        debug($query->build());
+
+        $query->fetch($database);
+        $lastInsert = $database->lastInsertId();
         $insertedIdList = range($lastInsert-$data->length()+1, $lastInsert);
 
         $events->dispatch(new AutobahnMultipleCreateAfter((string) $model, $query, $insertedIdList));
@@ -131,8 +130,10 @@ class BaseDriver implements DriverInterface
 
 
 
-    public function readCallback(Request $request): Response
+    public static function readCallback(Request $request, Database $database=null): Response
     {
+        $database ??= Database::getInstance();
+
         /** @var AbstractModel $model */
         list($model, $middlewares) = self::extractRouteData($request);
 
@@ -175,7 +176,7 @@ class BaseDriver implements DriverInterface
         $events = EventListener::getInstance();
         $events->dispatch(new AutobahnReadBefore((string) $model, $query));
 
-        $results = $query->toObjectArray($this->database);
+        $results = $query->toObjectArray($database);
 
         $events->dispatch(new AutobahnReadAfter((string) $model, $query, $results));
 
@@ -191,8 +192,10 @@ class BaseDriver implements DriverInterface
 
 
 
-    public function updateCallback(Request $request): Response
+    public static function updateCallback(Request $request, Database $database=null): Response
     {
+        $database ??= Database::getInstance();
+
         list($model, $middlewares) = self::extractRouteData($request);
 
         if (!($primaryKey = $model::getPrimaryKey()))
@@ -217,7 +220,7 @@ class BaseDriver implements DriverInterface
         $events = EventListener::getInstance();
         $events->dispatch(new AutobahnUpdateBefore($model, $primaryKeyValue, $query));
 
-        $query->fetch($this->database);
+        $query->fetch($database);
 
         $events->dispatch(new AutobahnUpdateAfter($model, $primaryKeyValue, $query));
 
@@ -228,8 +231,10 @@ class BaseDriver implements DriverInterface
 
 
 
-    public function deleteCallback(Request $request): Response
+    public static function deleteCallback(Request $request, Database $database=null): Response
     {
+        $database ??= Database::getInstance();
+
         list($model, $middlewares) = self::extractRouteData($request);
 
         $query = new ModelQuery($model, ModelQuery::DELETE);
@@ -246,7 +251,7 @@ class BaseDriver implements DriverInterface
         $events = EventListener::getInstance();
         $events->dispatch(new AutobahnDeleteBefore($model, $query));
 
-        $query->fetch($this->database);
+        $query->fetch($database);
 
         $events->dispatch(new AutobahnDeleteAfter($model, $query));
 
