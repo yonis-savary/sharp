@@ -4,9 +4,7 @@ namespace YonisSavary\Sharp\Commands;
 
 use YonisSavary\Sharp\Classes\CLI\Args;
 use YonisSavary\Sharp\Classes\CLI\AbstractCommand;
-use YonisSavary\Sharp\Classes\CLI\Terminal;
 use YonisSavary\Sharp\Classes\Env\Storage;
-use YonisSavary\Sharp\Core\Autoloader;
 use YonisSavary\Sharp\Core\Configuration\ApplicationsToLoad;
 use YonisSavary\Sharp\Core\Utils;
 
@@ -14,12 +12,6 @@ class Uninstall extends AbstractCommand
 {
     public function execute(Args $args): int
     {
-        $projectRoot = Autoloader::projectRoot();
-        $this->shellInDirectory('git clean -dfXn', $projectRoot);
-
-        if (Terminal::confirm('Git : Delete every untracked files ? This action cannot be undone'))
-            $this->shellInDirectory('git clean -dfX', $projectRoot);
-
         $this->log('Uninstalling dependencies...');
 
         $applications = ApplicationsToLoad::resolve()->applications;
@@ -32,7 +24,7 @@ class Uninstall extends AbstractCommand
 
     public function getHelp(): string
     {
-        return 'Delete every ignored files and vendor directories (Preview before deletion for ignored files)';
+        return 'Delete vendor directories (Preview before deletion for ignored files)';
     }
 
     protected function recursiveDeleteDirectory(Storage $rootDirectory)
