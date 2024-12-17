@@ -132,4 +132,15 @@ class AuthenticationTest extends TestCase
         $authentication->attempt('root', 'root');
         $this->assertNull($authentication->getUser());
     }
+
+    public function test_getUserId()
+    {
+        $authentication = TestClassFactory::createAuthentication();
+
+        $authentication->attempt('admin', 'admin');
+        $this->assertEquals(1, $authentication->getUserId());
+
+        $authentication->attempt('root', 'root');
+        $this->assertFalse($authentication->getUserId());
+    }
 }

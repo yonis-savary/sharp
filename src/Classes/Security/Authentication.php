@@ -157,4 +157,20 @@ class Authentication
     {
         return $this->getSessionKey(self::USER_DATA);
     }
+
+    /**
+     * @return mixed `false` if not logged in, the id or other primary key value, `null` on failure
+     */
+    public function getUserId(): mixed
+    {
+        if (!$this->isLogged())
+            return false;
+
+        /** @var AbstractModel $model */
+        $model = $this->configuration->model;
+        $primaryKey = $model::getPrimaryKey();
+
+        $data = $this->getUser();
+        return $data["data"][$primaryKey] ?? null;
+    }
 }
