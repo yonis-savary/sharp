@@ -19,12 +19,18 @@ class Configuration
     {
         if (is_file(Utils::relativePath("sharp.php")))
             return new self("sharp.php");
+
         return new self();
     }
 
-    public static function loadConfiguration(string $fileToLoad)
+    public static function fromFile(string $file): self
     {
-        $fileToLoad = Utils::relativePath($fileToLoad);
+        return new self($file);
+    }
+
+    protected static function loadConfiguration(string $fileToLoad)
+    {
+        $fileToLoad = is_file($fileToLoad) ? $fileToLoad : Utils::relativePath($fileToLoad);
         if (!is_file($fileToLoad))
         {
             Logger::getInstance()->error("Could not load $fileToLoad (not a file)");
@@ -38,8 +44,8 @@ class Configuration
         $filtered = [];
         foreach ($newElements as $element)
         {
-            if ($element instanceof ImportedConfiguration)
-                array_push($filtered, ...self::loadConfiguration($element->fileToImport));
+            if ($element instanceof Configuration)
+                array_push($filtered, ...$element->getElements());
             else
                 $filtered[] = $element;
         }
@@ -99,5 +105,11 @@ class Configuration
     {
         array_unshift($this->elements, ...$elements);
         $this->refreshGenericElements();
+    }
+
+
+    public function getElements(): array
+    {
+        return $this->elements;
     }
 }

@@ -49,4 +49,16 @@ class ConfigurationTest extends TestCase
         $this->assertEquals("Goodbye world !", $config->resolveByName("goodbye"));
         $this->assertFalse($config->resolveByName("farewell", false));
     }
+
+    public function test_importAnotherConfig()
+    {
+        $config = Configuration::fromFile("complex-config.php");
+
+        debug(
+            $config->getElements()
+        );
+
+        $this->assertEquals(["word" => "Hello"], $config->resolveByName("custom-element"));
+        $this->assertEquals(["key" => "value"], $config->resolveByName("complex-config"));
+    }
 }
