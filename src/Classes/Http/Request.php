@@ -13,6 +13,7 @@ use YonisSavary\Sharp\Core\Utils;
 use Stringable;
 use YonisSavary\Sharp\Classes\Core\EventListener;
 use YonisSavary\Sharp\Classes\Events\RequestNotValidated;
+use YonisSavary\Sharp\Classes\Http\Classes\HttpUtils;
 use YonisSavary\Sharp\Classes\Http\Classes\Validator;
 use YonisSavary\Sharp\Classes\Http\Configuration\RequestConfiguration;
 
@@ -20,7 +21,7 @@ use YonisSavary\Sharp\Classes\Http\Configuration\RequestConfiguration;
  * This component purpose is to hold information about a HTTP Request,
  * a default one can be built with `Request::fromGlobals()`
  */
-class Request
+class Request extends HttpUtils
 {
     protected array $slugs = [];
     protected ?Route $route = null;
@@ -86,7 +87,8 @@ class Request
         protected array $uploads=[],
         protected array $headers=[],
         protected mixed $body=null,
-        protected ?string $ip=null
+        protected ?string $ip=null,
+        protected array $cookies=[]
     )
     {
         $this->path = preg_replace("/\?.*/", '', $this->path);
@@ -145,17 +147,16 @@ class Request
             $post = self::parseDictionaryValueTypes($post);
         }
 
-        $path = $_SERVER['REQUEST_URI'] ?? '';
-
         $request = new self (
             $_SERVER['REQUEST_METHOD'] ?? php_sapi_name(),
-            $path,
+            $_SERVER['REQUEST_URI'] ?? '',
             $get,
             $post,
             $_FILES,
             $headers,
             file_get_contents('php://input'),
-            $_SERVER['REMOTE_ADDR'] ?? null
+            $_SERVER['REMOTE_ADDR'] ?? null,
+            $_COOKIE
         );
 
         return $request;
@@ -232,6 +233,11 @@ class Request
     public function body(): mixed
     {
         return $this->body;
+    }
+
+    public function cookies(): array
+    {
+        return $this->cookies;
     }
 
     /**
@@ -376,6 +382,18 @@ class Request
         return $this->headers;
     }
 
+    /**
+     * Get a header value from its name
+     *
+     * @param string Header name to retrieve (case-insensitive)
+     * @return ?string Header value if defined, `null` otherwise
+     */
+    public function getHeader(string $headerName, mixed $default=null): ?string
+    {
+        $headerName = $this->headerName($headerName);
+        return $this->headers[$headerName] ?? $default;
+    }
+
     public function getIp(): ?string
     {
         return $this->ip;
@@ -463,7 +481,7 @@ class Request
 
     public function isJSON(): bool
     {
-        return str_starts_with($this->headers['content-type'] ?? '', 'application/json');
+        return str_contains($this->getHeader('content-type', ''), 'application/json');
     }
 
     /**

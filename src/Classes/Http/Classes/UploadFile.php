@@ -3,6 +3,7 @@
 namespace YonisSavary\Sharp\Classes\Http\Classes;
 
 use YonisSavary\Sharp\Classes\Env\Storage;
+use YonisSavary\Sharp\Core\Utils;
 
 /**
  * Class to modelize Upload Files, methods that are the most useful are
@@ -19,9 +20,9 @@ use YonisSavary\Sharp\Classes\Env\Storage;
  */
 class UploadFile
 {
-    const KB = 1024;
-    const MB = 1024**2;
-    const GB = 1024**3;
+    const KB = Utils::KB;
+    const MB = Utils::MB;
+    const GB = Utils::GB;
 
     /** Target directory does not exists */
     const REASON_OK = 1<<0 ;

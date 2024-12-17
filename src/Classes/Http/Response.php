@@ -4,11 +4,12 @@ namespace YonisSavary\Sharp\Classes\Http;
 
 use InvalidArgumentException;
 use YonisSavary\Sharp\Classes\Core\Logger;
+use YonisSavary\Sharp\Classes\Http\Classes\HttpUtils;
 use YonisSavary\Sharp\Classes\Http\Classes\ResponseCodes;
 use YonisSavary\Sharp\Classes\Web\Renderer;
 use YonisSavary\Sharp\Core\Utils;
 
-class Response
+class Response extends HttpUtils
 {
     /**
      * @var array (`NULL` is NOT supported as it can represent an absence of function response !)
@@ -56,7 +57,7 @@ class Response
         $logger ??= Logger::getInstance();
         $logger->info('{status} {mime}', [
             'status' => $this->responseCode,
-            'mime' => $this->headers['content-type'] ?? 'Unknown MIME'
+            'mime' => $this->getHeader('content-type', 'Unknown MIME')
         ]);
     }
 
@@ -75,7 +76,7 @@ class Response
     {
         $toDisplay = $this->content;
 
-        if (str_starts_with($this->headers['content-type'] ?? '', 'application/json'))
+        if (str_starts_with($this->getHeader('content-type', ''), 'application/json'))
             $toDisplay = json_encode($toDisplay, JSON_THROW_ON_ERROR);
 
         if ($callback = $this->responseTransformer)
@@ -105,16 +106,7 @@ class Response
      */
     public function isJSON(): bool
     {
-        return str_contains($this->getHeader('content-type') ?? '', 'application/json');
-    }
-
-    /**
-     * @return string Transformed header name to lower case
-     * @example NULL `headerName('Content-Type') // returns 'content-type'`
-     */
-    protected function headerName(string $original): string
-    {
-        return trim(strtolower($original));
+        return str_contains($this->getHeader('content-type', ''), 'application/json');
     }
 
     /**
@@ -174,10 +166,10 @@ class Response
      * @param string Header name to retrieve (case-insensitive)
      * @return ?string Header value if defined, `null` otherwise
      */
-    public function getHeader(string $headerName): ?string
+    public function getHeader(string $headerName, mixed $default=null): ?string
     {
         $headerName = $this->headerName($headerName);
-        return $this->headers[$headerName] ?? null;
+        return $this->headers[$headerName] ?? $default;
     }
 
     /**
