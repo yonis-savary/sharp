@@ -12,6 +12,11 @@ function authGetUser(): array
     return Authentication::getInstance()->getUser();
 }
 
+function authUserId(): mixed
+{
+    return Authentication::getInstance()->getUserId();
+}
+
 function authAttempt(string $login, string $password): bool
 {
     return Authentication::getInstance()->attempt($login, $password);
