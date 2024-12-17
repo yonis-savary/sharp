@@ -10,6 +10,7 @@ use YonisSavary\Sharp\Classes\Core\Component;
 use YonisSavary\Sharp\Classes\Env\Storage;
 use Throwable;
 use YonisSavary\Sharp\Classes\Http\Request;
+use YonisSavary\Sharp\Core\Utils;
 
 class Logger implements LoggerInterface
 {
@@ -18,10 +19,11 @@ class Logger implements LoggerInterface
     protected $stream = null;
     protected bool $closeStream = true;
     protected string $filename;
+    protected Storage $storage;
 
     public static function getDefaultInstance()
     {
-        return new self('sharp.csv');
+        return new self('sharp.csv', maxSizeBytes: Utils::MB * 30);
     }
 
     /**
@@ -43,22 +45,56 @@ class Logger implements LoggerInterface
      * @param ?Storage $storage Optional target Storage directory (global instance if `null`)
      * @example NULL `new Logger('error.csv', new Storage('/var/log/sharp/my-app'))`
      */
-    public function __construct(string $filename=null, Storage $storage=null)
+    public function __construct(string $filename=null, Storage $storage=null, int $maxSizeBytes=0)
     {
         if (!$filename)
             return;
 
         $storage ??= Storage::getInstance()->getSubStorage('Logs');
+        $storage->assertIsWritable();
 
         $exists = $storage->isFile($filename);
-        if (!$exists)
-            $storage->assertIsWritable();
+        if ($exists && $maxSizeBytes)
+            $exists = !$this->renameLogFileIfNecessary($filename, $storage, $maxSizeBytes);
 
         $this->filename = $storage->path($filename);
         $this->stream = $storage->getStream($filename, 'a', false);
 
         if (!$exists)
             fputcsv($this->stream, ['DateTime', 'IP', 'Method', 'Level', 'Message'], "\t");
+
+        $this->storage = $storage;
+    }
+
+    /**
+     * @return bool `true` if the file was renamed, `false` otherwise
+     */
+    public function renameLogFileIfNecessary(string $filename=null, Storage $storage=null, int $maxSizeBytes=0)
+    {
+        $size = filesize($storage->path($filename));
+        if ($size < $maxSizeBytes)
+            return false;
+
+        $logger = Logger::getInstance();
+
+        $filenameWithoutExtension = pathinfo($filename, PATHINFO_FILENAME);
+        $extension = ".". pathinfo($filename, PATHINFO_EXTENSION);
+
+        $i=0;
+        do
+        {
+            $i++;
+            $newName = $filenameWithoutExtension . ".$i" . $extension;
+        } while ($storage->isFile($newName));
+
+        $logger->info("$filename logger file exceeded $maxSizeBytes bytes size, made a backup named $newName");
+
+        rename(
+            $storage->path($filename),
+            $storage->path($newName)
+        );
+
+        return true;
     }
 
     public function __destruct()
@@ -94,6 +130,14 @@ class Logger implements LoggerInterface
     public function getPath(): string
     {
         return $this->filename;
+    }
+
+    /**
+     * @return Storage Directory that contains the log file
+     */
+    public function getStorage(): Storage
+    {
+        return $this->storage;
     }
 
     /**
@@ -135,10 +179,7 @@ class Logger implements LoggerInterface
         $message = $this->toString($message);
 
         foreach ($context as $key => $value)
-        {
-            $value = $this->toString($value);
-            $message = str_replace('{'.$key.'}', $value, $message);
-        }
+            $message = str_replace('{'.$key.'}', $this->toString($value), $message);
 
         foreach (explode("\n", trim($message)) as $line)
             fputcsv($this->stream, [$now, $ip, $method, $level, $line], "\t");

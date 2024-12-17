@@ -5,6 +5,7 @@ namespace YonisSavary\Sharp\Tests\Units\Classes\Core;
 use PHPUnit\Framework\TestCase;
 use YonisSavary\Sharp\Classes\Core\Logger;
 use YonisSavary\Sharp\Classes\Env\Storage;
+use YonisSavary\Sharp\Core\Utils;
 
 class LoggerTest extends TestCase
 {
@@ -130,4 +131,26 @@ class LoggerTest extends TestCase
     }
 
 
+
+    public function test_maxSize()
+    {
+        $identifier = uniqid("loggersizetest-");
+
+        $logger = new Logger("$identifier.csv", maxSizeBytes: Utils::KB * 1);
+        $logger->info(get_declared_classes());
+
+        $storage = $logger->getStorage();
+        unset($logger);
+
+        for ($i=1; $i<=5; $i++)
+        {
+            $logger = new Logger("$identifier.csv", maxSizeBytes: Utils::KB * 1);
+            $logger->info(get_declared_classes());
+
+            $this->assertTrue($storage->isFile("$identifier.csv"));
+            $this->assertTrue($storage->isFile("$identifier.$i.csv"));
+
+            unset($logger);
+        }
+    }
 }
