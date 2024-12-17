@@ -9,7 +9,7 @@ use YonisSavary\Sharp\Classes\Env\Storage;
 
 class JSONConfigurationTest extends TestCase
 {
-    // Most of Configuration feature are tested by [./AbstractMapTest.php]
+    // Most of Configuration feature are tested by [./GenericMapTest.php]
 
     public function test___construct()
     {

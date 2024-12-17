@@ -2,14 +2,14 @@
 
 namespace YonisSavary\Sharp\Classes\Utils;
 
-use YonisSavary\Sharp\Classes\Core\AbstractMap;
+use YonisSavary\Sharp\Classes\Core\GenericMap;
 use YonisSavary\Sharp\Classes\Env\Storage;
 use YonisSavary\Sharp\Core\Autoloader;
 use YonisSavary\Sharp\Core\Utils;
 
 trait AppMap
 {
-    protected static ?AbstractMap $instance = null;
+    protected static ?GenericMap $instance = null;
 
     final protected static function getUniqueName(): string
     {
@@ -22,7 +22,7 @@ trait AppMap
         return Storage::getInstance()->getSubStorage('App/Maps');
     }
 
-    public static function &get(): AbstractMap
+    public static function &get(): GenericMap
     {
         if (self::$instance === null)
         {

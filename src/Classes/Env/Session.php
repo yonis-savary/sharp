@@ -4,11 +4,11 @@ namespace YonisSavary\Sharp\Classes\Env;
 
 use Exception;
 use RuntimeException;
-use YonisSavary\Sharp\Classes\Core\AbstractMap;
+use YonisSavary\Sharp\Classes\Core\GenericMap;
 use YonisSavary\Sharp\Classes\Core\Component;
 use YonisSavary\Sharp\Core\Autoloader;
 
-class Session extends AbstractMap
+class Session extends GenericMap
 {
     use Component;
 

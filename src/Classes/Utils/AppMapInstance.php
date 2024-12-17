@@ -2,10 +2,10 @@
 
 namespace YonisSavary\Sharp\Classes\Utils;
 
-use YonisSavary\Sharp\Classes\Core\AbstractMap;
+use YonisSavary\Sharp\Classes\Core\GenericMap;
 use YonisSavary\Sharp\Classes\Env\Storage;
 
-final class AppMapInstance extends AbstractMap {
+final class AppMapInstance extends GenericMap {
 
     private Storage $dataStorage;
     private string $hashName;

@@ -5,10 +5,10 @@ namespace YonisSavary\Sharp\Classes\Core;
 use YonisSavary\Sharp\Core\Utils;
 
 /**
- * `AbstractMap` is a way to store `key-values` data
+ * `GenericMap` is a way to store `key-values` data
  * in a class, which got very simple methods like 'set', 'get', 'has'...
  */
-abstract class AbstractMap
+class GenericMap
 {
     protected array $storage = [];
 
@@ -69,9 +69,9 @@ abstract class AbstractMap
      * Merge the current map with another one
      * Given data (over)write existing data
      */
-    final public function merge(array|AbstractMap $array): void
+    final public function merge(array|GenericMap $array): void
     {
-        if ($array instanceof AbstractMap)
+        if ($array instanceof GenericMap)
             $array = $array->dump();
 
         $this->storage = array_merge($this->storage, $array);
@@ -115,10 +115,18 @@ abstract class AbstractMap
     }
 
     /**
-     * Return the raw map array
+     * @return array Raw data inside GenericMap
      */
     final public function dump(): array
     {
         return $this->storage;
+    }
+
+    /**
+     * @return string JSON string of data inside GenericMap
+     */
+    final public function dumpJson(int $flags=0): string
+    {
+        return json_encode($this->dump(), JSON_THROW_ON_ERROR | $flags);
     }
 }

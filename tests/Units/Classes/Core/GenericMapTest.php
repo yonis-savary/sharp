@@ -4,25 +4,25 @@ namespace YonisSavary\Sharp\Tests\Units\Classes\Core;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use YonisSavary\Sharp\Classes\Core\AbstractMap;
+use YonisSavary\Sharp\Classes\Core\GenericMap;
 
 /**
- * `AbstractMap` is a way to store `key-values` data
+ * `GenericMap` is a way to store `key-values` data
  * in a class, which got very simple methods like 'set', 'get', 'has'...
  */
-class AbstractMapTest extends TestCase
+class GenericMapTest extends TestCase
 {
     protected array $storage = [];
 
-    protected function getDummyAbstractMap(): AbstractMap
+    protected function getDummyGenericMap(): GenericMap
     {
-        $class = new class extends AbstractMap {};
+        $class = new class extends GenericMap {};
         return new $class();
     }
 
     public function test_get()
     {
-        $dummy = $this->getDummyAbstractMap();
+        $dummy = $this->getDummyGenericMap();
 
         $this->assertEquals('A', $dummy->get('key', 'A'));
 
@@ -32,7 +32,7 @@ class AbstractMapTest extends TestCase
 
     public function test_try()
     {
-        $dummy = $this->getDummyAbstractMap();
+        $dummy = $this->getDummyGenericMap();
 
         $success = null;
 
@@ -53,7 +53,7 @@ class AbstractMapTest extends TestCase
 
     public function test_set()
     {
-        $dummy = $this->getDummyAbstractMap();
+        $dummy = $this->getDummyGenericMap();
 
         $this->assertEquals('A', $dummy->get('key', 'A'));
 
@@ -66,7 +66,7 @@ class AbstractMapTest extends TestCase
 
     public function test_has()
     {
-        $dummy = $this->getDummyAbstractMap();
+        $dummy = $this->getDummyGenericMap();
 
         $this->assertFalse($dummy->has('key'));
         $dummy->set('key', 'A');
@@ -75,7 +75,7 @@ class AbstractMapTest extends TestCase
 
     public function test_unset()
     {
-        $dummy = $this->getDummyAbstractMap();
+        $dummy = $this->getDummyGenericMap();
 
         $dummy->set('key', 'A');
         $this->assertTrue($dummy->has('key'));
@@ -91,7 +91,7 @@ class AbstractMapTest extends TestCase
 
     public function test_toArray()
     {
-        $dummy = $this->getDummyAbstractMap();
+        $dummy = $this->getDummyGenericMap();
 
         $dummy->set('key', 'A');
         $this->assertEquals(['A'], $dummy->toArray('key'));
@@ -102,7 +102,7 @@ class AbstractMapTest extends TestCase
 
     public function test_edit()
     {
-        $dummy = $this->getDummyAbstractMap();
+        $dummy = $this->getDummyGenericMap();
 
         $dummy->edit('inexistent', fn($x) => $x + 5, 0);
         $this->assertEquals(5, $dummy->get('inexistent'));
@@ -117,7 +117,7 @@ class AbstractMapTest extends TestCase
 
     public function test_dump()
     {
-        $dummy = $this->getDummyAbstractMap();
+        $dummy = $this->getDummyGenericMap();
 
         $dummy->set('A', 1);
         $dummy->set('B', 2);
@@ -128,7 +128,7 @@ class AbstractMapTest extends TestCase
 
     public function test_merge()
     {
-        $dummy = $this->getDummyAbstractMap();
+        $dummy = $this->getDummyGenericMap();
 
         $dummy->set('A', 1);
         $this->assertEquals(['A'=>1], $dummy->dump());

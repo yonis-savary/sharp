@@ -4,10 +4,10 @@ namespace YonisSavary\Sharp\Classes\Env\Configuration;
 
 use Exception;
 use RuntimeException;
-use YonisSavary\Sharp\Classes\Core\AbstractMap;
+use YonisSavary\Sharp\Classes\Core\GenericMap;
 use YonisSavary\Sharp\Core\Utils;
 
-class JSONConfiguration extends AbstractMap
+class JSONConfiguration extends GenericMap
 {
     protected ?string $filename = null;
     protected bool $merged = false;
