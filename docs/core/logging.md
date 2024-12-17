@@ -42,7 +42,13 @@ $logger = new Logger('errors.csv');
 
 # A custom Storage can also be given
 # this one will log everything in /var/log/shippingService/service.csv
-$logger = new Logger('service.csv', new Storage('/var/log/shippingService'))
+$logger = new Logger('service.csv', new Storage('/var/log/shippingService'));
+
+
+# A custom maximum size can also be given
+# this will create service.1.csv, service.2.csv, ... when service.csv exceed the maximum size
+# (note: the check action is done when creating the Logger, so the max size is not "strict", it can be exceeded for the current request)
+$logger = new Logger('service.csv', maxSizeBytes: 30 * Utils::MB);
 ```
 
 You can also work with streams directly !
