@@ -157,6 +157,7 @@ class UtilsTest extends TestCase
         $this->assertTrue(Utils::isAssoc(['A' => 5]));
         $this->assertFalse(Utils::isAssoc([['A' => 5]]));
         $this->assertFalse(Utils::isAssoc([]));
+        $this->assertTrue(Utils::isAssoc([], true));
 
         $this->assertFalse(Utils::isAssoc([1, 2, 3]));
         $this->assertFalse(Utils::isAssoc(['A', 'B', 'C']));

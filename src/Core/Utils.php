@@ -14,6 +14,13 @@ use YonisSavary\Sharp\Core\Configuration\Environmnent;
  */
 class Utils
 {
+    /** Kilobytes */
+    const KB = 1024;
+    /** Megabytes */
+    const MB = 1024**2;
+    /** Gigabytes */
+    const GB = 1024**3;
+
     /**
      * This function check if a class uses a specific trait
      *
@@ -183,14 +190,21 @@ class Utils
 
     /**
      * @return bool Is given array associative ?
-     * @note an empty array will be considered as a list (non-assoc)
      */
-    public static function isAssoc(array $array): bool
+    public static function isAssoc(array $array, bool $considerEmptyAsAssoc=false): bool
     {
         if (!count($array))
-            return false;
+            return $considerEmptyAsAssoc;
 
         return !array_is_list($array);
+    }
+
+    /**
+     * @return bool Is given array a list ?
+     */
+    public static function isList(array $array, bool $considerEmptyAsAssoc=false): bool
+    {
+        return !self::isAssoc($array, $considerEmptyAsAssoc);
     }
 
     /**
