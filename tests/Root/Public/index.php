@@ -5,7 +5,10 @@ use YonisSavary\Sharp\Classes\Http\Request;
 use YonisSavary\Sharp\Classes\Web\Router;
 use YonisSavary\Sharp\Core\Autoloader;
 
-require_once __DIR__ . '/../../bootstrap.php';
+$GLOBALS['sharp-root'] = realpath(__DIR__ . "/..");
+$GLOBALS['sharp-src']  = realpath(__DIR__ . '/../../../src');
+
+require_once __DIR__ . '/../../../vendor/autoload.php';
 
 Autoloader::initialize();
 

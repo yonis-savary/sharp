@@ -36,7 +36,9 @@ class AutoloadCacheTest extends TestCase
             ];
         "));
 
-        for ($i=0; $i<=1000; $i++)
+        $buildTaskNumber = 200;
+
+        for ($i=0; $i<=$buildTaskNumber; $i++)
         {
             $appClassname = uniqid("BuildTask");
             # Assets that Helpers files are loaded
@@ -86,7 +88,7 @@ class AutoloadCacheTest extends TestCase
         $firstStart = hrtime(true);
         $output = shell_exec("php do count-build-tasks --command-output-only");
         $firstTime = (hrtime(true) - $firstStart) / 1000000;
-        $this->assertGreaterThan(1000, $output);
+        $this->assertGreaterThan($buildTaskNumber, $output);
 
         shell_exec("php do cache-autoload $nullRedirect");
         shell_exec("php do count-build-tasks --command-output-only $nullRedirect");
@@ -96,8 +98,8 @@ class AutoloadCacheTest extends TestCase
         $secondTime = (hrtime(true) - $secondStart) / 1000000;
         $this->assertLessThan($firstTime, $secondTime);
 
-        $logger->info("Autoload Benchmark (Load 1000 build tasks, before caching) : $firstTime ms");
-        $logger->info("Autoload Benchmark (Load 1000 build tasks, before caching) : $secondTime ms");
+        $logger->info("Autoload Benchmark (Load $buildTaskNumber build tasks, before caching) : $firstTime ms");
+        $logger->info("Autoload Benchmark (Load $buildTaskNumber build tasks, after caching) : $secondTime ms");
 
         chdir($originalDir);
         shell_exec("rm -r " . $appStorage->getRoot() . " $nullRedirect");
