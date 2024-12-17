@@ -27,20 +27,17 @@ class Help extends AbstractCommand
         ];
 
         foreach ($commands as $command)
-        {
-            $maxLength['name']       = max($maxLength['name'], strlen($command->getName()));
-            $maxLength['identifier'] = max($maxLength['identifier'], strlen($command->getIdentifier()));
-        }
+            $maxLength['name'] = max($maxLength['name'], strlen($command->getName()));
 
         $this->log('Available commands with their identifier and purposes:');
         $this->log('Use --command-output-only to only display what the command shall display without any title or decoration');
+        $this->log("");
 
         foreach ($commands as $command)
         {
             $this->log(
-                sprintf(" - %s %s : %s",
+                sprintf(" - %s : %s",
                     str_pad($command->getName(), $maxLength['name']),
-                    str_pad('('. $command->getIdentifier() .')', $maxLength['identifier']+2),
                     $command->getHelp()
                 )
             );

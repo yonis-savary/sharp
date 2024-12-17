@@ -6,6 +6,8 @@ use YonisSavary\Sharp\Core\Autoloader;
 
 require_once 'vendor/autoload.php';
 
+set_time_limit(0);
+
 Autoloader::$ignoreRequireErrors = true;
 Autoloader::initialize();
 

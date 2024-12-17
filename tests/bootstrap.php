@@ -26,7 +26,16 @@ Autoloader::initialize();
 
 $rootDirectory    = new Storage($GLOBALS['sharp-root']);
 $testLogger       = new Logger('test-suite.csv', new Storage(__DIR__));
+
 $testStorage      = new Storage($rootDirectory->path('/Storage'));
+
+// Cleanup previous test files/caches/...
+foreach (array_reverse($testStorage->exploreDirectory("/", Storage::ONLY_FILES)) as $file)
+    unlink($file);
+foreach (array_reverse($testStorage->exploreDirectory("/", Storage::ONLY_DIRS)) as $directory)
+    rmdir($directory);
+
+
 $testConfig       = new Configuration($rootDirectory->path('/sharp.php'));
 $cacheStorage     = new Cache($testStorage->getSubStorage('Cache'));
 
